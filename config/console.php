@@ -25,7 +25,15 @@ $config = [
                 ],
             ],
         ],
+        'authManager'              => [
+            'class' => 'yii\rbac\DbManager',
+        ],
         'db' => $db,
+    ],
+    'modules' => [
+        'rbac' => [
+            'class' => 'yii2mod\rbac\ConsoleModule'
+        ]
     ],
     'params' => $params,
     /*

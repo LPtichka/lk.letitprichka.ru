@@ -1,70 +1,104 @@
 <?php
 
+use yii\web\UrlNormalizer;
+
 $params = require __DIR__ . '/params.php';
-$db = require __DIR__ . '/db.php';
+$db     = require __DIR__ . '/db.php';
 
 $config = [
-    'id' => 'basic',
-    'basePath' => dirname(__DIR__),
-    'bootstrap' => ['log'],
-    'aliases' => [
+    'id'             => 'basic',
+    'basePath'       => dirname(__DIR__),
+    'bootstrap'      => ['log'],
+    'defaultRoute'   => 'main/index',
+    'sourceLanguage' => 'en-US',
+    'language'       => 'ru-RU',
+    'name'           => 'LetitPtichka.ru',
+    'aliases'        => [
         '@bower' => '@vendor/bower-asset',
         '@npm'   => '@vendor/npm-asset',
     ],
-    'components' => [
-        'request' => [
-            // !!! insert a secret key in the following (if it is empty) - this is required by cookie validation
+    'components'     => [
+        'request'      => [
             'cookieValidationKey' => 'J0aidciAkL7ODYKG4gxbjYNAK8z6xT0O',
         ],
-        'cache' => [
+        'cache'        => [
             'class' => 'yii\caching\FileCache',
         ],
-        'user' => [
-            'identityClass' => 'app\models\User',
+        'user'         => [
+            'identityClass'   => 'app\models\User',
+            'loginUrl'        => ['main/login'],
             'enableAutoLogin' => true,
         ],
         'errorHandler' => [
             'errorAction' => 'site/error',
         ],
-        'mailer' => [
-            'class' => 'yii\swiftmailer\Mailer',
-            // send all mails to a file by default. You have to set
-            // 'useFileTransport' to false and configure a transport
-            // for the mailer to send real emails.
+        'mailer'       => [
+            'class'            => 'yii\swiftmailer\Mailer',
             'useFileTransport' => true,
         ],
-        'log' => [
+        'log'          => [
             'traceLevel' => YII_DEBUG ? 3 : 0,
-            'targets' => [
+            'targets'    => [
                 [
-                    'class' => 'yii\log\FileTarget',
+                    'class'  => 'yii\log\FileTarget',
                     'levels' => ['error', 'warning'],
                 ],
             ],
         ],
-        'db' => $db,
-        /*
-        'urlManager' => [
-            'enablePrettyUrl' => true,
-            'showScriptName' => false,
-            'rules' => [
+        'authManager'  => [
+            'class' => 'yii\rbac\DbManager',
+            'cache' => [
+                'class' => 'yii\caching\FileCache'
             ],
         ],
-        */
+        'db'           => $db,
+        'urlManager'   => [
+            'enablePrettyUrl'     => true,
+            'enableStrictParsing' => true,
+            'showScriptName'      => false,
+            'baseUrl'             => '/',
+            'normalizer'          => [
+                'class'  => 'yii\web\UrlNormalizer',
+                'action' => UrlNormalizer::ACTION_REDIRECT_PERMANENT,
+            ],
+            'rules'               => [
+                '/'                                           => 'main/index',
+                '/login'                                      => 'main/login',
+                '/forgot-password'                            => 'main/forgot-password',
+                '/reset-password'                             => 'main/reset-password',
+                '<action:\w+[^s]$>'                           => 'main/<action>',
+                '<controller>s/'                              => '<controller>/index',
+                '<controller>/<id:\d+>/<action>/<status:\w+>' => '<controller>/<action>',
+                '<controller>/<id:\d+>/<action>'              => '<controller>/<action>',
+                '<controller>/<id:\d+>'                       => '<controller>/view',
+                '<controller>/<action>'                       => '<controller>/<action>',
+            ],
+        ],
     ],
-    'params' => $params,
+    'as access'      => [
+        'class'        => 'app\rbac\AccessControl',
+        'allowActions' => [
+            'main/login',
+            'main/signup',
+            'main/forgot-password',
+            'main/reset-password',
+            'gii/*',
+            'debug/*',
+        ]
+    ],
+    'params'         => $params,
 ];
 
 if (YII_ENV_DEV) {
     // configuration adjustments for 'dev' environment
-    $config['bootstrap'][] = 'debug';
+    $config['bootstrap'][]      = 'debug';
     $config['modules']['debug'] = [
         'class' => 'yii\debug\Module',
         // uncomment the following to add your IP if you are not connecting from localhost.
         //'allowedIPs' => ['127.0.0.1', '::1'],
     ];
 
-    $config['bootstrap'][] = 'gii';
+    $config['bootstrap'][]    = 'gii';
     $config['modules']['gii'] = [
         'class' => 'yii\gii\Module',
         // uncomment the following to add your IP if you are not connecting from localhost.
