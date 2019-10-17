@@ -35,8 +35,8 @@ class m191017_105417_create_order_exception_table extends Migration
      */
     public function safeDown()
     {
-        $this->dropForeignKey('fk_order_exception_order_id', '{{%order}}');
-        $this->dropForeignKey('fk_order_exception_exception_id', '{{%order}}');
+        $this->dropForeignKey('fk_order_exception_order_id', '{{%order_exception}}');
+        $this->dropForeignKey('fk_order_exception_exception_id', '{{%order_exception}}');
         $this->dropTable('{{%order_exception}}');
     }
 }

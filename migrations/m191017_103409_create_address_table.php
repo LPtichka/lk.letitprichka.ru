@@ -29,6 +29,7 @@ class m191017_103409_create_address_table extends Migration
             'flat' => $this->string(16),
             'postcode' => $this->string(6),
             'description' => $this->text(),
+            'full_address' => $this->text(),
             'created_at' => $this->integer()->notNull(),
             'updated_at' => $this->integer()->notNull(),
         ], $tableOptions);
