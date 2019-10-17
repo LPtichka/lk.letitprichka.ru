@@ -20,6 +20,9 @@ $config = [
     'components'     => [
         'request'      => [
             'cookieValidationKey' => 'J0aidciAkL7ODYKG4gxbjYNAK8z6xT0O',
+            'parsers'             => [
+                'application/json' => 'yii\web\JsonParser',
+            ]
         ],
         'cache'        => [
             'class' => 'yii\caching\FileCache',
@@ -52,6 +55,27 @@ $config = [
             ],
         ],
         'db'           => $db,
+        'formatter'    => [
+            'class'                  => 'yii\i18n\Formatter',
+            'nullDisplay'            => '',
+            'locale'                 => 'ru-RU',
+            'timeZone'               => 'Europe/Moscow',
+            'currencyCode'           => 'RUB',
+            'numberFormatterSymbols' => [
+                NumberFormatter::CURRENCY_SYMBOL => '₽',
+            ],
+        ],
+        'i18n'         => [
+            'translations' => [
+                '*' => [
+                    'class'    => 'yii\i18n\PhpMessageSource',
+                    'fileMap'  => [
+                        'app'   => 'app.php',
+                    ],
+                    'basePath' => '@app/messages',
+                ],
+            ],
+        ],
         'urlManager'   => [
             'enablePrettyUrl'     => true,
             'enableStrictParsing' => true,
@@ -85,6 +109,11 @@ $config = [
             'gii/*',
             'debug/*',
         ]
+    ],
+    'modules'        => [
+        'api' => [
+            'class' => 'app\api\Module',
+        ],
     ],
     'params'         => $params,
 ];
