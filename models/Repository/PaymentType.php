@@ -33,13 +33,26 @@ class PaymentType extends \yii\db\ActiveRecord
     }
 
     /**
+     * @return array
+     */
+    public function attributeLabels()
+    {
+        return [
+            'id' => \Yii::t('payment', 'ID'),
+            'name' => \Yii::t('payment', 'Name'),
+            'updated_at' => \Yii::t('payment', 'Updated at'),
+        ];
+    }
+
+    /**
      * @inheritdoc
      */
     public function rules()
     {
         return [
-            [['name'], 'string'],
-            [['name'], 'required'],
+            ['name', 'unique', 'message' => \Yii::t('payment', 'This payment has already exists')],
+            ['name', 'string'],
+            ['name', 'required'],
         ];
     }
 

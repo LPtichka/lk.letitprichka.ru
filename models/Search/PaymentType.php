@@ -19,8 +19,8 @@ class PaymentType extends Repository
     public function rules()
     {
         return [
-            [['id'], 'integer'],
-            [['name'], 'string'],
+            ['id', 'integer'],
+            ['name', 'string'],
         ];
     }
 
@@ -64,17 +64,17 @@ class PaymentType extends Repository
 
         $result['id'] = [
             'attribute' => 'id',
-            'label' => 'id',
+            'label' => \Yii::t('payment', 'ID'),
         ];
 
         $result['name'] = [
             'attribute' => 'name',
-            'label' => 'name',
+            'label' => \Yii::t('payment', 'Name'),
         ];
 
         $result['updated_at'] = [
             'attribute' => 'updated_at',
-            'label' => 'updated_at',
+            'label' => \Yii::t('payment', 'Updated at'),
             'content' => function($model) {
                 return date('d.m.Y \в H:i', $model->updated_at);
             }

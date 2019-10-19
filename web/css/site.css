@@ -113,3 +113,33 @@ a.desc:after {
 .nav > li > form > button.logout:focus {
     outline: none;
 }
+
+.table th a {
+    color: #333;
+}
+
+.pagination {
+    width: 100%;
+    position: relative;
+}
+
+.pagination>li>a {
+    background: #fafafa;
+    color: #666;
+    padding: 5px 10px;
+    font-size: 12px;
+    line-height: 1.5;
+}
+
+.pagination>li>span {
+    border: none;
+}
+
+.pagination>li>span:hover {
+    background: none;
+}
+
+.pagination .form-control {
+    display: inline;
+    max-width: 50px;
+}

@@ -11,7 +11,7 @@ class GridView extends \yii\grid\GridView
 
     public $pager = ['class' => 'app\widgets\LinkPager'];
 
-    public $layout = "{items}\n{pager}";
+    public $layout = "<div class='box-body'>{items}</div>\n<div class='box-footer'>{pager}</div>";
 
     public $summaryOptions = ['class' => 'summary pull-right'];
 }
