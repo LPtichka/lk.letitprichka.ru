@@ -22,7 +22,8 @@
         "yii2mod/yii2-rbac": "*",
       "ext-intl": "*",
         "aryelds/yii2-sweet-alert": "@dev",
-      "ext-json": "*"
+      "ext-json": "*",
+        "yiier/yii2-phpexcel": "*"
     },
     "require-dev": {
         "yiisoft/yii2-debug": "~2.1.0",

@@ -1,6 +1,7 @@
 <?php
 namespace app\controllers;
 
+use app\models\Helper\Excel;
 use app\models\search\PaymentType;
 use app\models\User;
 use yii\web\Controller;
@@ -149,6 +150,63 @@ class PaymentTypeController extends Controller
         return [
             'status' => true,
             'title'  => \Yii::t('payment', 'Payment was successful deleted')
+        ];
+    }
+
+    /**
+     * Испорт товаров из Excel
+     */
+    public function actionImport()
+    {
+        $inputFile = $_FILES['xml'];
+        $excel       = new Excel();
+        $excel->load($inputFile);
+        if (!$excel->validate()) {
+            throw new \Exception(\Yii::t('file', 'Product file is not suitable'));
+        }
+
+        $parserData = $excel->parse();
+
+        \Yii::$app->response->format = Response::FORMAT_JSON;
+        $transaction = \Yii::$app->db->beginTransaction();
+        foreach ($parserData as $payment) {
+            $paymentType = new \app\models\Repository\PaymentType();
+            $paymentType->name = $payment[0] ?? null;
+
+            if (!($paymentType->validate() && $paymentType->save())) {
+                $transaction->rollBack();
+                \Yii::$app->session->addFlash('danger', \Yii::t('payment', 'Payment type import was failed'));
+                return [
+                    'success' => false,
+                ];
+            }
+        }
+
+        $transaction->commit();
+        \Yii::$app->session->addFlash('success', \Yii::t('payment', 'Payment type was imported successfully'));
+
+        return [
+            'success' => true,
+        ];
+    }
+
+    /**
+     * @return array
+     * @throws \PHPExcel_Exception
+     * @throws \PHPExcel_Reader_Exception
+     */
+    public function actionExport()
+    {
+        $payments = (new PaymentType())->export(\Yii::$app->request->post());
+
+        $excel = new Excel();
+        $excel->loadFromTemplate('files/templates/base.xlsx');
+        $excel->prepare($payments);
+        $excel->save('payments.xlsx', 'temp');
+
+        \Yii::$app->response->format = Response::FORMAT_JSON;
+        return [
+            'url' => $excel->getUrl(),
         ];
     }
 }

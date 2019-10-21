@@ -20,7 +20,10 @@ $this->title = \Yii::t('payment', 'Payment types');
             <?= Html::a(\Yii::t('payment', 'Create payment'), ['payment-type/create'], ['class' => 'btn btm-sm btn-warning']) ?>
         </div>
         <div class="pull-right">
+            <?= Html::button('<i class="fa fa-upload"></i> ', ['class' => 'btn btm-sm btn-default import']) ?>
+            <?= Html::button('<i class="fa fa-download"></i> ', ['class' => 'btn btm-sm btn-default export']) ?>
             <?= Html::submitButton('<i class="fa fa-times"></i> ', ['class' => 'btn btm-sm btn-danger delete']) ?>
+            <div class="hidden"><?= Html::fileInput('import') ?></div>
         </div>
     </div>
     <?php Pjax::begin(); ?>
@@ -29,12 +32,6 @@ $this->title = \Yii::t('payment', 'Payment types');
             'data-resizable-columns-id' => 'product',
             'class'                     => 'table table-bordered'
         ],
-        'rowOptions'   => function ($model) {
-            return [
-                'onclick' => 'location.href="'
-                    . Url::to(['payment-type/view', 'id' => $model->id]) . '";'
-            ];
-        },
         'dataProvider' => $dataProvider,
         'filterModel'  => $searchModel,
         'columns'      => (new \app\models\Search\PaymentType())->getSearchColumns($searchModel),

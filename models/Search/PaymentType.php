@@ -5,6 +5,7 @@ namespace app\models\search;
 use app\models\Repository\PaymentType as Repository;
 use yii\data\ActiveDataProvider;
 use yii\grid\CheckboxColumn;
+use yii\helpers\Html;
 
 class PaymentType extends Repository
 {
@@ -48,6 +49,28 @@ class PaymentType extends Repository
     }
 
     /**
+     * @param $params
+     * @return iterable
+     */
+    public function export($params): iterable
+    {
+        $paymentsQuery = self::find();
+
+        !empty($params['id']) && $paymentsQuery->filterWhere(['id' => $params['id']]);
+        !empty($params['name']) && $paymentsQuery->filterWhere(['like', 'name', urldecode($params['name'])]);
+
+        $payments = $paymentsQuery->asArray()->all();
+        foreach ($payments as $payment) {
+            yield [
+                'id' => $payment['id'],
+                'name' => $payment['name'],
+                'created_at' => date('d.m.Y \в H:i', $payment['created_at']),
+                'updated_at' => date('d.m.Y \в H:i', $payment['updated_at']),
+            ];
+        }
+    }
+
+    /**
      * Список полей для поиска
      * @param PaymentType $searchModel
      * @return array
@@ -65,6 +88,9 @@ class PaymentType extends Repository
         $result['id'] = [
             'attribute' => 'id',
             'label' => \Yii::t('payment', 'ID'),
+            'content' => function ($model) {
+                return Html::a($model->id, ['payment-type/view', 'id' => $model->id]);
+            }
         ];
 
         $result['name'] = [
