@@ -23,6 +23,7 @@ class AppAsset extends AssetBundle
         'css/site.css',
     ];
     public $js = [
+        'js/common.js',
         'js/payment.js'
     ];
     public $depends = [

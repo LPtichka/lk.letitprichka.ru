@@ -4,6 +4,8 @@ namespace app\models\Helper;
 class Excel
 {
     const AVAILABLE_TYPES = ['Excel2007'];
+    const MODEL_PRODUCT = 'product';
+    const MODEL_PAYMENT = 'payment';
 
     /** @var array */
     private $file;
@@ -121,10 +123,11 @@ class Excel
      * Загружаем данные в файл
      *
      * @param iterable $data
+     * @param string $model
      * @return bool
      * @throws \PHPExcel_Exception
      */
-    public function prepare(iterable $data): bool
+    public function prepare(iterable $data, string $model): bool
     {
         $objWorksheet = $this->fileName->getActiveSheet();
 
@@ -135,7 +138,7 @@ class Excel
             if ($iRow === 1) {
                 $keys = array_keys($row);
                 foreach ($keys as $item) {
-                    $value = \Yii::t('export', $item);
+                    $value = \Yii::t($model, $item);
                     $objWorksheet->getCellByColumnAndRow($col, $iRow)->setValue($value);
                     unset($value);
                     $col++;

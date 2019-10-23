@@ -21,9 +21,18 @@ $this->title = \Yii::t('payment', 'Payment types');
         </div>
         <div class="pull-right">
             <?= Html::button('<i class="fa fa-upload"></i> ', ['class' => 'btn btm-sm btn-default import']) ?>
-            <?= Html::button('<i class="fa fa-download"></i> ', ['class' => 'btn btm-sm btn-default export']) ?>
-            <?= Html::submitButton('<i class="fa fa-times"></i> ', ['class' => 'btn btm-sm btn-danger delete']) ?>
-            <div class="hidden"><?= Html::fileInput('import') ?></div>
+            <?= Html::button('<i class="fa fa-download"></i> ', [
+                'class'     => 'btn btm-sm btn-default export',
+                'data-href' => Url::to(['payment-type/export']),
+            ]) ?>
+            <?= Html::submitButton('<i class="fa fa-times"></i> ', [
+                'class'      => 'btn btm-sm btn-danger delete',
+                'data-title' => \Yii::t('payment', 'Do you really want to delete selected payments?'),
+                'data-href'  => Url::to(['payment-type/delete']),
+            ]) ?>
+            <div class="hidden"><?= Html::fileInput('import', '', [
+                    'data-href' => Url::to(['payment-type/import'])
+                ]) ?></div>
         </div>
     </div>
     <?php Pjax::begin(); ?>

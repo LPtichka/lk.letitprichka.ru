@@ -55,6 +55,15 @@ $config = [
                     'maxFileSize' => 102400,
                     'maxLogFiles' => 10,
                 ],
+                [
+                    'class'      => 'yii\log\FileTarget',
+                    'logFile'    => '@runtime/logs/product.log',
+                    'levels'     => ['info'],
+                    'categories' => ['product-*'],
+                    'logVars'    => [],
+                    'maxFileSize' => 102400,
+                    'maxLogFiles' => 10,
+                ],
             ],
         ],
         'authManager'  => [

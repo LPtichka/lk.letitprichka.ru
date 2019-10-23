@@ -37,7 +37,7 @@
                         'items' => [
                             ['label' => 'Блюда', 'icon' => 'file-code-o', 'url' => ['/gii'],],
                             ['label' => 'Исключения', 'icon' => 'file-code-o', 'url' => ['/gii'],],
-                            ['label' => 'Товары (склад)', 'icon' => 'dashboard', 'url' => ['/debug'],],
+                            ['label' => \Yii::t('app', 'Goods'), 'icon' => 'dashboard', 'url' => ['/product/index'],],
                         ],
                     ],
                     [

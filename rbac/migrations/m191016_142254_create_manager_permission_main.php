@@ -10,6 +10,7 @@ class m191016_142254_create_manager_permission_main extends Migration
         $this->addChild('manager', '/main/index');
         $this->createPermission('/main/logout');
         $this->addChild('manager', '/main/logout');
+
         $this->createPermission('/payment-type/index');
         $this->addChild('manager', '/payment-type/index');
         $this->createPermission('/payment-type/create');
@@ -22,6 +23,20 @@ class m191016_142254_create_manager_permission_main extends Migration
         $this->addChild('manager', '/payment-type/export');
         $this->createPermission('/payment-type/import');
         $this->addChild('manager', '/payment-type/import');
+
+        $this->createPermission('/product/index');
+        $this->addChild('manager', '/product/index');
+        $this->createPermission('/product/create');
+        $this->addChild('manager', '/product/create');
+        $this->createPermission('/product/view');
+        $this->addChild('manager', '/product/view');
+        $this->createPermission('/product/import');
+        $this->addChild('manager', '/product/import');
+        $this->createPermission('/product/export');
+        $this->addChild('manager', '/product/export');
+        $this->createPermission('/product/delete');
+        $this->addChild('manager', '/product/delete');
+
         $this->createPermission('/*');
         $this->addChild('root', '/*');
     }
@@ -44,6 +59,20 @@ class m191016_142254_create_manager_permission_main extends Migration
         $this->removePermission('/payment-type/export');
         $this->removeChild('manager', '/payment-type/import');
         $this->removePermission('/payment-type/import');
+
+        $this->removeChild('manager', '/product/index');
+        $this->removePermission('/product/index');
+        $this->removeChild('manager', '/product/view');
+        $this->removePermission('/product/view');
+        $this->removeChild('manager', '/product/create');
+        $this->removePermission('/product/create');
+        $this->removeChild('manager', '/product/import');
+        $this->removePermission('/product/import');
+        $this->removeChild('manager', '/product/export');
+        $this->removePermission('/product/export');
+        $this->removeChild('manager', '/product/delete');
+        $this->removePermission('/product/delete');
+
         $this->removeChild('root', '/*');
         $this->removePermission('/*');
     }
