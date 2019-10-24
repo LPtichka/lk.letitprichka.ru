@@ -37,18 +37,48 @@ class m191016_142254_create_manager_permission_main extends Migration
         $this->createPermission('/product/delete');
         $this->addChild('manager', '/product/delete');
 
+        $this->createPermission('/exception/index');
+        $this->addChild('manager', '/exception/index');
+        $this->createPermission('/exception/create');
+        $this->addChild('manager', '/exception/create');
+        $this->createPermission('/exception/view');
+        $this->addChild('manager', '/exception/view');
+        $this->createPermission('/exception/import');
+        $this->addChild('manager', '/exception/import');
+        $this->createPermission('/exception/export');
+        $this->addChild('manager', '/exception/export');
+        $this->createPermission('/exception/delete');
+        $this->addChild('manager', '/exception/delete');
+
+        $this->createPermission('/user/index');
+        $this->addChild('manager', '/user/index');
+        $this->createPermission('/user/create');
+        $this->addChild('manager', '/user/create');
+        $this->createPermission('/user/view');
+        $this->addChild('manager', '/user/view');
+        $this->createPermission('/user/export');
+        $this->addChild('manager', '/user/export');
+
+        $this->createPermission('/user/block');
+        $this->addChild('root', '/user/block');
+        $this->createPermission('/user/grant-privilege');
+        $this->addChild('root', '/user/grant-privilege');
+        $this->createPermission('/user/delete');
+        $this->addChild('root', '/user/delete');
+
         $this->createPermission('/*');
         $this->addChild('root', '/*');
     }
 
     public function safeDown()
     {
-        $this->removeChild('manager', '/payment-type/index');
-        $this->removePermission('/payment-type/index');
         $this->removeChild('manager', '/main/index');
         $this->removePermission('/main/index');
         $this->removeChild('manager', '/main/logout');
         $this->removePermission('/main/logout');
+
+        $this->removeChild('manager', '/payment-type/index');
+        $this->removePermission('/payment-type/index');
         $this->removeChild('manager', '/payment-type/create');
         $this->removePermission('/payment-type/create');
         $this->removeChild('manager', '/payment-type/delete');
@@ -62,16 +92,45 @@ class m191016_142254_create_manager_permission_main extends Migration
 
         $this->removeChild('manager', '/product/index');
         $this->removePermission('/product/index');
-        $this->removeChild('manager', '/product/view');
-        $this->removePermission('/product/view');
         $this->removeChild('manager', '/product/create');
         $this->removePermission('/product/create');
-        $this->removeChild('manager', '/product/import');
-        $this->removePermission('/product/import');
-        $this->removeChild('manager', '/product/export');
-        $this->removePermission('/product/export');
         $this->removeChild('manager', '/product/delete');
         $this->removePermission('/product/delete');
+        $this->removeChild('manager', '/product/view');
+        $this->removePermission('/product/view');
+        $this->removeChild('manager', '/product/export');
+        $this->removePermission('/product/export');
+        $this->removeChild('manager', '/product/import');
+        $this->removePermission('/product/import');
+
+        $this->removeChild('manager', '/exception/index');
+        $this->removePermission('/exception/index');
+        $this->removeChild('manager', '/exception/create');
+        $this->removePermission('/exception/create');
+        $this->removeChild('manager', '/exception/delete');
+        $this->removePermission('/exception/delete');
+        $this->removeChild('manager', '/exception/view');
+        $this->removePermission('/exception/view');
+        $this->removeChild('manager', '/exception/export');
+        $this->removePermission('/exception/export');
+        $this->removeChild('manager', '/exception/import');
+        $this->removePermission('/exception/import');
+
+        $this->removeChild('manager', '/user/index');
+        $this->removePermission('/user/index');
+        $this->removeChild('manager', '/user/view');
+        $this->removePermission('/user/view');
+        $this->removeChild('manager', '/user/create');
+        $this->removePermission('/user/create');
+        $this->removeChild('manager', '/user/export');
+        $this->removePermission('/user/export');
+
+        $this->removeChild('root', '/user/delete');
+        $this->removePermission('/user/delete');
+        $this->removeChild('root', '/user/block');
+        $this->removePermission('/user/block');
+        $this->removeChild('root', '/user/grant-privilege');
+        $this->removePermission('/user/grant-privilege');
 
         $this->removeChild('root', '/*');
         $this->removePermission('/*');

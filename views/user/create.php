@@ -2,11 +2,9 @@
 
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
+use yii\widgets\MaskedInput;
 
-/** @var \app\models\search\PaymentType $searchModel */
-
-$this->title = $title
-
+$this->title = $title;
 ?>
 
 <div class="row">
@@ -17,21 +15,37 @@ $this->title = $title
                 <?php $form = ActiveForm::begin(); ?>
                 <div class="row">
                     <div class="col-sm-12">
-                        <?= $form->field($model, 'name') ?>
+                        <?= $form->field($model, 'fio') ?>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-md-6">
-                        <?= $form->field($model, 'count') ?>
+                        <?= $form->field($model, 'email') ?>
                     </div>
                     <div class="col-md-6">
-                        <?= $form->field($model, 'weight') ?>
+                        <?= $form->field($model, 'phone')->widget(
+                            MaskedInput::class,
+                            [
+                                'mask'          => '+7 (999) 999-99-99',
+                                'clientOptions' => ['onincomplete' => 'function(){$("#user-phone").removeAttr("value").attr("value","");}'],
+                                'options'       => [
+                                    'class'       => 'form-control',
+                                    'placeholder' => '+7 (___) ___-__-__',
+                                ]
+                            ]) ?>
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-sm-12">
-                        <?= $form->field($model, 'exception_id')->dropDownList($exceptionList) ?>
+                    <?php if ($canBlockUser):?>
+                    <div class="col-md-6">
+                        <?= $form->field($model, 'status')->dropDownList($model->getStatuses()) ?>
                     </div>
+                    <?php endif;?>
+                    <?php if ($canGrantPrivileges):?>
+                    <div class="col-md-6">
+                        <?= $form->field($model, 'role')->dropDownList($model->getAllowedRoles()) ?>
+                    </div>
+                    <?php endif;?>
                 </div>
                 <div class="row">
                     <div class="col-md-6">

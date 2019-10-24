@@ -21,7 +21,7 @@ class Product extends Repository
     public function rules()
     {
         return [
-            [['id', 'count', 'weight'], 'integer'],
+            [['id', 'count', 'weight', 'exception_id'], 'integer'],
             ['name', 'string'],
         ];
     }
@@ -43,6 +43,7 @@ class Product extends Repository
         $query->andFilterWhere(['id' => $this->id]);
         $query->andFilterWhere(['count' => $this->count]);
         $query->andFilterWhere(['weight' => $this->weight]);
+        $query->andFilterWhere(['exception_id' => $this->exception_id]);
         $query->andFilterWhere(['like', 'name', $this->name]);
 
         return $dataProvider;
@@ -54,22 +55,32 @@ class Product extends Repository
      */
     public function export($params): iterable
     {
-        $paymentsQuery = self::find();
+        $paymentsQuery = self::find()->select(
+            'product.id as product_id, 
+            product.name as product_name, 
+            product.count as product_count, 
+            product.weight as product_weight, 
+            product.created_at as product_created_at, 
+            product.updated_at as product_updated_at,
+            exception.name as exception_name'
+        )->leftJoin('exception', 'product.exception_id = exception.id');
 
-        !empty($params['id']) && $paymentsQuery->filterWhere(['id' => $params['id']]);
-        !empty($params['count']) && $paymentsQuery->filterWhere(['count' => (int) $params['count']]);
-        !empty($params['weight']) && $paymentsQuery->filterWhere(['weight' => ((float) $params['count']) * 1000]);
-        !empty($params['name']) && $paymentsQuery->filterWhere(['like', 'name', urldecode($params['name'])]);
+        !empty($params['id']) && $paymentsQuery->filterWhere(['product.id' => $params['id']]);
+        !empty($params['count']) && $paymentsQuery->filterWhere(['product.count' => (int) $params['count']]);
+        !empty($params['weight']) && $paymentsQuery->filterWhere(['product.weight' => ((float) $params['count']) * 1000]);
+        !empty($params['name']) && $paymentsQuery->filterWhere(['like', 'product.name', urldecode($params['name'])]);
+        !empty($params['exception_id']) && $paymentsQuery->filterWhere(['product.exception_id' => (int) $params['exception_id']]);
 
-        $payments = $paymentsQuery->asArray()->all();
-        foreach ($payments as $payment) {
+        $products = $paymentsQuery->asArray()->all();
+        foreach ($products as $product) {
             yield [
-                'id' => $payment['id'],
-                'name' => $payment['name'],
-                'count' => $payment['count'],
-                'weight' => (new Weight())->format($payment['weight'], Weight::UNIT_KG),
-                'created_at' => date('d.m.Y \в H:i', $payment['created_at']),
-                'updated_at' => date('d.m.Y \в H:i', $payment['updated_at']),
+                'id' => $product['product_id'],
+                'name' => $product['product_name'],
+                'count' => $product['product_count'],
+                'weight' => (new Weight())->format($product['product_weight'], Weight::UNIT_KG),
+                'Exception ID' => $product['exception_name'] ?? '',
+                'created_at' => date('d.m.Y \в H:i', $product['product_created_at']),
+                'updated_at' => date('d.m.Y \в H:i', $product['product_updated_at']),
             ];
         }
     }
@@ -112,6 +123,22 @@ class Product extends Repository
             'label' => \Yii::t('app', 'Weight'),
             'content' => function($model) {
                 return (new Weight())->format($model->weight, Weight::UNIT_KG);
+            }
+        ];
+
+        $result['exception_id'] = [
+            'attribute' => 'exception_id',
+            'label' => \Yii::t('product', 'Exception ID'),
+            'filter'    => Html::tag('div', Html::dropDownList(
+                'exception_id',
+                $searchModel->exception_id,
+                $searchModel->getExceptionList(),
+                ['class' => 'form-control']
+            ),
+                ['class' => 'select_wrapper']
+            ),
+            'content' => function($model) {
+                return $model->exception->name ?? '';
             }
         ];
 

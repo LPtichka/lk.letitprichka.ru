@@ -240,13 +240,13 @@ use yii\helpers\Html;
 
                             <p>
                                 <?= \Yii::$app->user->identity->fio;?> - <?= \Yii::$app->user->identity->role;?>
-                                <small>Рарегистрирован с <?= date('d.m.Y', \Yii::$app->user->identity->created_at);?></small>
+                                <small>Зарегистрирован с <?= date('d.m.Y', \Yii::$app->user->identity->created_at);?></small>
                             </p>
                         </li>
                         <!-- Menu Footer-->
                         <li class="user-footer">
                             <div class="pull-left">
-                                <a href="#" class="btn btn-default btn-flat">Profile</a>
+                                <a href="<?= \yii\helpers\Url::to(['user/view', 'id' => \Yii::$app->user->getId()]);?>" class="btn btn-default btn-flat">Profile</a>
                             </div>
                             <div class="pull-right">
                                 <?= Html::beginForm(['/main/logout'], 'post')

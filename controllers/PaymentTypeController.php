@@ -29,17 +29,16 @@ class PaymentTypeController extends BaseController
     {
         $payment = new \app\models\Repository\PaymentType();
 
-        $logCategory = 'payment-create';
         if (\Yii::$app->request->post()) {
-            $this->log('create', $logCategory, []);
+            $this->log('payment-create', []);
             $payment->load(\Yii::$app->request->post());
             $isValidate = $payment->validate();
             if ($isValidate && $payment->save()) {
                 \Yii::$app->session->addFlash('success', \Yii::t('payment', 'Payment type was saved successfully'));
-                $this->log('create-success', $logCategory, ['name' => $payment->name]);
+                $this->log('payment-create-success', ['name' => $payment->name]);
                 return $this->redirect(['payment-type/index']);
             } else {
-                $this->log('create-fail', $logCategory, ['name' => $payment->name, 'errors' => json_encode($payment->getFirstErrors())]);
+                $this->log('payment-create-fail', ['name' => $payment->name, 'errors' => json_encode($payment->getFirstErrors())]);
             }
         }
         return $this->render('/payment/create', [
@@ -59,17 +58,16 @@ class PaymentTypeController extends BaseController
             throw new NotFoundHttpException('Тип оплаты не найден');
         }
 
-        $logCategory = 'payment-update';
         if (\Yii::$app->request->post()) {
-            $this->log('edit', $logCategory, ['name' => $payment->name]);
+            $this->log('payment-edit', ['name' => $payment->name]);
             $payment->load(\Yii::$app->request->post());
             $isValidate = $payment->validate();
             if ($isValidate && $payment->save()) {
-                $this->log('edit-success', $logCategory, ['name' => $payment->name]);
+                $this->log('payment-edit-success', ['name' => $payment->name]);
                 \Yii::$app->session->addFlash('success', \Yii::t('payment', 'Payment type was saved successfully'));
                 return $this->redirect(['payment-type/index']);
             } else {
-                $this->log('edit-fail', $logCategory, ['name' => $payment->name]);
+                $this->log('payment-edit-fail', ['name' => $payment->name]);
             }
         }
         return $this->render('/payment/create', [
@@ -87,14 +85,13 @@ class PaymentTypeController extends BaseController
 
         \Yii::$app->response->format = Response::FORMAT_JSON;
 
-        $logCategory = 'payment-delete';
-        $this->log('delete', $logCategory, $paymentIds);
+        $this->log('payment-delete', $paymentIds);
         $transaction = \Yii::$app->db->beginTransaction();
         foreach ($paymentIds as $id) {
             $isDelete = \app\models\Repository\PaymentType::deleteAll(['id' => $id]);
             if (!$isDelete) {
                 $transaction->rollBack();
-                $this->log('delete-fail', $logCategory, $paymentIds);
+                $this->log('payment-delete-fail', $paymentIds);
                 return [
                     'status' => false,
                     'title'  => \Yii::t('order', 'Payments was not deleted')
@@ -103,7 +100,7 @@ class PaymentTypeController extends BaseController
         }
 
         $transaction->commit();
-        $this->log('delete-success', $logCategory, $paymentIds);
+        $this->log('payment-delete-success', $paymentIds);
         return [
             'status' => true,
             'title'  => \Yii::t('payment', 'Payment was successful deleted')

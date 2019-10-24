@@ -35,9 +35,16 @@ $config = [
         'errorHandler' => [
             'errorAction' => 'site/error',
         ],
-        'mailer'       => [
-            'class'            => 'yii\swiftmailer\Mailer',
-            'useFileTransport' => true,
+        'mailer'         => [
+            'class'     => 'yii\swiftmailer\Mailer',
+            'transport' => [
+                'class'      => 'Swift_SmtpTransport',
+                'host'       => 'smtp.yandex.ru',
+                'username'   => 'support@letitptichka.ru',
+                'password'   => 'srs666tt',
+                'port'       => '465',
+                'encryption' => 'SSL',
+            ],
         ],
         'log'          => [
             'traceLevel' => YII_DEBUG ? 3 : 0,
@@ -60,6 +67,24 @@ $config = [
                     'logFile'    => '@runtime/logs/product.log',
                     'levels'     => ['info'],
                     'categories' => ['product-*'],
+                    'logVars'    => [],
+                    'maxFileSize' => 102400,
+                    'maxLogFiles' => 10,
+                ],
+                [
+                    'class'      => 'yii\log\FileTarget',
+                    'logFile'    => '@runtime/logs/user.log',
+                    'levels'     => ['info'],
+                    'categories' => ['user-*'],
+                    'logVars'    => [],
+                    'maxFileSize' => 102400,
+                    'maxLogFiles' => 10,
+                ],
+                [
+                    'class'      => 'yii\log\FileTarget',
+                    'logFile'    => '@runtime/logs/exception.log',
+                    'levels'     => ['info'],
+                    'categories' => ['exception-*'],
                     'logVars'    => [],
                     'maxFileSize' => 102400,
                     'maxLogFiles' => 10,

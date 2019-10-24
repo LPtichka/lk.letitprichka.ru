@@ -5,6 +5,7 @@ namespace app\models\Repository;
 use app\models\Helper\Weight;
 use app\models\Queries\PaymentTypeQuery;
 use yii\behaviors\TimestampBehavior;
+use yii\helpers\ArrayHelper;
 
 /**
  * This is the model class for table "{{%payment_type}}".
@@ -13,8 +14,11 @@ use yii\behaviors\TimestampBehavior;
  * @property string $name
  * @property int $count
  * @property int $weight
+ * @property int $exception_id
  * @property int $created_at
  * @property int $updated_at
+ *
+ * @property Exception $exception
  */
 class Product extends \yii\db\ActiveRecord
 {
@@ -46,6 +50,7 @@ class Product extends \yii\db\ActiveRecord
             'count' => \Yii::t('app', 'Count'),
             'weight' => \Yii::t('app', 'Weight'),
             'updated_at' => \Yii::t('app', 'Updated at'),
+            'exception_id' => \Yii::t('product', 'Exception ID'),
         ];
     }
 
@@ -57,7 +62,8 @@ class Product extends \yii\db\ActiveRecord
         return [
             ['name', 'unique', 'message' => \Yii::t('product', 'This product has already exists')],
             ['name', 'string'],
-            [['count', 'weight'], 'integer'],
+            [['count', 'weight', 'exception_id'], 'integer'],
+            ['exception_id', 'exist', 'targetClass' => Exception::class, 'targetAttribute' => 'id'],
             [['name'], 'required'],
         ];
     }
@@ -70,6 +76,14 @@ class Product extends \yii\db\ActiveRecord
         return [
             TimestampBehavior::class,
         ];
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getException()
+    {
+        return $this->hasOne(Exception::class, ['id' => 'exception_id']);
     }
 
     /**
@@ -91,9 +105,17 @@ class Product extends \yii\db\ActiveRecord
         }
 
         $product->name = trim($data['name']);
-        !empty($data['count']) && $product->count = $product->count + (int) $data['count'];
-        !empty($data['weight']) && $product->weight = $product->weight + (new Weight())->convert((float) $data['weight'], Weight::UNIT_KG);
+        $product->count = (int) $product->count + (int) ($data['count'] ?? 0);
+        $product->weight = (int) $product->weight + (new Weight())->convert((float) ($data['weight'] ?? 0), Weight::UNIT_KG);
 
         return $product;
+    }
+
+    /**
+     * @return array
+     */
+    public function getExceptionList(): array
+    {
+        return ArrayHelper::map(Exception::find()->asArray()->all(), 'id', 'name');
     }
 }

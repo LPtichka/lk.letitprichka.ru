@@ -6,6 +6,8 @@ class Excel
     const AVAILABLE_TYPES = ['Excel2007'];
     const MODEL_PRODUCT = 'product';
     const MODEL_PAYMENT = 'payment';
+    const MODEL_EXCEPTION = 'exception';
+    const MODEL_USER = 'user';
 
     /** @var array */
     private $file;
@@ -150,6 +152,8 @@ class Excel
             foreach ($row as $key => $item) {
                 $value = (new Params())->getRealValueParam($key, $item, []);
                 $objWorksheet->getCellByColumnAndRow($col, $iRow)->setValue($value);
+                $cell = $objWorksheet->getCellByColumnAndRow($col, $iRow);
+                $objWorksheet->getColumnDimension($cell->getColumn())->setAutoSize(true);
                 unset($value);
                 $col++;
             }

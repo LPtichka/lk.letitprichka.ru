@@ -1,6 +1,7 @@
 <?php
 namespace app\models;
 
+use app\models\Helper\Phone;
 use Yii;
 use yii\base\Security;
 use yii\behaviors\TimestampBehavior;
@@ -18,6 +19,7 @@ use yii\web\IdentityInterface;
  * @property string $password_hash
  * @property string $password_reset_token
  * @property string $email
+ * @property string $phone
  * @property string $fio
  * @property string $auth_key
  * @property integer $status
@@ -137,6 +139,9 @@ class User extends ActiveRecord implements IdentityInterface
     public function rules()
     {
         $rules = [
+            [['phone'], 'filter', 'filter' => function () {
+                return '+7' . (new Phone($this->phone))->getClearPhone();
+            }],
             ['password', 'default', 'value' => (new Security())->generateRandomString(8), 'on' => self::SCENARIO_CREATE],
             ['access_token', 'default', 'value' => $this->generateAccessToken()],
             ['password', 'string', 'min' => 8],
@@ -228,6 +233,22 @@ class User extends ActiveRecord implements IdentityInterface
     }
 
     /**
+     * @return array
+     */
+    public function attributeLabels()
+    {
+        return [
+            'id'         => \Yii::t('user', 'ID'),
+            'email'      => \Yii::t('user', 'Email'),
+            'fio'        => \Yii::t('user', 'Fio'),
+            'phone'      => \Yii::t('user', 'Phone'),
+            'status'     => \Yii::t('user', 'Status'),
+            'role'       => \Yii::t('user', 'Role'),
+            'updated_at' => \Yii::t('app', 'Updated at'),
+        ];
+    }
+
+    /**
      * @throws \yii\base\Exception
      */
     public function resetAccessToken(): void
@@ -258,18 +279,9 @@ class User extends ActiveRecord implements IdentityInterface
     public function getStatuses()
     {
         return $statuses = [
-            self::STATUS_ACTIVE   => \Yii::t('app', 'active'),
-            self::STATUS_SYSTEM   => \Yii::t('app', 'system'),
-            self::STATUS_INACTIVE => \Yii::t('app', 'deleted'),
+            self::STATUS_ACTIVE   => \Yii::t('app', 'Active'),
+            self::STATUS_INACTIVE => \Yii::t('app', 'Disabled'),
         ];
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function attributeLabels()
-    {
-        return [];
     }
 
     /**
@@ -395,7 +407,7 @@ class User extends ActiveRecord implements IdentityInterface
         return \Yii::$app
             ->mailer
             ->compose(
-                ['html' => 'newUser-html', 'text' => 'newUser-text'],
+                ['html' => 'newUser-html'],
                 ['user' => $this]
             )
             ->setFrom([Yii::$app->params['supportEmail'] => \Yii::$app->name . ' robot'])

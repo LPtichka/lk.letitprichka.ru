@@ -68,7 +68,8 @@ body.delegate('.delete', 'click', function (e) {
                         });
                     } else {
                         swal({
-                            title: data.title
+                            title: data.title,
+                            text: data.description,
                         }, function () {
                             location.reload();
                         });
