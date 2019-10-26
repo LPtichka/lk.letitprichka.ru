@@ -35,6 +35,17 @@ body.delegate('.export', 'click', function (e) {
     });
 });
 
+body.delegate('#add-product', 'click', function () {
+    window.addProduct();
+});
+
+body.delegate('.delete-product', 'click', function () {
+    let product = $(this).parents('[class*=product-row]');
+    if ($('[class*=product-row]').length > 1) {
+        product.remove();
+    }
+});
+
 body.delegate('.delete', 'click', function (e) {
     e.preventDefault();
 
@@ -177,4 +188,19 @@ window.getAllUrlParams = function (url) {
     }
 
     return obj;
+};
+
+// Добавление строки продкута
+window.addProduct = function () {
+    let prodContainer = $('.products'),
+        lastGroupId = prodContainer.find('[class*=product-row]:last').prop('id'),
+        lastIndex = 0;
+
+    if (lastGroupId) {
+        lastIndex = lastGroupId.split('-')[1];
+    }
+
+    $.get('/product/get-row?counter=' + lastIndex, function (prodRow) {
+        prodContainer.append($(prodRow));
+    });
 };

@@ -4,6 +4,7 @@ namespace app\controllers;
 use app\models\Helper\Excel;
 use app\models\Helper\ExcelParser;
 use app\models\Helper\Weight;
+use app\models\Repository\DishProduct;
 use app\models\Repository\Exception;
 use app\models\search\Product;
 use yii\helpers\ArrayHelper;
@@ -35,9 +36,7 @@ class ProductController extends BaseController
 
         if (\Yii::$app->request->post()) {
             $this->log('product-create', []);
-            $post = \Yii::$app->request->post();
-            !empty($post['Product']['weight']) && $post['Product']['weight'] = (new Weight())->convert((float)$post['Product']['weight'], Weight::UNIT_KG);
-            $product->load($post);
+            $product->load(\Yii::$app->request->post());
             $isValidate = $product->validate();
 
             if ($isValidate && $product->save()) {
@@ -194,5 +193,46 @@ class ProductController extends BaseController
         return [
             'url' => $excel->getUrl(),
         ];
+    }
+
+    /**
+     * @param int $counter
+     * @return string
+     */
+    public function actionGetRow(int $counter)
+    {
+        return $this->renderAjax('/dish/_product', [
+            'product' => new \app\models\Repository\DishProduct(),
+            'i'            => ++$counter,
+        ]);
+    }
+
+    /**
+     * @return array
+     */
+    public function actionSearch()
+    {
+        $term    = \Yii::$app->request->get('term');
+        $element = \Yii::$app->request->get('element');
+
+        $products = \app\models\Repository\Product::find()
+            ->select(['*', $element . ' as value'])
+            ->andFilterWhere(['like', $element, $term])
+            ->orderBy(['count'   => SORT_DESC])
+            ->asArray()
+            ->all();
+
+        $result = [];
+        foreach ($products as $product) {
+            $result[] = [
+                'name' => $product['name'],
+                'weight' => $product['weight'],
+                'count' => $product['count'],
+                'product_id' => $product['id'],
+            ];
+        }
+
+        \Yii::$app->response->format = Response::FORMAT_JSON;
+        return $result;
     }
 }

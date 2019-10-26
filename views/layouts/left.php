@@ -8,7 +8,7 @@
                 <img src="<?= $directoryAsset ?>/img/user2-160x160.jpg" class="img-circle" alt="User Image"/>
             </div>
             <div class="pull-left info">
-                <p><?= \Yii::$app->user->identity->fio; ?></p>
+                <p><?= \Yii::$app->user->identity ? \Yii::$app->user->identity->fio : ''; ?></p>
 
                 <a href="#"><i class="fa fa-circle text-success"></i> Online</a>
             </div>
@@ -31,12 +31,12 @@
                         ],
                     ],
                     [
-                        'label' => 'Товары',
+                        'label' => \Yii::t('app', 'Dishes'),
                         'icon'  => 'cube',
                         'url'   => '#',
                         'items' => [
-                            ['label' => 'Блюда', 'icon' => 'file-code-o', 'url' => ['/gii'],],
-                            ['label' => 'Исключения', 'icon' => 'file-code-o', 'url' => ['/exception/index'],],
+                            ['label' => \Yii::t('app', 'Dishes'), 'icon' => 'file-code-o', 'url' => ['/dish/index'],],
+                            ['label' => \Yii::t('app', 'Exceptions'), 'icon' => 'file-code-o', 'url' => ['/exception/index'],],
                             ['label' => \Yii::t('app', 'Goods'), 'icon' => 'dashboard', 'url' => ['/product/index'],],
                         ],
                     ],

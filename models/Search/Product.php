@@ -2,6 +2,7 @@
 
 namespace app\models\search;
 
+use app\models\Helper\Arrays;
 use app\models\Helper\Weight;
 use app\models\Repository\Product as Repository;
 use yii\data\ActiveDataProvider;
@@ -87,10 +88,10 @@ class Product extends Repository
 
     /**
      * Список полей для поиска
-     * @param \app\models\Repository\Product $searchModel
+     * @param Repository $searchModel
      * @return array
      */
-    public function getSearchColumns(\app\models\Repository\Product $searchModel)
+    public function getSearchColumns(Repository $searchModel)
     {
         $result[] = [
             'class' => CheckboxColumn::class,
@@ -132,7 +133,7 @@ class Product extends Repository
             'filter'    => Html::tag('div', Html::dropDownList(
                 'exception_id',
                 $searchModel->exception_id,
-                $searchModel->getExceptionList(),
+                (new Arrays($searchModel->getExceptionList()))->getSelectOptions(),
                 ['class' => 'form-control']
             ),
                 ['class' => 'select_wrapper']

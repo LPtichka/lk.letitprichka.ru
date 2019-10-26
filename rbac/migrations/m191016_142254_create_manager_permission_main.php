@@ -36,6 +36,10 @@ class m191016_142254_create_manager_permission_main extends Migration
         $this->addChild('manager', '/product/export');
         $this->createPermission('/product/delete');
         $this->addChild('manager', '/product/delete');
+        $this->createPermission('/product/search');
+        $this->addChild('manager', '/product/search');
+        $this->createPermission('/product/get-row');
+        $this->addChild('manager', '/product/get-row');
 
         $this->createPermission('/exception/index');
         $this->addChild('manager', '/exception/index');
@@ -49,6 +53,19 @@ class m191016_142254_create_manager_permission_main extends Migration
         $this->addChild('manager', '/exception/export');
         $this->createPermission('/exception/delete');
         $this->addChild('manager', '/exception/delete');
+
+        $this->createPermission('/dish/index');
+        $this->addChild('manager', '/dish/index');
+        $this->createPermission('/dish/create');
+        $this->addChild('manager', '/dish/create');
+        $this->createPermission('/dish/view');
+        $this->addChild('manager', '/dish/view');
+        $this->createPermission('/dish/import');
+        $this->addChild('manager', '/dish/import');
+        $this->createPermission('/dish/export');
+        $this->addChild('manager', '/dish/export');
+        $this->createPermission('/dish/delete');
+        $this->addChild('manager', '/dish/delete');
 
         $this->createPermission('/user/index');
         $this->addChild('manager', '/user/index');
@@ -102,6 +119,10 @@ class m191016_142254_create_manager_permission_main extends Migration
         $this->removePermission('/product/export');
         $this->removeChild('manager', '/product/import');
         $this->removePermission('/product/import');
+        $this->removeChild('manager', '/product/search');
+        $this->removePermission('/product/search');
+        $this->removeChild('manager', '/product/get-row');
+        $this->removePermission('/product/get-row');
 
         $this->removeChild('manager', '/exception/index');
         $this->removePermission('/exception/index');
@@ -115,6 +136,19 @@ class m191016_142254_create_manager_permission_main extends Migration
         $this->removePermission('/exception/export');
         $this->removeChild('manager', '/exception/import');
         $this->removePermission('/exception/import');
+
+        $this->removeChild('manager', '/dish/index');
+        $this->removePermission('/dish/index');
+        $this->removeChild('manager', '/dish/create');
+        $this->removePermission('/dish/create');
+        $this->removeChild('manager', '/dish/delete');
+        $this->removePermission('/dish/delete');
+        $this->removeChild('manager', '/dish/view');
+        $this->removePermission('/dish/view');
+        $this->removeChild('manager', '/dish/export');
+        $this->removePermission('/dish/export');
+        $this->removeChild('manager', '/dish/import');
+        $this->removePermission('/dish/import');
 
         $this->removeChild('manager', '/user/index');
         $this->removePermission('/user/index');

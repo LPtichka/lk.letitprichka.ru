@@ -3,7 +3,10 @@
 use yii\web\UrlNormalizer;
 
 $params = require __DIR__ . '/params.php';
-$db     = require __DIR__ . '/db.php';
+$db = array_merge(
+    require(__DIR__ . '/db.php'),
+    require(__DIR__ . '/db-local.php')
+);
 
 $config = [
     'id'             => 'basic',
@@ -85,6 +88,15 @@ $config = [
                     'logFile'    => '@runtime/logs/exception.log',
                     'levels'     => ['info'],
                     'categories' => ['exception-*'],
+                    'logVars'    => [],
+                    'maxFileSize' => 102400,
+                    'maxLogFiles' => 10,
+                ],
+                [
+                    'class'      => 'yii\log\FileTarget',
+                    'logFile'    => '@runtime/logs/dish.log',
+                    'levels'     => ['info'],
+                    'categories' => ['dish-*'],
                     'logVars'    => [],
                     'maxFileSize' => 102400,
                     'maxLogFiles' => 10,

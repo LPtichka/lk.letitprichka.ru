@@ -52,8 +52,8 @@ $fieldOptions2 = [
 
         <?php ActiveForm::end(); ?>
 
-        <a href="<?= Url::to(['/main/forgot-password']) ?>">I forgot my password</a><br>
-        <a href="<?= Url::to(['/main/signup']) ?>" class="text-center">Register a new membership</a>
+        <!--<a href="<?= Url::to(['/main/forgot-password']) ?>">I forgot my password</a><br>
+        <a href="<?= Url::to(['/main/signup']) ?>" class="text-center">Register a new membership</a>-->
 
     </div>
     <!-- /.login-box-body -->

@@ -30,7 +30,7 @@ $this->title = $title
                 </div>
                 <div class="row">
                     <div class="col-sm-12">
-                        <?= $form->field($model, 'exception_id')->dropDownList($exceptionList) ?>
+                        <?= $form->field($model, 'exception_id')->dropDownList((new \app\models\Helper\Arrays($exceptionList))->getSelectOptions()) ?>
                     </div>
                 </div>
                 <div class="row">
