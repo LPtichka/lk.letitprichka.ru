@@ -2,7 +2,7 @@
 namespace app\controllers;
 
 use app\models\Helper\Excel;
-use app\models\search\PaymentType;
+use app\models\Search\PaymentType;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
 

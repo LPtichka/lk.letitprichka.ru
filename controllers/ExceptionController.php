@@ -2,7 +2,7 @@
 namespace app\controllers;
 
 use app\models\Helper\Excel;
-use app\models\search\Exception;
+use app\models\Search\Exception;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
 

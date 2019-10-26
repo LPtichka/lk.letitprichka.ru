@@ -3,8 +3,8 @@ namespace app\controllers;
 
 use app\models\Helper\Excel;
 use app\models\Repository\DishProduct;
-use app\models\search\Dish;
-use app\models\search\PaymentType;
+use app\models\Search\Dish;
+use app\models\Search\PaymentType;
 use yii\db\IntegrityException;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;

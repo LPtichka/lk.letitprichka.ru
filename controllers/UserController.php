@@ -2,7 +2,7 @@
 namespace app\controllers;
 
 use app\models\Helper\Excel;
-use app\models\search\User;
+use app\models\Search\User;
 use yii\rbac\DbManager;
 use yii\rbac\Role;
 use yii\web\ForbiddenHttpException;
