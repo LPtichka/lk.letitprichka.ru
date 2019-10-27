@@ -66,6 +66,8 @@ class UserController extends BaseController
         }
         return $this->render('/user/create', [
             'model' => $user,
+            'canBlockUser'       => \Yii::$app->user->can('/user/block'),
+            'canGrantPrivileges' => \Yii::$app->user->can('/user/grant-privilege'),
             'title' => \Yii::t('user', 'User create'),
         ]);
     }
