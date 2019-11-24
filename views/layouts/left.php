@@ -25,8 +25,8 @@
                         'url'   => '#',
                         'items' => [
                             ['label' => 'Список заказов', 'icon' => 'list-ol', 'url' => ['/gii'],],
-                            ['label' => 'Покупатели', 'icon' => 'user-o', 'url' => ['/debug'],],
-                            ['label' => 'Адреса', 'icon' => 'address-book-o', 'url' => ['/debug'],],
+                            ['label' => \Yii::t('app', 'Customers'), 'icon' => 'user-o', 'url' => ['/customer/index'],],
+                            ['label' => \Yii::t('app', 'Addresses'), 'icon' => 'address-book-o', 'url' => ['/address/index'],],
                             ['label' => 'Меню', 'icon' => 'bars', 'url' => ['/debug'],],
                         ],
                     ],

@@ -1,14 +1,20 @@
 <?php
 
 use yii\helpers\Html;
+use yii\helpers\Url;
 use yii\widgets\ActiveForm;
 
-/** @var \app\models\search\Dish $model */
+/** @var \app\models\Repository\Dish $model */
 
 $this->title = $title;
 
 ?>
-
+<div style="position: absolute; right: 15px; top: 60px; z-index: 999999;">
+    <?= Html::button('<i class="fa fa-download"></i> ', [
+        'class'     => 'btn btm-sm btn-default export',
+        'data-href' => Url::to(['dish/export', 'id' => $model->id]),
+    ]) ?>
+</div>
 <?php $form = ActiveForm::begin(); ?>
 <div class="row">
     <div class="col-md-8">

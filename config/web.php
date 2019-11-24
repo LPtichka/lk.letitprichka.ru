@@ -3,7 +3,8 @@
 use yii\web\UrlNormalizer;
 
 $params = require __DIR__ . '/params.php';
-$db = array_merge(
+$log    = require __DIR__ . '/logs.php';
+$db     = array_merge(
     require(__DIR__ . '/db.php'),
     require(__DIR__ . '/db-local.php')
 );
@@ -38,7 +39,7 @@ $config = [
         'errorHandler' => [
             'errorAction' => 'site/error',
         ],
-        'mailer'         => [
+        'mailer'       => [
             'class'     => 'yii\swiftmailer\Mailer',
             'transport' => [
                 'class'      => 'Swift_SmtpTransport',
@@ -49,60 +50,7 @@ $config = [
                 'encryption' => 'SSL',
             ],
         ],
-        'log'          => [
-            'traceLevel' => YII_DEBUG ? 3 : 0,
-            'targets'    => [
-                [
-                    'class'  => 'yii\log\FileTarget',
-                    'levels' => ['error', 'warning'],
-                ],
-                [
-                    'class'      => 'yii\log\FileTarget',
-                    'logFile'    => '@runtime/logs/payment.log',
-                    'levels'     => ['info'],
-                    'categories' => ['payment-*'],
-                    'logVars'    => [],
-                    'maxFileSize' => 102400,
-                    'maxLogFiles' => 10,
-                ],
-                [
-                    'class'      => 'yii\log\FileTarget',
-                    'logFile'    => '@runtime/logs/product.log',
-                    'levels'     => ['info'],
-                    'categories' => ['product-*'],
-                    'logVars'    => [],
-                    'maxFileSize' => 102400,
-                    'maxLogFiles' => 10,
-                ],
-                [
-                    'class'      => 'yii\log\FileTarget',
-                    'logFile'    => '@runtime/logs/user.log',
-                    'levels'     => ['info'],
-                    'categories' => ['user-*'],
-                    'logVars'    => [],
-                    'maxFileSize' => 102400,
-                    'maxLogFiles' => 10,
-                ],
-                [
-                    'class'      => 'yii\log\FileTarget',
-                    'logFile'    => '@runtime/logs/exception.log',
-                    'levels'     => ['info'],
-                    'categories' => ['exception-*'],
-                    'logVars'    => [],
-                    'maxFileSize' => 102400,
-                    'maxLogFiles' => 10,
-                ],
-                [
-                    'class'      => 'yii\log\FileTarget',
-                    'logFile'    => '@runtime/logs/dish.log',
-                    'levels'     => ['info'],
-                    'categories' => ['dish-*'],
-                    'logVars'    => [],
-                    'maxFileSize' => 102400,
-                    'maxLogFiles' => 10,
-                ],
-            ],
-        ],
+        'log'          => $log,
         'authManager'  => [
             'class' => 'yii\rbac\DbManager',
             'cache' => [
@@ -125,7 +73,7 @@ $config = [
                 '*' => [
                     'class'    => 'yii\i18n\PhpMessageSource',
                     'fileMap'  => [
-                        'app'   => 'app.php',
+                        'app' => 'app.php',
                     ],
                     'basePath' => '@app/messages',
                 ],

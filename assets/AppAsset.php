@@ -21,8 +21,10 @@ class AppAsset extends AssetBundle
     public $baseUrl = '@web';
     public $css = [
         'css/site.css',
+        'css/auto-complete.css',
     ];
     public $js = [
+        'js/auto-complete.js',
         'js/common.js',
         'js/payment.js'
     ];

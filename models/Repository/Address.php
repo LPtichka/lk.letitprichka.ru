@@ -1,0 +1,140 @@
+<?php
+
+namespace app\models\Repository;
+
+use app\components\Dadata;
+use app\models\Builder\Suggestions;
+use app\models\Queries\AddressQuery;
+use yii\base\InvalidConfigException;
+use yii\behaviors\TimestampBehavior;
+
+/**
+ * This is the model class for table "{{%address}}".
+ *
+ * @property int $id
+ * @property int $customer_id
+ * @property int $status
+ * @property string $city
+ * @property string $street
+ * @property string $house
+ * @property string $housing
+ * @property string $building
+ * @property string $flat
+ * @property int $postcode
+ * @property string $description
+ * @property string $full_address
+ * @property int $created_at
+ * @property int $updated_at
+ *
+ * @property Exception $exception
+ */
+class Address extends \yii\db\ActiveRecord
+{
+    const STATUS_DELETED = 0;
+    const STATUS_BLOCKED = 1;
+    const STATUS_ACTIVE = 10;
+
+    /** @var bool */
+    public $is_default_address = false;
+
+    /** @var bool */
+    public $address_detailed = false;
+
+    /**
+     * @inheritdoc
+     */
+    public static function tableName()
+    {
+        return '{{%address}}';
+    }
+
+    /**
+     * @inheritdoc
+     * @return AddressQuery the active query used by this AR class.
+     */
+    public static function find()
+    {
+        return new AddressQuery(get_called_class());
+    }
+
+    /**
+     * @return array
+     */
+    public function attributeLabels()
+    {
+        return [
+            'id'           => \Yii::t('address', 'ID'),
+            'customer_id'  => \Yii::t('address', 'Customer ID'),
+            'full_address' => \Yii::t('address', 'Full address'),
+            'city'         => \Yii::t('address', 'City'),
+            'street'       => \Yii::t('address', 'Street'),
+            'house'        => \Yii::t('address', 'House'),
+            'housing'      => \Yii::t('address', 'Housing'),
+            'building'     => \Yii::t('address', 'Building'),
+            'flat'         => \Yii::t('address', 'Flat'),
+            'postcode'     => \Yii::t('address', 'Postcode'),
+            'description'  => \Yii::t('address', 'Extra info'),
+        ];
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function rules()
+    {
+        return [
+            [['status'], 'default', 'value' => 10],
+            [['customer_id', 'postcode', 'status'], 'integer'],
+            [['city', 'street', 'house', 'housing', 'building', 'flat', 'full_address', 'description'], 'string'],
+            [['city', 'street', 'house', 'customer_id', 'full_address'], 'required'],
+            [['customer_id'], 'exist', 'targetClass' => Customer::class, 'targetAttribute' => 'id', 'message' => 'Указан не существующий ID покупателя'],
+        ];
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function behaviors()
+    {
+        return [
+            TimestampBehavior::class,
+        ];
+    }
+
+    /**
+     * @param array $data
+     * @return Address
+     */
+    public function build(array $data): Address
+    {
+        $address              = new Address();
+        $address->description = (string)$data['description'];
+        $address->customer_id = (int)$data['customer_id'];
+
+        try {
+            $suggestions = (new Dadata())->getSuggestions('address', [
+                'query' => $data['full_address'],
+                'limit' => 10,
+            ]);
+        } catch (\Exception $e) {
+            \Yii::info($e->getMessage(), 'address-import-exception');
+            return $address;
+        }
+
+        $suggest = (new Suggestions())->setSuggestions($suggestions['suggestions'] ?? [])->build();
+        if (isset($suggest[0])) {
+            /** @var Suggestion $data */
+            $data = $suggest[0];
+
+            $address->full_address = $data->value;
+            $address->city         = $data->getData()->cityWithType;
+            $address->street       = $data->getData()->streetWithType;
+            $address->house        = $data->getData()->house;
+            $address->housing      = $data->getData()->block;
+            $address->flat         = $data->getData()->flat;
+            $address->postcode     = $data->getData()->postalCode;
+        }
+
+        return $address;
+    }
+}

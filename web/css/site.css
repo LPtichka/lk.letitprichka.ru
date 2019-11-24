@@ -178,3 +178,24 @@ a.desc:after {
 .ui-menu .ui-menu-item {
     list-style-image: none;
 }
+
+thead .form-control {
+    padding: 2px 6px;
+    height: 28px;
+}
+
+.switch {
+    padding-top: 30px;
+}
+
+.switch .form-group {
+    float: left;
+    margin-right: 10px;
+}
+
+input[type="radio"] {
+    -webkit-appearance: radio !important;
+    -moz-appearance: radio !important;
+    appearance: radio !important;
+}
+

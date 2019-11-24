@@ -39,10 +39,30 @@ body.delegate('#add-product', 'click', function () {
     window.addProduct();
 });
 
+body.delegate('#add-address', 'click', function () {
+    window.addAddress();
+});
+
 body.delegate('.delete-product', 'click', function () {
     let product = $(this).parents('[class*=product-row]');
     if ($('[class*=product-row]').length > 1) {
         product.remove();
+    }
+});
+
+body.delegate('.delete-address', 'click', function () {
+    let block = $(this).parents('[class*=address-row]');
+    if (block.find('input:checked').length > 0) {
+        swal({
+            confirmButtonColor: redColor,
+            title: 'Ошибка.',
+            html: true,
+            text: 'Вы не можете удалить адрес по умолчанию.'
+        });
+    } else {
+        if ($('[class*=address-row]').length > 1) {
+            block.remove();
+        }
     }
 });
 
@@ -98,6 +118,12 @@ body.delegate('.delete', 'click', function (e) {
             html: true,
             text: noSelectionText
         });
+    }
+});
+
+body.delegate('.detailed-address-input', 'change', function (e) {
+    if ($('#order-address_detailed').is(':checked')) {
+        $('#full_address').val(makeFullAddress());
     }
 });
 
@@ -204,3 +230,87 @@ window.addProduct = function () {
         prodContainer.append($(prodRow));
     });
 };
+
+// Добавление строки продкута
+window.addAddress = function () {
+    let prodContainer = $('.addresses'),
+        lastGroupId = prodContainer.find('[class*=address-row]:last').prop('id'),
+        lastIndex = 0;
+
+    if (lastGroupId) {
+        lastIndex = lastGroupId.split('-')[1];
+    }
+
+    $.get('/address/get-row?counter=' + lastIndex, function (prodRow) {
+        prodContainer.append($(prodRow));
+    });
+};
+
+// Получение полного адреса
+window.buildFullAddress = function () {
+    let fullAddress = [];
+
+    if ($('#address-city').val() !== '') {
+        fullAddress.push($('#address-city').val());
+    }
+    if ($('#address-street').val() !== '') {
+        fullAddress.push($('#address-street').val());
+    }
+    if ($('#address-house').val() !== '') {
+        fullAddress.push($('#address-house').val());
+    }
+    if ($('#address-housing').val() !== '') {
+        fullAddress.push($('#address-housing').val());
+    }
+    if ($('#address-flat').val() !== '') {
+        fullAddress.push($('#address-flat').val());
+    }
+    if ($('#address-postcode').val() !== '') {
+        fullAddress.push($('#address-postcode').val());
+    }
+
+    return fullAddress.join(', ');
+};
+
+$(document).ready(function () {
+    // Автоподстановка адреса
+    new autoComplete({
+        selector: '#full_address',
+        source: function (term, response) {
+            try {
+                xhr.abort();
+            } catch (e) {
+            }
+            xhr = $.getJSON('/address/get-by-query', {query: term}, function (data) {
+                response(data);
+            });
+        },
+        renderItem: function (item, search) {
+            search = search.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+            var re = new RegExp("(" + search.split(' ').join('|') + ")", "gi");
+
+            return '<div class="autocomplete-suggestion" ' +
+                ' data-region="' + item['data']['regionWithType'] + '"' +
+                ' data-city="' + item['data']['cityWithType'] + '"' +
+                ' data-street="' + item['data']['streetWithType'] + '"' +
+                ' data-house="' + (item['data']['house'] || '') + '"' +
+                ' data-flat="' + (item['data']['flat'] || '') + '"' +
+                ' data-housing="' + (item['data']['block'] || '') + '"' +
+                ' data-postcode="' + (item['data']['postalCode'] || '') + '"' +
+                ' data-val="' + item['value'] + '">' + item['value'].replace(re, "<b>$1</b>") + '</div>';
+        },
+        onSelect: function (e, term, item) {
+            var cityInput = $('[name="Address[city]"]');
+            var streetInput = $('[name="Address[street]"]');
+
+            cityInput.val(item.getAttribute('data-city'));
+            streetInput.val(item.getAttribute('data-street'));
+
+            $('[name="Address[region]"]').val(item.getAttribute('data-region'));
+            $('[name="Address[house]"]').val(item.getAttribute('data-house'));
+            $('[name="Address[flat]"]').val(item.getAttribute('data-flat'));
+            $('[name="Address[housing]"]').val(item.getAttribute('data-housing'));
+            $('[name="Address[postcode]"]').val(item.getAttribute('data-postcode'));
+        }
+    });
+});

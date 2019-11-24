@@ -187,51 +187,25 @@ class DishController extends BaseController
      */
     public function actionImport()
     {
-        $inputFile = $_FILES['xml'];
-        $excel     = new Excel();
-        $excel->load($inputFile);
-        if (!$excel->validate()) {
-            throw new \Exception(\Yii::t('file', 'Product file is not suitable'));
-        }
-
-        $parserData = $excel->parse();
-
-        \Yii::$app->response->format = Response::FORMAT_JSON;
-        $transaction                 = \Yii::$app->db->beginTransaction();
-        foreach ($parserData as $payment) {
-            $paymentType       = new \app\models\Repository\PaymentType();
-            $paymentType->name = $payment[0] ?? null;
-
-            if (!($paymentType->validate() && $paymentType->save())) {
-                $transaction->rollBack();
-                \Yii::$app->session->addFlash('danger', \Yii::t('payment', 'Payment type import was failed'));
-                return [
-                    'success' => false,
-                ];
-            }
-        }
-
-        $transaction->commit();
-        \Yii::$app->session->addFlash('success', \Yii::t('payment', 'Payment type was imported successfully'));
-
-        return [
-            'success' => true,
-        ];
+        // TODO доделать импорт
     }
 
     /**
+     * @param int|null $id
      * @return array
      * @throws \PHPExcel_Exception
      * @throws \PHPExcel_Reader_Exception
      */
-    public function actionExport()
+    public function actionExport(int $id = null)
     {
-        $payments = (new PaymentType())->export(\Yii::$app->request->post());
+        if ($id) {
+            $dishes = [\app\models\Repository\Dish::findOne($id)];
+        }
 
         $excel = new Excel();
         $excel->loadFromTemplate('files/templates/base.xlsx');
-        $excel->prepare($payments, Excel::MODEL_PAYMENT);
-        $excel->save('payments.xlsx', 'temp');
+        $excel->prepare($dishes, Excel::MODEL_DISH);
+        $excel->save('dish.xlsx', 'temp');
 
         \Yii::$app->response->format = Response::FORMAT_JSON;
         return [
