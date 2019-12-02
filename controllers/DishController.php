@@ -2,9 +2,10 @@
 namespace app\controllers;
 
 use app\models\Helper\Excel;
+use app\models\Helper\ExcelParser;
+use app\models\Helper\Weight;
 use app\models\Repository\DishProduct;
 use app\models\Search\Dish;
-use app\models\Search\PaymentType;
 use yii\db\IntegrityException;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
@@ -155,7 +156,8 @@ class DishController extends BaseController
         foreach ($dishIds as $id) {
             $errorMessage = \Yii::t('order', 'Dish was not deleted');
             try {
-                $isDelete =  DishProduct::deleteAll(['dish_id' => $id]) &&  \app\models\Repository\Dish::deleteAll(['id' => $id]);
+                $isDelete = DishProduct::deleteAll(['dish_id' => $id])
+                    && \app\models\Repository\Dish::deleteAll(['id' => $id]);
             } catch (IntegrityException $e) {
                 $this->log('dish-delete-fail', [$e->getMessage()]);
                 $errorMessage = \Yii::t('dish', 'You can not delete dish before you dont delete products');
@@ -182,12 +184,57 @@ class DishController extends BaseController
     /**
      * Испорт типов оплат из Excel
      *
-     * @throws \PHPExcel_Exception
      * @throws \Exception
      */
     public function actionImport()
     {
-        // TODO доделать импорт
+        $inputFile = $_FILES['xml'];
+        $excel     = new Excel();
+        $excel->load($inputFile);
+        if (!$excel->validate()) {
+            throw new \Exception(\Yii::t('file', 'Dish file is not suitable'));
+        }
+
+        $parserData = $excel->parse();
+        $data = (new ExcelParser(array_merge([$excel->getHeaderRow()], $parserData), ExcelParser::MODEL_DISH))->getParsedArray();
+        $dish = (new \app\models\Repository\Dish())->build($data, Weight::UNIT_GR);
+
+        \Yii::$app->response->format = Response::FORMAT_JSON;
+        $transaction                 = \Yii::$app->db->beginTransaction();
+        if ($dish->validate() && $dish->save()) {
+            foreach ($dish->dishProducts as $dishProduct) {
+                if (empty($dishProduct->product_id)) {
+                    \Yii::$app->session->addFlash('danger', \Yii::t('dish', 'Dish product is unknown'));
+                    $transaction->rollBack();
+                    return [
+                        'success' => false,
+                    ];
+                }
+                $dishProduct->dish_id = $dish->id;
+                if (!($dishProduct->validate() && $dishProduct->save())) {
+                    $errorMessages = implode(', <br />', $dishProduct->getFirstErrors());
+                    \Yii::$app->session->addFlash('danger', \Yii::t('dish', 'Dish product saving error:') . $errorMessages);
+                    $transaction->rollBack();
+                    return [
+                        'success' => false,
+                    ];
+                }
+            }
+        } else {
+            $transaction->rollBack();
+            $errorMessages = implode(', <br />', $dish->getFirstErrors());
+            \Yii::$app->session->addFlash('danger', \Yii::t('dish', 'Dish saving error:') . $errorMessages);
+            return [
+                'success' => false,
+            ];
+        }
+
+        $transaction->commit();
+        \Yii::$app->session->addFlash('success', \Yii::t('address', 'Dish was imported successfully'));
+
+        return [
+            'success' => true,
+        ];
     }
 
     /**
@@ -200,6 +247,8 @@ class DishController extends BaseController
     {
         if ($id) {
             $dishes = [\app\models\Repository\Dish::findOne($id)];
+        } else {
+            $dishes = (new Dish())->export(\Yii::$app->request->post());
         }
 
         $excel = new Excel();

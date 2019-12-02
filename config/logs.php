@@ -70,5 +70,14 @@ return [
             'maxFileSize' => 102400,
             'maxLogFiles' => 10,
         ],
+        [
+            'class'       => 'yii\log\FileTarget',
+            'logFile'     => '@runtime/logs/subscription.log',
+            'levels'      => ['info'],
+            'categories'  => ['subscriptions-*'],
+            'logVars'     => [],
+            'maxFileSize' => 102400,
+            'maxLogFiles' => 10,
+        ],
     ],
 ];

@@ -45,9 +45,6 @@ $this->title = $title;
                         <?= $form->field($model, 'type')->dropDownList((new \app\models\Helper\Arrays($model->getTypes()))->getSelectOptions()) ?>
                     </div>
                     <div class="col-sm-3" style="padding-top: 30px;">
-                        <?= $form->field($model, 'is_garnish')->checkbox() ?>
-                    </div>
-                    <div class="col-sm-3" style="padding-top: 30px;">
                         <?= $form->field($model, 'with_garnish')->checkbox() ?>
                     </div>
                 </div>

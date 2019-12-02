@@ -39,6 +39,27 @@ body.delegate('#add-product', 'click', function () {
     window.addProduct();
 });
 
+body.delegate('.add-row-action', 'click', function () {
+    let container = $('.' + $(this).data('block')),
+        lastGroupId = container.find('[class*=' + $(this).data('row') + ']:last').prop('id'),
+        lastIndex = 0;
+
+    if (lastGroupId) {
+        lastIndex = lastGroupId.split('-')[1];
+    }
+
+    $.get($(this).data('href') + '?counter=' + lastIndex, function (row) {
+        container.append($(row));
+    });
+});
+
+body.delegate('.delete-row-action', 'click', function () {
+    let row = $(this).parents('[class*=' + $(this).data('row') + ']');
+    if ($('[class*=' + $(this).data('row') + ']').length > 1) {
+        row.remove();
+    }
+});
+
 body.delegate('#add-address', 'click', function () {
     window.addAddress();
 });

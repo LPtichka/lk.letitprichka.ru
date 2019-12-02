@@ -31,6 +31,11 @@
                         ],
                     ],
                     [
+                        'label' => 'Подписки',
+                        'icon'  => 'list-ol',
+                        'url'   => ['/subscription/index'],
+                    ],
+                    [
                         'label' => \Yii::t('app', 'Dishes'),
                         'icon'  => 'cube',
                         'url'   => '#',

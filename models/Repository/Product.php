@@ -60,9 +60,10 @@ class Product extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            ['name', 'unique', 'message' => \Yii::t('product', 'This product has already exists')],
-            ['name', 'string'],
-            [['count', 'weight', 'exception_id'], 'integer'],
+            [['name'], 'unique', 'message' => \Yii::t('product', 'This product has already exists')],
+            [['name'], 'string'],
+            [['weight'], 'number'],
+            [['count', 'exception_id'], 'integer'],
             ['exception_id', 'exist', 'targetClass' => Exception::class, 'targetAttribute' => 'id'],
             [['name'], 'required'],
         ];

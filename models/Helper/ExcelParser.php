@@ -1,11 +1,15 @@
 <?php
 namespace app\models\Helper;
 
+use app\models\Common\Ingestion;
+use app\models\Repository\Dish;
+
 class ExcelParser
 {
     const MODEL_PRODUCT = 'product';
     const MODEL_CUSTOMER = 'customer';
     const MODEL_ADDRESS = 'address';
+    const MODEL_DISH = 'dish';
 
     /** @var array */
     private $data;
@@ -37,6 +41,8 @@ class ExcelParser
                 return $this->parseCustomer();
             case self::MODEL_ADDRESS:
                 return $this->parseAddress();
+            case self::MODEL_DISH:
+                return $this->parseDish();
             default:
                 return [];
         }
@@ -79,5 +85,81 @@ class ExcelParser
             'full_address' => $this->data[1] ?? null,
             'description'  => $this->data[2] ?? null,
         ];
+    }
+
+    /**
+     * @return array
+     */
+    private function parseDish(): array
+    {
+        $data = [];
+
+        foreach ($this->data as $item) {
+            if (!empty($item[0])) {
+                $data[] = $item;
+            }
+        }
+
+        if (empty($data)) {
+            return $data;
+        }
+
+        $ingestion            = new Ingestion();
+        $ingestionNameStrings = $data[4][10] ?? '';
+        $ingestionNames       = explode(',', $ingestionNameStrings);
+
+        $isBreakfast = false;
+        $isDinner    = false;
+        $isLunch     = false;
+        $isSupper    = false;
+        foreach ($ingestionNames as $name) {
+            $ingestion->setEatingName($name);
+            if ($ingestion->isBreakfast()) {
+                $isBreakfast = $ingestion->isBreakfast();
+            }
+            if ($ingestion->isDinner()) {
+                $isDinner = $ingestion->isDinner();
+            }
+            if ($ingestion->isLunch()) {
+                $isLunch = $ingestion->isLunch();
+            }
+            if ($ingestion->isSupper()) {
+                $isSupper = $ingestion->isSupper();
+            }
+        }
+
+        $dish = [
+            'name'               => $data[0][0] ?? null,
+            'type'               => (new Dish())->getTypeByTitle($data[2][10] ?? ''),
+            'with_garnish'       => mb_strtolower(trim($data[6][10] ?? '')) == 'да',
+            'is_breakfast'       => $isBreakfast,
+            'is_dinner'          => $isDinner,
+            'is_lunch'           => $isLunch,
+            'is_supper'          => $isSupper,
+            'kkal'               => $data[(count($data) - 2)][1] ?? null,
+            'proteins'           => $data[(count($data) - 2)][2] ?? null,
+            'fat'                => $data[(count($data) - 2)][3] ?? null,
+            'carbohydrates'      => $data[(count($data) - 2)][4] ?? null,
+            'process'            => $this->data[4][9] ?? null,
+            'storage_conditions' => $data[(count($data) - 2)][9] ?? null,
+            'weight'             => $data[(count($data) - 4)][3] ?? null,
+            'products'           => [],
+        ];
+
+        for ($i = 2; $i < (count($data) - 4); $i++) {
+            $dish['products'][] = [
+                'name'           => $data[$i][0] ?? null,
+                'brutto'         => $data[$i][1] ?? null,
+                'netto'          => $data[$i][2] ?? null,
+                'weight'         => $data[$i][3] ?? null,
+                'weight_on_1_kg' => $data[$i][4] ?? null,
+                'kkal'           => $data[$i][5] ?? null,
+                'proteins'       => $data[$i][6] ?? null,
+                'fat'            => $data[$i][7] ?? null,
+                'carbohydrates'  => $data[$i][8] ?? null,
+            ];
+        }
+
+        return $dish;
     }
 }

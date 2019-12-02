@@ -203,11 +203,15 @@ class Excel
      */
     public function prepareDish(iterable $dishes): bool
     {
-        $objWorksheet = $this->fileName->getActiveSheet();
+        foreach ($dishes as $key => $dish) {
+            if (!$key) {
+                $objWorksheet = $this->fileName->getActiveSheet();
+            } else {
+                $objWorksheet = $this->fileName->createSheet();
+            }
 
-//        $sheet = $this->fileName->createSheet();
-        $this->makeDishTemplatePage($objWorksheet, 1);
-        foreach ($dishes as $dish) {
+            $objWorksheet->setTitle($dish->name);
+            $this->makeDishTemplatePage($objWorksheet, 1);
             $objWorksheet->getCellByColumnAndRow(0, 1)->setValue($dish->name);
             $productCount = count($dish->dishProducts);
 
@@ -258,13 +262,12 @@ class Excel
                 ->setVertical(\PHPExcel_Style_Alignment::VERTICAL_CENTER)
                 ->setHorizontal(\PHPExcel_Style_Alignment::HORIZONTAL_CENTER)
                 ->setWrapText(true);
-        }
 
-        $highestRow = $objWorksheet->getHighestRow();
-        for ($i = 1; $i <= $highestRow; $i++) {
-            $objWorksheet->getRowDimension($i)->setRowHeight(30);
+            $highestRow = $objWorksheet->getHighestRow();
+            for ($i = 1; $i <= $highestRow; $i++) {
+                $objWorksheet->getRowDimension($i)->setRowHeight(30);
+            }
         }
-
         return true;
     }
 

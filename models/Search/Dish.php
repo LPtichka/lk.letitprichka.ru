@@ -3,6 +3,7 @@
 namespace app\models\search;
 
 use app\models\Helper\Arrays;
+use app\models\Helper\Weight;
 use app\models\Repository\Dish as Repository;
 use yii\data\ActiveDataProvider;
 use yii\grid\CheckboxColumn;
@@ -40,10 +41,8 @@ class Dish extends Repository
 
         $this->load($params);
 
-        $query->andFilterWhere([
-            'id' => $this->id,
-        ]);
-
+        $query->andFilterWhere(['id' => $this->id]);
+        $query->andFilterWhere(['type' => $this->type]);
         $query->andFilterWhere(['like', 'name', $this->name]);
 
         return $dataProvider;
@@ -55,20 +54,20 @@ class Dish extends Repository
      */
     public function export($params): iterable
     {
-        $paymentsQuery = self::find();
+        $dishQuery = self::find();
 
-        !empty($params['id']) && $paymentsQuery->filterWhere(['id' => $params['id']]);
-        !empty($params['name']) && $paymentsQuery->filterWhere(['like', 'name', urldecode($params['name'])]);
+        !empty($params['id']) && $dishQuery->filterWhere(['id' => $params['id']]);
+        !empty($params['name']) && $dishQuery->filterWhere(['like', 'name', urldecode($params['name'])]);
 
-        $payments = $paymentsQuery->asArray()->all();
-        foreach ($payments as $payment) {
-            yield [
-                'id' => $payment['id'],
-                'name' => $payment['name'],
-                'created_at' => date('d.m.Y \в H:i', $payment['created_at']),
-                'updated_at' => date('d.m.Y \в H:i', $payment['updated_at']),
-            ];
-        }
+        return $dishQuery->all();
+//        foreach ($dishes as $dish) {
+//            yield [
+//                'id' => $dish['id'],
+//                'name' => $dish['name'],
+//                'created_at' => date('d.m.Y \в H:i', $dish['created_at']),
+//                'updated_at' => date('d.m.Y \в H:i', $dish['updated_at']),
+//            ];
+//        }
     }
 
     /**
@@ -119,6 +118,9 @@ class Dish extends Repository
         $result['weight'] = [
             'attribute' => 'weight',
             'label' => \Yii::t('dish', 'Weight'),
+            'content' => function ($model) {
+                return (new Weight())->setUnit(Weight::UNIT_KG)->convert($model->weight, Weight::UNIT_GR);
+            }
         ];
 
 

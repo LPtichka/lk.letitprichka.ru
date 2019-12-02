@@ -22,7 +22,8 @@ class Product extends Repository
     public function rules()
     {
         return [
-            [['id', 'count', 'weight', 'exception_id'], 'integer'],
+            [['id', 'count', 'exception_id'], 'integer'],
+            [['weight'], 'number'],
             ['name', 'string'],
         ];
     }
