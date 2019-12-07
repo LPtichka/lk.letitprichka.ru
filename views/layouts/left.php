@@ -19,40 +19,15 @@
                 'options' => ['class' => 'sidebar-menu tree', 'data-widget' => 'tree'],
                 'items'   => [
                     ['label' => 'Меню управления', 'options' => ['class' => 'header']],
-                    [
-                        'label' => 'Заказы',
-                        'icon'  => 'list-ol',
-                        'url'   => '#',
-                        'items' => [
-                            ['label' => 'Список заказов', 'icon' => 'list-ol', 'url' => ['/gii'],],
-                            ['label' => \Yii::t('app', 'Customers'), 'icon' => 'user-o', 'url' => ['/customer/index'],],
-                            ['label' => \Yii::t('app', 'Addresses'), 'icon' => 'address-book-o', 'url' => ['/address/index'],],
-                            ['label' => 'Меню', 'icon' => 'bars', 'url' => ['/debug'],],
-                        ],
-                    ],
-                    [
-                        'label' => 'Подписки',
-                        'icon'  => 'list-ol',
-                        'url'   => ['/subscription/index'],
-                    ],
-                    [
-                        'label' => \Yii::t('app', 'Dishes'),
-                        'icon'  => 'cube',
-                        'url'   => '#',
-                        'items' => [
-                            ['label' => \Yii::t('app', 'Dishes'), 'icon' => 'file-code-o', 'url' => ['/dish/index'],],
-                            ['label' => \Yii::t('app', 'Exceptions'), 'icon' => 'file-code-o', 'url' => ['/exception/index'],],
-                            ['label' => \Yii::t('app', 'Goods'), 'icon' => 'dashboard', 'url' => ['/product/index'],],
-                        ],
-                    ],
-                    [
-                        'label' => 'Настройки',
-                        'icon'  => 'gears',
-                        'url'   => '#',
-                        'items' => [
-                            ['label' => 'Типы оплат', 'icon' => 'file-code-o', 'url' => ['/payment-type/index'],],
-                        ],
-                    ],
+                    ['label' => 'Список заказов', 'icon' => 'list-ol', 'url' => ['/gii']],
+                    ['label' => \Yii::t('app', 'Customers'), 'icon' => 'user-o', 'url' => ['/customer/index']],
+                    ['label' => \Yii::t('app', 'Addresses'), 'icon' => 'address-book-o', 'url' => ['/address/index']],
+                    ['label' => 'Меню', 'icon' => 'bars', 'url' => ['/debug']],
+                    ['label' => \Yii::t('app', 'Dishes'), 'icon' => 'file-code-o', 'url' => ['/dish/index']],
+                    ['label' => \Yii::t('app', 'Exceptions'), 'icon' => 'file-code-o', 'url' => ['/exception/index']],
+                    ['label' => \Yii::t('app', 'Goods'), 'icon' => 'dashboard', 'url' => ['/product/index']],
+                    ['label' => 'Типы оплат', 'icon' => 'file-code-o', 'url' => ['/payment-type/index']],
+                    ['label' => 'Подписки', 'icon'  => 'list-ol', 'url'   => ['/subscription/index']],
                     ['label' => \Yii::t('user', 'Users'), 'icon' => 'user-o', 'url' => ['/user/index']],
                 ],
             ]

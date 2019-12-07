@@ -139,4 +139,18 @@ class Customer extends \yii\db\ActiveRecord
 
         return $customer;
     }
+
+    /**
+     * @return Address|null
+     */
+    public function getDefaultAddress(): ?Address
+    {
+        foreach ($this->addresses as $address) {
+            if ($address->id === $this->default_address_id) {
+                return $address;
+            }
+        }
+
+        return null;
+    }
 }

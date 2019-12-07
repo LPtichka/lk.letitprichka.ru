@@ -12,4 +12,6 @@ return [
     'Exceptions'                                        => 'Исключения',
     'Created at'                                        => 'Дата создания',
     'Updated at'                                        => 'Дата обновления',
+    'Exception was imported successfully'               => 'Исключения были успешно импортированы',
+    'Product count'                                     => 'Количество продуктов',
 ];

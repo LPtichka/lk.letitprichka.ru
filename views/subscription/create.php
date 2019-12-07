@@ -19,10 +19,14 @@ $this->title = \Yii::t('subscription', 'Subscription create');
             <div class="box-body">
                 <div class="row">
                     <div class="col-sm-8">
-                        <?= $form->field($model, 'name')->textInput() ?>
+                        <?= $form->field($model, 'name')->textInput([
+                            'class' => 'form-control input-sm'
+                        ]) ?>
                     </div>
                     <div class="col-sm-4">
-                        <?= $form->field($model, 'price')->textInput() ?>
+                        <?= $form->field($model, 'price')->textInput([
+                                'class' => 'form-control input-sm'
+                        ]) ?>
                     </div>
                 </div>
                 <div class="row">
@@ -47,12 +51,11 @@ $this->title = \Yii::t('subscription', 'Subscription create');
             </div>
             <div class="box-body">
                 <div class="row">
-                    <div class="col-sm-1">#</div>
-                    <div class="col-sm-4"><?php echo \Yii::t('subscription', 'Count');?></div>
-                    <div class="col-sm-4"><?php echo \Yii::t('subscription', 'Price');?></div>
+                    <div class="col-sm-1 text-center"><label>#</label></div>
+                    <div class="col-sm-4"><label><?php echo \Yii::t('subscription', 'Count');?></label></div>
+                    <div class="col-sm-4"><label><?php echo \Yii::t('subscription', 'Discount price');?></label></div>
                     <div class="col-sm-3"></div>
                 </div>
-                <hr />
                 <div class="discounts">
                     <?php foreach ($model->discounts as $i => $discount) : ?>
                         <?= $this->render('_discount', [
@@ -81,12 +84,12 @@ $this->title = \Yii::t('subscription', 'Subscription create');
         <div class="row">
             <div class="col-md-6">
                 <div class="form-group">
-                    <?= Html::submitButton('<i class="fa fa-check"></i> ' . \Yii::t('app', 'Save'), ['class' => 'btn btm-sm btn-warning']) ?>
+                    <?= Html::submitButton('<i class="fa fa-check"></i> ' . \Yii::t('app', 'Save'), ['class' => 'btn btn-sm btn-warning']) ?>
                 </div>
             </div>
             <div class="col-md-6">
                 <div class="form-group text-right">
-                    <?= Html::a(\Yii::t('app', 'Cancel'), ['subscription/index'], ['class' => 'btn btm-sm btn-default']) ?>
+                    <?= Html::a(\Yii::t('app', 'Cancel'), ['subscription/index'], ['class' => 'btn btn-sm btn-default']) ?>
                 </div>
             </div>
         </div>

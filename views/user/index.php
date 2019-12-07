@@ -17,15 +17,15 @@ $this->title = \Yii::t('user', 'Users');
 <div class="box">
     <div class="box-header with-border">
         <div class="pull-left">
-            <?= Html::a(\Yii::t('user', 'Create user'), ['user/create'], ['class' => 'btn btm-sm btn-warning']) ?>
+            <?= Html::a(\Yii::t('user', 'Create user'), ['user/create'], ['class' => 'btn btn-sm btn-warning']) ?>
         </div>
         <div class="pull-right">
             <?= Html::button('<i class="fa fa-download"></i> ', [
-                'class'     => 'btn btm-sm btn-default export',
+                'class'     => 'btn btn-sm btn-default export',
                 'data-href' => Url::to(['user/export']),
             ]) ?>
             <?= Html::submitButton('<i class="fa fa-times"></i> ', [
-                'class'      => 'btn btm-sm btn-danger delete',
+                'class'      => 'btn btn-sm btn-danger delete',
                 'data-title' => \Yii::t('user', 'Do you really want to delete selected users?'),
                 'data-href'  => Url::to(['user/delete']),
             ]); ?>

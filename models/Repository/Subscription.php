@@ -48,7 +48,13 @@ class Subscription extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id' => \Yii::t('address', 'ID'),
+            'id' => \Yii::t('subscription', 'ID'),
+            'name' => \Yii::t('subscription', 'Name'),
+            'price' => \Yii::t('subscription', 'Price'),
+            'has_breakfast' => \Yii::t('subscription', 'Has breakfast'),
+            'has_dinner' => \Yii::t('subscription', 'Has dinner'),
+            'has_lunch' => \Yii::t('subscription', 'Has lunch'),
+            'has_supper' => \Yii::t('subscription', 'Has supper'),
         ];
     }
 

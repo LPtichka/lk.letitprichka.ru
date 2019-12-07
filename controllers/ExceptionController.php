@@ -3,6 +3,7 @@ namespace app\controllers;
 
 use app\models\Helper\Excel;
 use app\models\Search\Exception;
+use yii\db\IntegrityException;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
 
@@ -91,7 +92,18 @@ class ExceptionController extends BaseController
         $this->log('exception-delete', $exceptionsIDs);
         $transaction = \Yii::$app->db->beginTransaction();
         foreach ($exceptionsIDs as $id) {
-            $isDelete = \app\models\Repository\Exception::deleteAll(['id' => $id]);
+            try {
+                $isDelete = \app\models\Repository\Exception::deleteAll(['id' => $id]);
+            } catch (IntegrityException $e) {
+                $transaction->rollBack();
+                $this->log('exception-delete-fail', [$e->getMessage()]);
+                return [
+                    'status' => false,
+                    'title'  => \Yii::t('order', 'Error'),
+                    'description'  => \Yii::t('order', 'Exception was not deleted because has links with products'),
+                ];
+            }
+
             if (!$isDelete) {
                 $transaction->rollBack();
                 $this->log('exception-delete-fail', $exceptionsIDs);

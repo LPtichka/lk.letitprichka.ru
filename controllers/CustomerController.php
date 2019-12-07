@@ -44,6 +44,7 @@ class CustomerController extends BaseController
         }
 
         return $this->render('/customer/create', [
+            'title' => \Yii::t('customer', 'Customer create'),
             'model' => $customer,
         ]);
     }
@@ -74,7 +75,7 @@ class CustomerController extends BaseController
 
         return $this->render('/customer/create', [
             'model' => $customer,
-            'title' => \Yii::t('customer', 'Customer update'),
+            'title' => \Yii::t('customer', 'Customer update: #') . $customer->id . '<small> '.$customer->fio.' </small>',
         ]);
     }
 

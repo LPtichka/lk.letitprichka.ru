@@ -11,7 +11,7 @@ $this->title = $title;
 ?>
 <div style="position: absolute; right: 15px; top: 60px; z-index: 999999;">
     <?= Html::button('<i class="fa fa-download"></i> ', [
-        'class'     => 'btn btm-sm btn-default export',
+        'class'     => 'btn btn-sm btn-default export',
         'data-href' => Url::to(['dish/export', 'id' => $model->id]),
     ]) ?>
 </div>
@@ -119,12 +119,12 @@ $this->title = $title;
         <div class="row">
             <div class="col-md-6">
                 <div class="form-group">
-                    <?= Html::submitButton('<i class="fa fa-check"></i> ' . \Yii::t('app', 'Save'), ['class' => 'btn btm-sm btn-warning']) ?>
+                    <?= Html::submitButton('<i class="fa fa-check"></i> ' . \Yii::t('app', 'Save'), ['class' => 'btn btn-sm btn-warning']) ?>
                 </div>
             </div>
             <div class="col-md-6">
                 <div class="form-group text-right">
-                    <?= Html::a(\Yii::t('app', 'Cancel'), ['payment-type/index'], ['class' => 'btn btm-sm btn-default']) ?>
+                    <?= Html::a(\Yii::t('app', 'Cancel'), ['payment-type/index'], ['class' => 'btn btn-sm btn-default']) ?>
                 </div>
             </div>
         </div>

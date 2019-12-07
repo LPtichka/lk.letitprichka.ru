@@ -17,16 +17,16 @@ $this->title = \Yii::t('product', 'Products');
 <div class="box">
     <div class="box-header with-border">
         <div class="pull-left">
-            <?= Html::a(\Yii::t('product', 'Create product'), ['product/create'], ['class' => 'btn btm-sm btn-warning']) ?>
+            <?= Html::a(\Yii::t('product', 'Create product'), ['product/create'], ['class' => 'btn btn-sm btn-warning']) ?>
         </div>
         <div class="pull-right">
-            <?= Html::button('<i class="fa fa-upload"></i> ', ['class' => 'btn btm-sm btn-default import']) ?>
+            <?= Html::button('<i class="fa fa-upload"></i> ', ['class' => 'btn btn-sm btn-default import']) ?>
             <?= Html::button('<i class="fa fa-download"></i> ', [
-                'class'     => 'btn btm-sm btn-default export',
+                'class'     => 'btn btn-sm btn-default export',
                 'data-href' => Url::to(['product/export']),
             ]) ?>
             <?= Html::submitButton('<i class="fa fa-times"></i> ', [
-                'class'      => 'btn btm-sm btn-danger delete',
+                'class'      => 'btn btn-sm btn-danger delete',
                 'data-title' => \Yii::t('product', 'Do you really want to delete selected products?'),
                 'data-href'  => Url::to(['product/delete']),
             ]); ?>
@@ -39,7 +39,7 @@ $this->title = \Yii::t('product', 'Products');
     <?= GridView::widget([
         'tableOptions' => [
             'data-resizable-columns-id' => 'product',
-            'class'                     => 'table table-bordered'
+            'class'                     => 'table'
         ],
         'dataProvider' => $dataProvider,
         'filterModel'  => $searchModel,

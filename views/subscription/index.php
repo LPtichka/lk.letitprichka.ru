@@ -17,29 +17,21 @@ $this->title = \Yii::t('subscription', 'Subscriptions');
 <div class="box">
     <div class="box-header with-border">
         <div class="pull-left">
-            <?= Html::a(\Yii::t('subscription', 'Create subscription'), ['subscription/create'], ['class' => 'btn btm-sm btn-warning']) ?>
+            <?= Html::a(\Yii::t('subscription', 'Create subscription'), ['subscription/create'], ['class' => 'btn btn-sm btn-warning']) ?>
         </div>
         <div class="pull-right">
-            <?= Html::button('<i class="fa fa-upload"></i> ', ['class' => 'btn btm-sm btn-default import']) ?>
-            <?= Html::button('<i class="fa fa-download"></i> ', [
-                'class'     => 'btn btm-sm btn-default export',
-                'data-href' => Url::to(['subscription/export']),
-            ]) ?>
             <?= Html::submitButton('<i class="fa fa-times"></i> ', [
-                'class'      => 'btn btm-sm btn-danger delete',
+                'class'      => 'btn btn-sm btn-danger delete',
                 'data-title' => \Yii::t('subscription', 'Do you really want to delete selected subscriptions?'),
                 'data-href'  => Url::to(['subscription/delete']),
             ]) ?>
-            <div class="hidden"><?= Html::fileInput('import', '', [
-                    'data-href' => Url::to(['subscription/import'])
-                ]) ?></div>
         </div>
     </div>
     <?php Pjax::begin(); ?>
     <?= GridView::widget([
         'tableOptions' => [
-            'data-resizable-columns-id' => 'address',
-            'class'                     => 'table table-bordered'
+            'data-resizable-columns-id' => 'subscription',
+            'class'                     => 'table'
         ],
         'dataProvider' => $dataProvider,
         'filterModel'  => $searchModel,

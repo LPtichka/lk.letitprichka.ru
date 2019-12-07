@@ -5,8 +5,8 @@ namespace app\models\search;
 use app\models\Helper\Arrays;
 use app\models\Helper\Weight;
 use app\models\Repository\Product as Repository;
+use app\widgets\Grid\CheckboxColumn;
 use yii\data\ActiveDataProvider;
-use yii\grid\CheckboxColumn;
 use yii\helpers\Html;
 
 class Product extends Repository
@@ -24,7 +24,7 @@ class Product extends Repository
         return [
             [['id', 'count', 'exception_id'], 'integer'],
             [['weight'], 'number'],
-            ['name', 'string'],
+            [['name', 'updated_at'], 'string'],
         ];
     }
 
@@ -104,6 +104,7 @@ class Product extends Repository
 
         $result['id'] = [
             'attribute' => 'id',
+            'contentOptions' => ['style' => 'width:120px;'],
             'label' => \Yii::t('product', 'ID'),
             'content' => function ($model) {
                 return Html::a($model->id, ['product/view', 'id' => $model->id]);

@@ -52,6 +52,19 @@ class m191117_163922_add_manager_rules extends Migration
         $this->addChild('manager', '/subscription/import');
         $this->createPermission('/subscription/add-discount');
         $this->addChild('manager', '/subscription/add-discount');
+
+        $this->createPermission('/order/index');
+        $this->addChild('manager', '/order/index');
+        $this->createPermission('/order/create');
+        $this->addChild('manager', '/order/create');
+        $this->createPermission('/order/delete');
+        $this->addChild('manager', '/order/delete');
+        $this->createPermission('/order/view');
+        $this->addChild('manager', '/order/view');
+        $this->createPermission('/order/export');
+        $this->addChild('manager', '/order/export');
+        $this->createPermission('/order/import');
+        $this->addChild('manager', '/order/import');
     }
 
     public function safeDown()
@@ -102,5 +115,18 @@ class m191117_163922_add_manager_rules extends Migration
         $this->removePermission('/subscription/import');
         $this->removeChild('manager', '/subscription/add-discount');
         $this->removePermission('/subscription/add-discount');
+
+        $this->removeChild('manager', '/order/index');
+        $this->removePermission('/order/index');
+        $this->removeChild('manager', '/order/create');
+        $this->removePermission('/order/create');
+        $this->removeChild('manager', '/order/delete');
+        $this->removePermission('/order/delete');
+        $this->removeChild('manager', '/order/view');
+        $this->removePermission('/order/view');
+        $this->removeChild('manager', '/order/export');
+        $this->removePermission('/order/export');
+        $this->removeChild('manager', '/order/import');
+        $this->removePermission('/order/import');
     }
 }

@@ -12,6 +12,8 @@ use yii\behaviors\TimestampBehavior;
  * @property string $name
  * @property int $created_at
  * @property int $updated_at
+ *
+ * @property Product[] $products
  */
 class Exception extends \yii\db\ActiveRecord
 {
@@ -40,8 +42,17 @@ class Exception extends \yii\db\ActiveRecord
         return [
             'id'         => \Yii::t('exception', 'ID'),
             'name'       => \Yii::t('exception', 'Name'),
+            'product_count'       => \Yii::t('exception', 'Product count'),
             'updated_at' => \Yii::t('app', 'Updated at'),
         ];
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getProducts()
+    {
+        return $this->hasMany(Product::class, ['exception_id' => 'id']);
     }
 
     /**

@@ -24,12 +24,12 @@ $this->title = $title;
                 <div class="row">
                     <div class="col-md-6">
                         <div class="form-group">
-                            <?= Html::submitButton('<i class="fa fa-check"></i> ' . Yii::t('app', 'Save'), ['class' => 'btn btm-sm btn-warning']) ?>
+                            <?= Html::submitButton('<i class="fa fa-check"></i> ' . Yii::t('app', 'Save'), ['class' => 'btn btn-sm btn-warning']) ?>
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="form-group text-right">
-                            <?= Html::a(\Yii::t('app', 'Cancel'), ['payment-type/index'], ['class' => 'btn btm-sm btn-default']) ?>
+                            <?= Html::a(\Yii::t('app', 'Cancel'), ['payment-type/index'], ['class' => 'btn btn-sm btn-default']) ?>
                         </div>
                     </div>
                 </div>

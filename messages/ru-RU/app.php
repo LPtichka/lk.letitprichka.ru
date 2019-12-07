@@ -14,4 +14,6 @@ return [
     'Weight'         => 'Вес (кг.)',
     'Choose element' => 'Выберите',
     'Dishes'         => 'Блюда',
+    'Customers'      => 'Покупатели',
+    'Addresses'      => 'Адреса',
 ];

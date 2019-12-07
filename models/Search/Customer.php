@@ -2,7 +2,9 @@
 
 namespace app\models\search;
 
+use app\models\Helper\Phone;
 use app\models\Repository\Customer as Repository;
+use kartik\daterange\DateRangePicker;
 use yii\data\ActiveDataProvider;
 use yii\grid\CheckboxColumn;
 use yii\helpers\Html;
@@ -34,7 +36,7 @@ class Customer extends Repository
         $query        = Repository::find();
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
-            'sort'  => ['defaultOrder' => ['id' => SORT_ASC]],
+            'sort'  => ['defaultOrder' => ['created_at' => SORT_DESC]],
         ]);
 
         $this->load($params);
@@ -86,7 +88,7 @@ class Customer extends Repository
                     $result['full_address'] = $address['full_address'];
                     $result['description']  = $address['description'];
                     if ($customer['default_address_id'] === $address['id']) {
-                        $result['is_default_address']  = \Yii::t('app', 'Yes');
+                        $result['is_default_address'] = \Yii::t('app', 'Yes');
                     }
                     yield $result;
                 }
@@ -101,6 +103,7 @@ class Customer extends Repository
      *
      * @param Repository $searchModel
      * @return array
+     * @throws \Exception
      */
     public function getSearchColumns(Repository $searchModel)
     {
@@ -112,8 +115,33 @@ class Customer extends Repository
             ],
         ];
 
+        $result['created_at'] = [
+            'attribute'      => 'created_at',
+            'label'          => \Yii::t('customer', 'Created at'),
+            'contentOptions' => ['style' => 'width:200px;'],
+            'filter'         => Html::tag('div',
+                DateRangePicker::widget([
+                    'name'          => 'created_at',
+                    'value'         => $searchModel->created_at,
+                    'convertFormat' => false,
+                    'useWithAddon'  => false,
+                    'options'       => ['class' => 'form-control input-sm', 'id' => 'order-create-date'],
+                    'pluginOptions' => [
+                        'locale' => [
+                            'format'    => 'DD.MM.YYYY',
+                            'separator' => ' - ',
+                        ]
+                    ]
+                ])
+            ),
+            'content'        => function ($model) {
+                return date('d.m.Y \в H:i', $model->updated_at);
+            }
+        ];
+
         $result['id'] = [
             'attribute' => 'id',
+            'contentOptions' => ['style' => 'width:120px;'],
             'label'     => \Yii::t('customer', 'ID'),
             'content'   => function ($model) {
                 return Html::a($model->id, ['customer/view', 'id' => $model->id]);
@@ -122,12 +150,15 @@ class Customer extends Repository
 
         $result['fio'] = [
             'attribute' => 'fio',
-            'label'     => \Yii::t('customer', 'Fio'),
+            'label'     => \Yii::t('customer', 'FIO'),
         ];
 
         $result['phone'] = [
             'attribute' => 'phone',
             'label'     => \Yii::t('customer', 'Phone'),
+            'content'   => function ($model) {
+                return (new Phone($model->phone))->getHumanView();
+            }
         ];
 
         $result['email'] = [
@@ -135,13 +166,14 @@ class Customer extends Repository
             'label'     => \Yii::t('customer', 'Email'),
         ];
 
-        $result['updated_at'] = [
-            'attribute' => 'updated_at',
-            'label'     => \Yii::t('payment', 'Updated at'),
+        $result['default_address_id'] = [
+            'attribute' => 'default_address_id',
+            'label'     => \Yii::t('customer', 'Default address ID'),
             'content'   => function ($model) {
-                return date('d.m.Y \в H:i', $model->updated_at);
+                return $model->getDefaultAddress() ? $model->getDefaultAddress()->full_address : '---';
             }
         ];
+
         return $result;
     }
 }

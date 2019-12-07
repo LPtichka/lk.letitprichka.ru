@@ -3,12 +3,15 @@
 namespace app\models\search;
 
 use app\models\Repository\Exception as Repository;
+use app\widgets\Grid\CheckboxColumn;
 use yii\data\ActiveDataProvider;
-use yii\grid\CheckboxColumn;
 use yii\helpers\Html;
 
 class Exception extends Repository
 {
+    /** @var int */
+    public $product_count;
+
     public function formName()
     {
         return '';
@@ -20,8 +23,8 @@ class Exception extends Repository
     public function rules()
     {
         return [
-            ['id', 'integer'],
-            ['name', 'string'],
+            [['id', 'product_count'], 'integer'],
+            [['name', 'updated_at'], 'string'],
         ];
     }
 
@@ -88,6 +91,7 @@ class Exception extends Repository
         $result['id'] = [
             'attribute' => 'id',
             'label' => \Yii::t('exception', 'ID'),
+            'contentOptions' => ['style' => 'width:120px;'],
             'content' => function ($model) {
                 return Html::a($model->id, ['exception/view', 'id' => $model->id]);
             }
@@ -98,9 +102,19 @@ class Exception extends Repository
             'label' => \Yii::t('exception', 'Name'),
         ];
 
+        $result['product_count'] = [
+            'attribute' => 'product_count',
+            'contentOptions' => ['style' => 'width:240px;'],
+            'label' => \Yii::t('exception', 'Product count'),
+            'content' => function ($model) {
+                return count($model->products);
+            }
+        ];
+
         $result['updated_at'] = [
             'attribute' => 'updated_at',
             'label' => \Yii::t('payment', 'Updated at'),
+            'contentOptions' => ['style' => 'width:240px;'],
             'content' => function($model) {
                 return date('d.m.Y \в H:i', $model->updated_at);
             }

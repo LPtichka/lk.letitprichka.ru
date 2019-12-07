@@ -5,7 +5,7 @@ namespace app\models\search;
 use app\models\Repository\Subscription as Repository;
 use kartik\daterange\DateRangePicker;
 use yii\data\ActiveDataProvider;
-use yii\grid\CheckboxColumn;
+use app\widgets\Grid\CheckboxColumn;
 use yii\helpers\Html;
 
 class Subscription extends Repository
@@ -35,7 +35,7 @@ class Subscription extends Repository
         $query        = Repository::find();
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
-            'sort'  => ['defaultOrder' => ['id' => SORT_ASC]],
+            'sort'  => ['defaultOrder' => ['created_at' => SORT_DESC]],
         ]);
 
         $this->load($params);
@@ -108,10 +108,10 @@ class Subscription extends Repository
             'filter' => Html::tag('div',
                 DateRangePicker::widget([
                     'name'          => 'created_at',
-                    'value'         => $searchModel->updated_at,
+                    'value'         => $searchModel->created_at,
                     'convertFormat' => false,
                     'useWithAddon'  => false,
-                    'options'       => ['class' => 'form-control input-xs', 'id' => 'order-create-date'],
+                    'options'       => ['class' => 'form-control input-sm', 'id' => 'order-create-date'],
                     'pluginOptions' => [
                         'locale' => [
                             'format'    => 'DD.MM.YYYY',
@@ -147,7 +147,6 @@ class Subscription extends Repository
                 return \Yii::$app->formatter->asCurrency($model->price, 'RUB');
             }
         ];
-
 
         return $result;
     }

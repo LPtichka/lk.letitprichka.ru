@@ -19,7 +19,7 @@ use yii\widgets\Breadcrumbs;
 </div>
 
 <footer class="main-footer">
-    <strong>Copyright &copy; 2014-2015 <a href="https://letitptichka.ru">LetitPtichka.ru</a>.</strong> All rights
+    <strong>Copyright &copy; 2019-2020 <a href="https://letitptichka.ru">LetitPtichka.ru</a>.</strong> All rights
     reserved.
 </footer>
 
