@@ -22,6 +22,9 @@ use yii\behaviors\TimestampBehavior;
  */
 class Subscription extends \yii\db\ActiveRecord
 {
+    const STATUS_ACTIVE = 10;
+    const STATUS_DELETED = 0;
+
     /** @var boolean */
     public $isTest;
 
@@ -162,5 +165,18 @@ class Subscription extends \yii\db\ActiveRecord
 
         $transaction->commit();
         return true;
+    }
+
+    /**
+     * @return array
+     */
+    public function getCounts(): array
+    {
+        return [
+            1 => \Yii::t('Subscription', 'One day'),
+            5 => \Yii::t('Subscription', '5 day'),
+            10 => \Yii::t('Subscription', '10 day'),
+            20 => \Yii::t('Subscription', '20 day'),
+        ];
     }
 }

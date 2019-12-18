@@ -282,3 +282,6 @@ hr {
     font-size: 14px;
 }
 
+.exception-row > div {
+    margin-bottom: 15px;
+}

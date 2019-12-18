@@ -19,10 +19,10 @@
                 'options' => ['class' => 'sidebar-menu tree', 'data-widget' => 'tree'],
                 'items'   => [
                     ['label' => 'Меню управления', 'options' => ['class' => 'header']],
-                    ['label' => 'Список заказов', 'icon' => 'list-ol', 'url' => ['/gii']],
+                    ['label' => \Yii::t('app', 'Orders'), 'icon' => 'list-ol', 'url' => ['/order/index']],
                     ['label' => \Yii::t('app', 'Customers'), 'icon' => 'user-o', 'url' => ['/customer/index']],
                     ['label' => \Yii::t('app', 'Addresses'), 'icon' => 'address-book-o', 'url' => ['/address/index']],
-                    ['label' => 'Меню', 'icon' => 'bars', 'url' => ['/debug']],
+                    ['label' => \Yii::t('app', 'Menu'), 'icon' => 'bars', 'url' => ['/menu/index']],
                     ['label' => \Yii::t('app', 'Dishes'), 'icon' => 'file-code-o', 'url' => ['/dish/index']],
                     ['label' => \Yii::t('app', 'Exceptions'), 'icon' => 'file-code-o', 'url' => ['/exception/index']],
                     ['label' => \Yii::t('app', 'Goods'), 'icon' => 'dashboard', 'url' => ['/product/index']],

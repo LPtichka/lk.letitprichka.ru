@@ -5,6 +5,7 @@ use app\models\Helper\Excel;
 use app\models\Helper\ExcelParser;
 use app\models\Repository\Address;
 use app\models\search\Customer;
+use yii\helpers\ArrayHelper;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
 
@@ -181,6 +182,18 @@ class CustomerController extends BaseController
 
         return [
             'success' => true,
+        ];
+    }
+
+    public function getCustomerByFio(string $fio)
+    {
+        $customers = \app\models\Repository\Customer::find()->where([
+            'LIKE', 'fio', $fio
+        ])->asArray()->all();
+
+        \Yii::$app->response->format = Response::FORMAT_JSON;
+        return [
+            ArrayHelper::map($customers, 'id', 'fio')
         ];
     }
 

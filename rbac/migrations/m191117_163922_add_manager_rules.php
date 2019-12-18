@@ -37,6 +37,8 @@ class m191117_163922_add_manager_rules extends Migration
         $this->addChild('manager', '/customer/import');
         $this->createPermission('/customer/get-by-query');
         $this->addChild('manager', '/customer/get-by-query');
+        $this->createPermission('/customer/get-customer-by-fio');
+        $this->addChild('manager', '/customer/get-customer-by-fio');
 
         $this->createPermission('/subscription/index');
         $this->addChild('manager', '/subscription/index');
@@ -65,6 +67,10 @@ class m191117_163922_add_manager_rules extends Migration
         $this->addChild('manager', '/order/export');
         $this->createPermission('/order/import');
         $this->addChild('manager', '/order/import');
+        $this->createPermission('/order/add-exception');
+        $this->addChild('manager', '/order/add-exception');
+        $this->createPermission('/order/get-address');
+        $this->addChild('manager', '/order/get-address');
     }
 
     public function safeDown()
@@ -100,6 +106,8 @@ class m191117_163922_add_manager_rules extends Migration
         $this->removePermission('/customer/import');
         $this->removeChild('manager', '/customer/get-by-query');
         $this->removePermission('/customer/get-by-query');
+        $this->removeChild('manager', '/customer/get-customer-by-fio');
+        $this->removePermission('/customer/get-customer-by-fio');
 
         $this->removeChild('manager', '/subscription/index');
         $this->removePermission('/subscription/index');
@@ -128,5 +136,9 @@ class m191117_163922_add_manager_rules extends Migration
         $this->removePermission('/order/export');
         $this->removeChild('manager', '/order/import');
         $this->removePermission('/order/import');
+        $this->removeChild('manager', '/order/add-exception');
+        $this->removePermission('/order/add-exception');
+        $this->removeChild('manager', '/order/get-address');
+        $this->removePermission('/order/get-address');
     }
 }

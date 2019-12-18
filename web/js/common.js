@@ -175,6 +175,29 @@ window.parseXML = function (url) {
     });
 };
 
+window.getAddressBlock = function () {
+    let customerInput = $('[name="Order[customer_id]"]');
+    let addressInput = $('[name="Order[address_id]"]');
+    $.get('/order/get-address?customerId=' + customerInput.val(), function (address) {
+        let options = '';
+        $.each(address, function (index, value) {
+            options += '<option value="' + value.id + '" ' + (value.selected ? ' selected="selected"' : '') + '>' + (value.full_address !== '' ? value.full_address : 'Новый адрес') + '</option>';
+            if (value.selected) {
+                $('[name="Address[full_address]"]').val(value.full_address);
+                $('[name="Address[city]"]').val(value.city);
+                $('[name="Address[street]"]').val(value.street);
+                $('[name="Address[house]"]').val(value.house);
+                $('[name="Address[housing]"]').val(value.housing);
+                $('[name="Address[building]"]').val(value.building);
+                $('[name="Address[flat]"]').val(value.flat);
+                $('[name="Address[postcode]"]').val(value.postcode);
+                $('[name="Address[description]"]').val(value.description);
+            }
+        });
+        addressInput.html(options);
+    });
+};
+
 // Получение GET параметров
 window.getAllUrlParams = function (url) {
     // извлекаем строку из URL или объекта window

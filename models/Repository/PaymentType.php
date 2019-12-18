@@ -10,11 +10,15 @@ use yii\behaviors\TimestampBehavior;
  *
  * @property int $id
  * @property string $name
+ * @property int $status
  * @property int $created_at
  * @property int $updated_at
  */
 class PaymentType extends \yii\db\ActiveRecord
 {
+    const STATUS_ACTIVE = 10;
+    const STATUS_DELETED = 0;
+
     /**
      * @inheritdoc
      */
@@ -52,6 +56,7 @@ class PaymentType extends \yii\db\ActiveRecord
         return [
             ['name', 'unique', 'message' => \Yii::t('payment', 'This payment has already exists')],
             ['name', 'string'],
+            ['status', 'default', 'value' => self::STATUS_ACTIVE],
             ['name', 'required'],
         ];
     }

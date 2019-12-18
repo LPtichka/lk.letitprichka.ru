@@ -28,6 +28,8 @@
     "yii2mod/yii2-rbac": "*",
     "kartik-v/yii2-widget-switchinput": "*",
     "kartik-v/yii2-date-range": "*",
+    "kartik-v/yii2-widget-datepicker": "@dev",
+    "kartik-v/yii2-widget-select2": "@dev",
     "ext-intl": "*",
     "aryelds/yii2-sweet-alert": "@dev",
     "ext-json": "*",
