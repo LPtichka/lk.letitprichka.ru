@@ -16,6 +16,9 @@ $this->title = $title;
 OrderAsset::register($this);
 ?>
 
+<?= $this->render('_buttons', [
+    'order' => $model,
+]); ?>
 <div class="row" id="order-container" data-order-id="<?php echo $model->id; ?>">
     <?php $form = ActiveForm::begin(); ?>
     <div class="col-md-8">

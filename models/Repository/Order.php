@@ -389,4 +389,18 @@ class Order extends \yii\db\ActiveRecord
         $transaction->commit();
         return true;
     }
+
+    /**
+     * @param int $statusID
+     * @return bool
+     */
+    public function setStatus(int $statusID): bool
+    {
+        if (!in_array($statusID, self::STATUSES)) {
+            return false;
+        }
+
+        $this->status_id = $statusID;
+        return $this->save(false);
+    }
 }

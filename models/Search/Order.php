@@ -2,6 +2,8 @@
 
 namespace app\models\search;
 
+use app\models\Helper\Phone;
+use app\models\Helper\Status;
 use app\models\Repository\Order as Repository;
 use app\widgets\Grid\CheckboxColumn;
 use yii\data\ActiveDataProvider;
@@ -24,7 +26,7 @@ class Order extends Repository
     public function rules()
     {
         return [
-            [['id', 'total'], 'integer'],
+            [['id', 'total', 'status_id'], 'integer'],
             [['created_at', 'fio', 'email', 'phone', 'address'], 'string'],
         ];
     }
@@ -90,11 +92,19 @@ class Order extends Repository
             }
         ];
 
+        $result['status_id'] = [
+            'attribute' => 'status_id',
+            'label'     => \Yii::t('order', 'Status'),
+            'content'   => function ($model) {
+                return (new Status($model->status_id))->getStatusName();
+            }
+        ];
+
         $result['phone'] = [
             'attribute' => 'phone',
             'label'     => \Yii::t('order', 'Phone'),
             'content'   => function ($model) {
-                return $model->customer->phone ?? '---';
+                return !empty($model->customer->phone) ? (new Phone($model->customer->phone))->getHumanView() : '---';
             }
         ];
 

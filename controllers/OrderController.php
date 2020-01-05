@@ -249,4 +249,22 @@ class OrderController extends BaseController
             'addresses' => ArrayHelper::map($addresses, 'id', 'full_address'),
         ]);
     }
+
+    /**
+     * @param int $orderID
+     * @param int $statusID
+     * @return string
+     */
+    public function actionSetStatus(int $orderID, int $statusID)
+    {
+        $order = Order::findOne($orderID);
+
+        if ($order->setStatus($statusID)) {
+            \Yii::$app->session->addFlash('success', \Yii::t('order', 'Order change status successfully'));
+        } else {
+            \Yii::$app->session->addFlash('danger', \Yii::t('order', 'Order was not changed'));
+        }
+
+        return $this->redirect(['order/view', 'id' => $order->id]);
+    }
 }
