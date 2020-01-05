@@ -76,9 +76,9 @@ class Order extends Repository
         $result['id'] = [
             'attribute' => 'id',
             'contentOptions' => ['style' => 'width:120px;'],
-            'label'     => \Yii::t('product', 'ID'),
+            'label'     => \Yii::t('order', 'ID'),
             'content'   => function ($model) {
-                return Html::a($model->id, ['product/view', 'id' => $model->id]);
+                return Html::a($model->id, ['order/view', 'id' => $model->id]);
             }
         ];
 
@@ -86,7 +86,7 @@ class Order extends Repository
             'attribute' => 'fio',
             'label'     => \Yii::t('order', 'FIO'),
             'content'   => function ($model) {
-                return $model->customer->fio ?? '---';
+                return Html::a($model->customer->fio, ['customer/view', 'id' => $model->customer_id]);
             }
         ];
 
@@ -109,6 +109,9 @@ class Order extends Repository
         $result['total'] = [
             'attribute' => 'total',
             'label'     => \Yii::t('order', 'Total'),
+            'content'   => function ($model) {
+                return \Yii::$app->formatter->asCurrency($model->total, 'RUB');
+            }
         ];
 
         $result['address'] = [

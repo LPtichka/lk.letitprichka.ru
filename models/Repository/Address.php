@@ -5,7 +5,6 @@ namespace app\models\Repository;
 use app\components\Dadata;
 use app\models\Builder\Suggestions;
 use app\models\Queries\AddressQuery;
-use yii\base\InvalidConfigException;
 use yii\behaviors\TimestampBehavior;
 
 /**
@@ -107,13 +106,25 @@ class Address extends \yii\db\ActiveRecord
      */
     public function build(array $data): Address
     {
-        $address              = new Address();
+        $address = new Address();
+
         $address->description = (string)$data['description'];
         $address->customer_id = (int)$data['customer_id'];
+        $address->prepareAddress($address, $data['full_address']);
 
+        return $address;
+    }
+
+    /**
+     * @param Address $address
+     * @param string $fullAddress
+     * @return Address
+     */
+    public function prepareAddress(Address $address, string $fullAddress): Address
+    {
         try {
             $suggestions = (new Dadata())->getSuggestions('address', [
-                'query' => $data['full_address'],
+                'query' => $fullAddress,
                 'limit' => 10,
             ]);
         } catch (\Exception $e) {
@@ -135,6 +146,17 @@ class Address extends \yii\db\ActiveRecord
             $address->postcode     = $data->getData()->postalCode;
         }
 
+        return $address;
+    }
+
+    /**
+     * @param string $fullAddress
+     * @param int|null $customerId
+     * @return Address
+     */
+    public function getByFullAddress(string $fullAddress, ?int $customerId): ?Address
+    {
+        $address = Address::find()->where(['full_address' => $fullAddress, 'customer_id' => $customerId])->one();
         return $address;
     }
 }

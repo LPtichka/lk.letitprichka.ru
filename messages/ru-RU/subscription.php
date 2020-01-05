@@ -6,7 +6,7 @@ return [
     'Count'                                                => 'Количество дней подписки',
     'Create subscription'                                  => 'Создать новую подписку',
     'Created at'                                           => 'Создана',
-    'Discount price'                                       => 'Цена со скидкой',
+    'Discount price'                                       => 'Итоговая цена со скидкой',
     'Discounts'                                            => 'Скидки',
     'Do you really want to delete selected subscriptions?' => 'Вы действительно хотите удалить выбранные подписки?',
     'Has breakfast'                                        => 'Завтрак',

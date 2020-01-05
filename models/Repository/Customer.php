@@ -157,4 +157,24 @@ class Customer extends \yii\db\ActiveRecord
 
         return null;
     }
+
+    /**
+     * @param array $params
+     * @return Customer
+     */
+    public function getByParams(array $params)
+    {
+        $query = Customer::find();
+
+        !empty($params['fio']) && $query->andWhere(['fio' => $params['fio']]);
+        !empty($params['email']) && $query->andWhere(['email' => $params['email']]);
+        !empty($params['phone']) && $query->andWhere(['phone' => '+7' . (new Phone($params['phone']))->getClearPhone()]);
+
+        $customer = $query->one();
+
+        if (!$customer) {
+            $customer = new Customer();
+        }
+        return $customer;
+    }
 }

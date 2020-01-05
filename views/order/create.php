@@ -1,19 +1,22 @@
 <?php
 
+use app\assets\OrderAsset;
 use kartik\date\DatePicker;
 use kartik\select2\Select2;
 use kartik\switchinput\SwitchInput;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\widgets\ActiveForm;
+use yii\widgets\MaskedInput;
 
 /** @var \app\models\Repository\Order $model */
 
-$this->title = $title
+$this->title = $title;
 
+OrderAsset::register($this);
 ?>
 
-<div class="row">
+<div class="row" id="order-container" data-order-id="<?php echo $model->id; ?>">
     <?php $form = ActiveForm::begin(); ?>
     <div class="col-md-8">
         <div class="box box-primary">
@@ -60,12 +63,13 @@ $this->title = $title
                                     ],
                                     'pluginEvents'  => [
                                         "switchChange.bootstrapSwitch" => "function() {
-                                            $('#collapse-customer').collapse('toggle');
-                                            if ($('#order-customer_id').attr('disabled')) {
-                                                $('#order-customer_id').prop('disabled', false); 
-                                            } else {
+                                            if ($('[name=\"Order[isNewCustomer]\"]').is(':checked')) {
                                                 $('#order-customer_id').prop('disabled', true); 
+                                            } else {
+                                                $('#order-customer_id').prop('disabled', false); 
                                             }
+                                            setTimeout(window.getAddressBlock(), 300);
+                                            $('#collapse-customer').collapse('toggle');
                                         }"
                                     ]
                                 ])->label(false); ?>
@@ -75,18 +79,31 @@ $this->title = $title
                 </div>
                 <div class="row collapse" id="collapse-customer">
                     <div class="col-sm-4">
-                        <?= $form->field($model->customer, 'fio'); ?>
+                        <?= $form->field($model->customer, 'fio')->textInput([
+                            'class' => 'form-control input-sm',
+                        ]); ?>
                     </div>
                     <div class="col-sm-4">
-                        <?= $form->field($model->customer, 'phone'); ?>
+                        <?= $form->field($model->customer, 'phone')->widget(
+                            MaskedInput::class,
+                            [
+                                'mask'          => '+7 (999) 999-99-99',
+                                'clientOptions' => ['onincomplete' => 'function(){$("#user-phone").removeAttr("value").attr("value","");}'],
+                                'options'       => [
+                                    'class'       => 'form-control input-sm',
+                                    'placeholder' => '+7 (___) ___-__-__',
+                                ]
+                            ]) ?>
                     </div>
                     <div class="col-sm-4">
-                        <?= $form->field($model->customer, 'email'); ?>
+                        <?= $form->field($model->customer, 'email')->textInput([
+                            'class' => 'form-control input-sm',
+                        ]); ?>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="box box-primary">
+        <div class="box box-primary" id="order-address-block">
             <div class="box-header with-border">
                 <h2 class="box-title"><?php echo \Yii::t('order', 'Address block'); ?></h2>
             </div>
@@ -106,8 +123,8 @@ $this->title = $title
                     <div class="col-sm-4">
                         <div class="switch detailed-address">
                             <?= SwitchInput::widget([
-                                'name'          => 'status_1',
-                                'value'         => true,
+                                'name'          => 'address_detailed',
+                                'value'         => false,
                                 'pluginOptions' => [
                                     'size'    => 'mini',
                                     'onText'  => 'Вкл',
@@ -135,7 +152,7 @@ $this->title = $title
                 ]); ?>
             </div>
         </div>
-        <div class="box box-primary">
+        <div class="box box-primary" id="order-menu-block">
             <div class="box-header with-border">
                 <h2 class="box-title"><?php echo \Yii::t('order', 'Menu block'); ?></h2>
             </div>
@@ -156,7 +173,7 @@ $this->title = $title
                     </div>
                     <div class="col-sm-6">
                         <?= $form->field($model, 'scheduleFirstDate')->widget(DatePicker::class, [
-                            'options'       => ['placeholder' => 'Enter birth date ...'],
+                            'options'       => ['placeholder' => \Yii::t('order', 'Choose date')],
                             'pluginOptions' => [
                                 'autoclose' => true
                             ]

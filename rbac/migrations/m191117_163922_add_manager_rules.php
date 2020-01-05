@@ -71,6 +71,11 @@ class m191117_163922_add_manager_rules extends Migration
         $this->addChild('manager', '/order/add-exception');
         $this->createPermission('/order/get-address');
         $this->addChild('manager', '/order/get-address');
+        $this->createPermission('/order/get-menu');
+        $this->addChild('manager', '/order/get-menu');
+
+        $this->createPermission('/api/order/create');
+        $this->addChild('manager', '/api/order/create');
     }
 
     public function safeDown()
@@ -140,5 +145,10 @@ class m191117_163922_add_manager_rules extends Migration
         $this->removePermission('/order/add-exception');
         $this->removeChild('manager', '/order/get-address');
         $this->removePermission('/order/get-address');
+        $this->removeChild('manager', '/order/get-menu');
+        $this->removePermission('/order/get-menu');
+
+        $this->removeChild('manager', '/api/order/create');
+        $this->removePermission('/api/order/create');
     }
 }

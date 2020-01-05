@@ -35,7 +35,26 @@ class OrderSchedule extends \yii\db\ActiveRecord
         self::STATUS_DELAYED,
     ];
 
+    const STATUS_NAMES = [
+        self::STATUS_NEW => 'new',
+        self::STATUS_DELETED => 'deleted',
+        self::STATUS_COMPLETED => 'completed',
+        self::STATUS_FREEZED => 'freezed',
+        self::STATUS_DELAYED => 'delayed',
+    ];
+
+    const EDITABLE_STATUSES = [
+        self::STATUS_NEW,
+        self::STATUS_FREEZED,
+        self::STATUS_DELAYED,
+    ];
+
     const BASE_INTERVAL = '10:00 - 19:00';
+    const INTERVALS = [
+        '10:00 - 19:00' => '10:00 - 19:00',
+        '10:00 - 14:00' => '10:00 - 14:00',
+        '14:00 - 19:00' => '14:00 - 19:00',
+    ];
 
     /**
      * @inheritdoc
@@ -86,5 +105,29 @@ class OrderSchedule extends \yii\db\ActiveRecord
         return [
             TimestampBehavior::class,
         ];
+    }
+
+    /**
+     * @return array
+     */
+    public function getIntervals(): array
+    {
+        return self::INTERVALS;
+    }
+
+    /**
+     * @return string
+     */
+    public function getStatusKey(): string
+    {
+        return self::STATUS_NAMES[$this->status];
+    }
+
+    /**
+     * @return bool
+     */
+    public function isEditable(): bool
+    {
+        return in_array($this->status, self::EDITABLE_STATUSES);
     }
 }

@@ -12,6 +12,7 @@ use yii\helpers\ArrayHelper;
  * This is the model class for table "{{%order}}".
  *
  * @property int $id
+ * @property string $shop_order_number
  * @property int $status_id
  * @property int $payment_type
  * @property int $customer_id
@@ -88,7 +89,9 @@ class Order extends \yii\db\ActiveRecord
      */
     public function attributeLabels()
     {
-        return [];
+        return [
+            'subscription_id' => \Yii::t('order', 'Subscription ID'),
+        ];
     }
 
     /**
@@ -100,7 +103,7 @@ class Order extends \yii\db\ActiveRecord
             [['status_id', 'payment_type', 'cutlery', 'count', 'total', 'address_id'], 'integer'],
             [['status_id'], 'in', 'range' => self::STATUSES],
             [['cash_machine'], 'boolean'],
-            [['comment'], 'string'],
+            [['comment', 'shop_order_number'], 'string'],
             [['status_id'], 'default', 'value' => self::STATUS_NEW],
             ['payment_type', 'exist', 'targetClass' => PaymentType::class, 'targetAttribute' => 'id'],
             ['subscription_id', 'exist', 'targetClass' => Subscription::class, 'targetAttribute' => 'id'],
@@ -206,34 +209,119 @@ class Order extends \yii\db\ActiveRecord
             ->orderBy(['count' => SORT_DESC])
             ->limit(1)
             ->one();
-        $this->total = $subscriptionDiscount->price * $this->count;
+        $this->total = $subscriptionDiscount->price;
 
-        $customer = new Customer();
-        $customer->load($data);
-        $this->setCustomer($customer);
+        if (empty($data['Order']['customer_id']) || !empty($data['Order']['isNewCustomer'])) {
+            $customer = new Customer();
+            $customer->load($data);
+            $this->setCustomer($customer);
+        }
 
-        $address = new Address();
-        $address->load($data);
-        $customer->setAddresses([$address]);
+        if (empty($data['Order']['address_id'])) {
+            $address = new Address();
+            $address->load($data);
+            $this->customer->setAddresses([$address]);
+        }
 
         $exceptions = [];
         foreach ($data['Exception'] as $exception) {
+            if (empty($exception['id'])) {
+                continue;
+            }
             $exceptions[] = Exception::findOne($exception['id']);
         }
         $this->setExceptions($exceptions);
 
-        $scheduleFirstDate = $data['Order']['scheduleFirstDate'] ?? null;
+        $schedules = [];
+        if (empty($data['OrderSchedule'])) {
+            $scheduleFirstDate = $data['Order']['scheduleFirstDate'] ?? null;
+            if ($scheduleFirstDate !== null) {
+                $firstDateTime = strtotime($scheduleFirstDate);
+                for ($i = 0; $i < $data['Order']['count']; $i++) {
+                    $schedule = new OrderSchedule();
+
+                    $schedule->date = date('Y-m-d', $firstDateTime + $i * 86400);
+                    $schedule->cost = $subscriptionDiscount->price / $data['Order']['count'];
+                    $schedule->address_id = $address->id ?? null;
+                    $schedule->order_id = $this->id;
+
+                    $schedules[] = $schedule;
+                }
+            }
+        } else {
+            foreach ($data['OrderSchedule'] as $scheduleId => $schedule) {
+                $scheduleData = OrderSchedule::findOne($scheduleId);
+                $scheduleData->address_id = $schedule['address_id'];
+                $scheduleData->interval = $schedule['interval'];
+                $scheduleData->comment = $schedule['comment'];
+                $schedules[$scheduleId] = $scheduleData;
+            }
+        }
+
+        $this->setSchedules($schedules);
+
+        return true;
+    }
+
+
+    /**
+     * Собрать заказ из массива данные в API
+     *
+     * @param array $data
+     * @return bool
+     */
+    public function buildFromApi(array $data): bool
+    {
+        !empty($data['shop_order_number']) && $this->shop_order_number = $data['shop_order_number'];
+        !empty($data['schedule']['subscription_id']) && $this->subscription_id = $data['schedule']['subscription_id'];
+        !empty($data['total']) && $this->total = $data['total'];
+        !empty($data['schedule']['count']) && $this->count = $data['schedule']['count'];
+        !empty($data['payment_type']) && $this->payment_type = $data['payment_type'];
+        !empty($data['comment']) && $this->comment = $data['comment'];
+
+        $paymentType = PaymentType::findOne($this->payment_type);
+        if (!$paymentType) {
+            return false;
+        }
+
+        $this->cash_machine = $paymentType->cash_machine;
+        $this->cutlery = $data['cutlery'] ?? 1;
+
+        $customer = (new Customer())->getByParams($data['customer']);
+        if (empty($customer->id)) {
+            !empty($data['customer']['fio']) && $customer->fio = $data['customer']['fio'];
+            !empty($data['customer']['email']) && $customer->email = $data['customer']['email'];
+            !empty($data['customer']['phone']) && $customer->phone = $data['customer']['phone'];
+        }
+
+        $address = new Address();
+        !empty($data['address']['city']) && $address->city = $data['address']['city'];
+        !empty($data['address']['full_address']) && $address->full_address = $data['address']['full_address'];
+        !empty($data['address']['description']) && $address->description = $data['address']['description'];
+        $address->prepareAddress($address, $data['address']['full_address']);
+
+        $addressByParams = (new Address())->getByFullAddress($address->full_address, $customer->id);
+        if (!empty($addressByParams)) {
+            $address = $addressByParams;
+        }
+
+        $customer->setAddresses([$address]);
+        $this->setCustomer($customer);
+
+        $exceptions = [];
+        foreach ($data['exceptions'] as $exception) {
+            if ($exceptionData = Exception::find()->where(['name' => $exception])->one())
+            $exceptions[] = $exceptionData;
+        }
+        $this->setExceptions($exceptions);
+
+        $scheduleFirstDate = !empty($data['schedule']['start_date']) ? strtotime($data['schedule']['start_date']) : null;
         $schedules = [];
         if ($scheduleFirstDate !== null) {
-            $firstDateTime = strtotime($scheduleFirstDate);
-            for ($i = 0; $i < $data['Order']['count']; $i++) {
+            for ($i = 0; $i < $data['schedule']['count']; $i++) {
                 $schedule = new OrderSchedule();
-
-                $schedule->date = date('Y-m-d', $firstDateTime + $i * 86400);
-                $schedule->cost = $subscriptionDiscount->price;
-                $schedule->address_id = $address->id;
-                $schedule->order_id = $this->id;
-
+                $schedule->date = date('Y-m-d', $scheduleFirstDate + $i * 86400);
+                $schedule->cost = $data['total'] / $data['schedule']['count'];
                 $schedules[] = $schedule;
             }
         }
@@ -291,7 +379,7 @@ class Order extends \yii\db\ActiveRecord
 
         foreach ($this->schedules as $schedule) {
             $schedule->order_id = $this->id;
-            $schedule->address_id = $this->address_id;
+            empty($schedule->address_id) && $schedule->address_id = $this->address_id;
             if (!$schedule->validate() || !$schedule->save()) {
                 $transaction->rollBack();
                 return false;

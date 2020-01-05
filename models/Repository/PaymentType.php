@@ -11,6 +11,7 @@ use yii\behaviors\TimestampBehavior;
  * @property int $id
  * @property string $name
  * @property int $status
+ * @property boolean $cash_machine
  * @property int $created_at
  * @property int $updated_at
  */
@@ -56,7 +57,9 @@ class PaymentType extends \yii\db\ActiveRecord
         return [
             ['name', 'unique', 'message' => \Yii::t('payment', 'This payment has already exists')],
             ['name', 'string'],
+            ['cash_machine', 'boolean'],
             ['status', 'default', 'value' => self::STATUS_ACTIVE],
+            ['cash_machine', 'default', 'value' => 0],
             ['name', 'required'],
         ];
     }
