@@ -75,6 +75,10 @@ class m191117_163922_add_manager_rules extends Migration
         $this->addChild('manager', '/order/get-menu');
         $this->createPermission('/order/set-status');
         $this->addChild('manager', '/order/set-status');
+        $this->createPermission('/order/deffer-request');
+        $this->addChild('manager', '/order/deffer-request');
+        $this->createPermission('/order/deffer');
+        $this->addChild('manager', '/order/deffer');
 
         $this->createPermission('/api/order/create');
         $this->addChild('manager', '/api/order/create');
@@ -151,6 +155,10 @@ class m191117_163922_add_manager_rules extends Migration
         $this->removePermission('/order/get-menu');
         $this->removeChild('manager', '/order/set-status');
         $this->removePermission('/order/set-status');
+        $this->removeChild('manager', '/order/deffer-request');
+        $this->removePermission('/order/deffer-request');
+        $this->removeChild('manager', '/order/deffer');
+        $this->removePermission('/order/deffer');
 
         $this->removeChild('manager', '/api/order/create');
         $this->removePermission('/api/order/create');

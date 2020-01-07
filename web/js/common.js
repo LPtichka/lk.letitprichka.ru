@@ -148,6 +148,101 @@ body.delegate('.detailed-address-input', 'change', function (e) {
     }
 });
 
+body.delegate('.action-with-approve', 'click', function (e) {
+    let title = $(this).data('title');
+    let text = $(this).data('text');
+    let url = $(this).data('request-url');
+    swal({
+        title: title,
+        text: text,
+        html: true,
+        confirmButtonText: 'Подтвердить',
+        cancelButtonText: 'Отменить',
+        confirmButtonColor: "#5cb85c",
+        showCancelButton: true,
+        closeOnConfirm: false,
+        showLoaderOnConfirm: true
+    }, function () {
+        $.ajax({
+            url: url,
+            dataType: 'json',
+            type: 'POST',
+            success: function (data) {
+                if (data.status) {
+                    swal({
+                        title: data.title
+                    }, function () {
+                        location.reload();
+                    });
+                } else {
+                    swal({
+                        title: data.title
+                    }, function () {
+                        location.reload();
+                    });
+                }
+            },
+            error: function (data) {
+                console.log(data)
+            }
+        });
+    });
+   e.preventDefault();
+});
+
+body.delegate('.action-with-request', 'click', function (e) {
+    let title = $(this).data('title');
+    let text = $(this).data('text');
+    let preRequestUrl = $(this).data('pre-request-url');
+    let requestUrl = $(this).data('request-url');
+
+    $('#pre-request-modal').modal('show');
+    $.ajax({
+        url: preRequestUrl,
+        dataType: 'html',
+        type: 'POST',
+        success: function (data) {
+            let modal = $('#pre-request-modal'),
+                page = $(data),
+                header = page.find('h1').text(),
+                title = page.find('title').text();
+
+            page.find('h1').remove();
+            modal.find('.modal-title').remove();
+            modal.find('.modal-header').append('<h5 class="modal-title lead">' + header + '</h5>');
+            modal.find('.modal-body').html(page);
+
+            if (page.find('title').length > 0) {
+                $('head').find('title').html(title);
+                page.find('title').remove();
+            }
+
+            body.delegate('#modal-make-request', 'click', function (e) {
+                $.ajax({
+                    url: requestUrl,
+                    dataType: 'json',
+                    data: modal.find('form').serialize(),
+                    type: 'POST',
+                    success: function (data) {
+                        $('#pre-request-modal').modal('hide');
+                        swal({
+                            title: data.title
+                        }, function () {
+                            location.reload();
+                        });
+                    }
+                });
+                e.preventDefault();
+            });
+        },
+        error: function (data) {
+            $('#pre-request-modal').find('.modal-body').html('<h2 class="text-center">' + data.responseText + '</h2><br/>');
+            console.log(data);
+        }
+    });
+   e.preventDefault();
+});
+
 window.parseXML = function (url) {
     let formData = new FormData();
 

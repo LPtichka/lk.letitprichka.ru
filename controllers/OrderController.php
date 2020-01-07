@@ -1,9 +1,6 @@
 <?php
 namespace app\controllers;
 
-use app\models\Helper\Excel;
-use app\models\Helper\ExcelParser;
-use app\models\Helper\Weight;
 use app\models\Repository\Address;
 use app\models\Repository\Customer;
 use app\models\Repository\Exception;
@@ -11,9 +8,7 @@ use app\models\Repository\OrderSchedule;
 use app\models\Repository\Subscription;
 use app\models\search\Order;
 use app\models\search\PaymentType;
-use app\models\Search\Product;
 use yii\helpers\ArrayHelper;
-use yii\web\NotFoundHttpException;
 use yii\web\Response;
 
 class OrderController extends BaseController
@@ -90,13 +85,13 @@ class OrderController extends BaseController
         $subscriptionCounts = (new Subscription())->getCounts();
 
         return $this->render('/order/create', [
-            'model' => $order,
-            'payments' => $paymentTypes,
-            'exceptions' => $exceptions,
-            'subscriptions' => $subscriptions,
-            'customers' => ArrayHelper::map(Customer::find()->asArray()->all(), 'id', 'fio'),
+            'model'              => $order,
+            'payments'           => $paymentTypes,
+            'exceptions'         => $exceptions,
+            'subscriptions'      => $subscriptions,
+            'customers'          => ArrayHelper::map(Customer::find()->asArray()->all(), 'id', 'fio'),
             'subscriptionCounts' => $subscriptionCounts,
-            'title' => \Yii::t('order', 'Order create'),
+            'title'              => \Yii::t('order', 'Order create'),
         ]);
     }
 
@@ -160,13 +155,13 @@ class OrderController extends BaseController
         $subscriptionCounts = (new Subscription())->getCounts();
 
         return $this->render('/order/create', [
-            'model' => $order,
-            'payments' => $paymentTypes,
-            'exceptions' => $exceptions,
-            'subscriptions' => $subscriptions,
-            'customers' => ArrayHelper::map(Customer::find()->asArray()->all(), 'id', 'fio'),
+            'model'              => $order,
+            'payments'           => $paymentTypes,
+            'exceptions'         => $exceptions,
+            'subscriptions'      => $subscriptions,
+            'customers'          => ArrayHelper::map(Customer::find()->asArray()->all(), 'id', 'fio'),
             'subscriptionCounts' => $subscriptionCounts,
-            'title' => \Yii::t('order', 'Order create'),
+            'title'              => \Yii::t('order', 'Order create'),
         ]);
     }
 
@@ -183,9 +178,9 @@ class OrderController extends BaseController
         );
 
         return $this->renderAjax('/order/_exception', [
-            'exception' => new Exception(),
+            'exception'  => new Exception(),
             'exceptions' => $exceptions,
-            'i'        => ++$counter,
+            'i'          => ++$counter,
         ]);
     }
 
@@ -202,28 +197,28 @@ class OrderController extends BaseController
             $addresses = Address::find()
                 ->where([
                     'customer_id' => $customerId,
-                    'status' => Address::STATUS_ACTIVE
+                    'status'      => Address::STATUS_ACTIVE
                 ])
                 ->asArray()
                 ->all();
             foreach ($addresses as $address) {
                 $address['selected'] = $customer->default_address_id == $address['id'];
-                $addressList[] = $address;
+                $addressList[]       = $address;
             }
         }
 
         $addressList[] = [
-            'id' => '',
+            'id'           => '',
             'full_address' => '',
-            'city' => '',
-            'street' => '',
-            'house' => '',
-            'housing' => '',
-            'building' => '',
-            'flat' => '',
-            'postcode' => '',
-            'description' => '',
-            'selected' => empty($addressList),
+            'city'         => '',
+            'street'       => '',
+            'house'        => '',
+            'housing'      => '',
+            'building'     => '',
+            'flat'         => '',
+            'postcode'     => '',
+            'description'  => '',
+            'selected'     => empty($addressList),
         ];
 
         \Yii::$app->response->format = Response::FORMAT_JSON;
@@ -236,7 +231,7 @@ class OrderController extends BaseController
      */
     public function actionGetMenu(int $orderId = 0)
     {
-        $order = Order::findOne($orderId);
+        $order     = Order::findOne($orderId);
         $intervals = (new OrderSchedule())->getIntervals();
         $addresses = Address::find()
             ->where(['customer_id' => $order->customer_id, 'status' => Address::STATUS_ACTIVE])
@@ -244,7 +239,7 @@ class OrderController extends BaseController
             ->all();
 
         return $this->renderAjax('/order/_menu', [
-            'order' => $order,
+            'order'     => $order,
             'intervals' => $intervals,
             'addresses' => ArrayHelper::map($addresses, 'id', 'full_address'),
         ]);
@@ -253,18 +248,105 @@ class OrderController extends BaseController
     /**
      * @param int $orderID
      * @param int $statusID
-     * @return string
+     * @return array
      */
     public function actionSetStatus(int $orderID, int $statusID)
     {
         $order = Order::findOne($orderID);
 
-        if ($order->setStatus($statusID)) {
-            \Yii::$app->session->addFlash('success', \Yii::t('order', 'Order change status successfully'));
+        if ($isSuccess = $order->setStatus($statusID)) {
+            $title = \Yii::t('order', 'Order change status successfully');
         } else {
-            \Yii::$app->session->addFlash('danger', \Yii::t('order', 'Order was not changed'));
+            $title = \Yii::t('order', 'Order was not changed');
         }
 
-        return $this->redirect(['order/view', 'id' => $order->id]);
+        \Yii::$app->response->format = Response::FORMAT_JSON;
+        return [
+            'success' => $isSuccess,
+            'title'   => $title
+        ];
+    }
+
+    /**
+     * @param int $orderID
+     * @return string
+     */
+    public function actionDefferRequest(int $orderID)
+    {
+        $order = Order::findOne($orderID);
+
+        $schedules = OrderSchedule::find()
+            ->where(['order_id' => $order->id])
+            ->andWhere(['>=', 'date', date('Y-m-d', time())])
+            ->asArray()->all();
+
+        $dates = ArrayHelper::map(
+            $schedules,
+            function ($schedule) {
+                return date('d.m.Y', strtotime($schedule['date']));
+            },
+            function ($schedule) {
+                return date('d.m.Y', strtotime($schedule['date']));
+            }
+        );
+
+        return $this->renderAjax('/order/_request_deffer', [
+            'order' => $order,
+            'dates' => $dates,
+        ]);
+    }
+
+    /**
+     * Отложить выполнение заказа с определенной даты
+     *
+     * @param int $orderID
+     * @return array
+     */
+    public function actionDeffer(int $orderID)
+    {
+        \Yii::$app->response->format = Response::FORMAT_JSON;
+
+        $newDateFrom = \Yii::$app->request->post('dateTo');
+        $oldDateFrom = \Yii::$app->request->post('dateFrom');
+
+        if (!$newDateFrom || !$oldDateFrom) {
+            return [
+                'success' => false,
+                'title' => \Yii::t('order', 'Required parameters are not filled'),
+            ];
+        }
+
+        $transaction = \Yii::$app->db->beginTransaction();
+        $orderSchedules = OrderSchedule::find()
+            ->where(['order_id' => $orderID])
+            ->andWhere(['>=', 'date', date('Y-m-d', strtotime($oldDateFrom))])
+            ->orderBy(['date' => SORT_ASC])
+            ->all();
+
+        $newDateTimestamp = strtotime($newDateFrom);
+        foreach ($orderSchedules as $key => $orderSchedule) {
+            $orderSchedule->date = date('Y-m-d', $newDateTimestamp + ($key * 86400));
+            if (!$orderSchedule->save(false)) {
+                $transaction->rollBack();
+                return [
+                    'success' => false,
+                    'title' => \Yii::t('order', 'Error schedule saving'),
+                ];
+            }
+        }
+
+        try {
+            $transaction->commit();
+        } catch (\yii\db\Exception $e) {
+            return [
+                'success' => false,
+                'title' => \Yii::t('order', 'Error saving to database'),
+            ];
+        }
+
+        return [
+            'success' => true,
+            'title' => \Yii::t('order', 'Order schedule saved successfully'),
+        ];
     }
 }

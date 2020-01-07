@@ -2,6 +2,7 @@
 
 use dmstr\widgets\Alert;
 use yii\widgets\Breadcrumbs;
+use yii\widgets\Pjax;
 
 ?>
 <div class="content-wrapper">
@@ -9,7 +10,7 @@ use yii\widgets\Breadcrumbs;
         <?= Breadcrumbs::widget([
             'links' => isset($this->params['breadcrumbs']) ? $this->params['breadcrumbs'] : [],
         ]) ?>
-        <h1><?= $this->title;?></h1>
+        <h1><?= $this->title; ?></h1>
     </section>
 
     <section class="content">
@@ -22,7 +23,34 @@ use yii\widgets\Breadcrumbs;
     <strong>Copyright &copy; 2019-2020 <a href="https://letitptichka.ru">LetitPtichka.ru</a>.</strong> All rights
     reserved.
 </footer>
-
+<?php Pjax::begin(
+    ['id' => 'pre-request-modal-buttons']
+); ?>
+<div id="pre-request-modal" class="fade modal" role="dialog" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="text-center"><i class="fa fa-circle-o-notch fa-spin fa-3x fa-fw"></i></div>
+            </div>
+            <div class="modal-footer">
+                <div class="pull-right">
+                    <?php echo \yii\helpers\Html::a(\Yii::t('app', 'Cancel'), '#', [
+                        'class'        => 'btn btn-default',
+                        'data-dismiss' => "modal"
+                    ]); ?>
+                    <?php echo \yii\helpers\Html::a(\Yii::t('app', 'Approve'), '#', [
+                        'class' => 'btn btn-success',
+                        'id'    => 'modal-make-request',
+                    ]); ?>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<?php Pjax::end(); ?>
 <!-- Control Sidebar -->
 <aside class="control-sidebar control-sidebar-dark">
     <!-- Create the tabs -->
