@@ -21,6 +21,7 @@ class m191024_103616_add_exception_id_column_to_product_table extends Migration
      */
     public function safeDown()
     {
+        $this->dropForeignKey('fk_product_exception_id', '{{%product}}');
         $this->dropColumn('{{%product}}', 'exception_id');
     }
 }

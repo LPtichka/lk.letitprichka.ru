@@ -43,8 +43,13 @@ class Order extends Repository
             'sort'  => ['defaultOrder' => ['id' => SORT_ASC]],
         ]);
 
-        $this->load($params);
+        /** @var \app\models\User $user */
+        $user = \Yii::$app->user->identity;
+        if (!empty($user->franchise_id)) {
+            $query->andWhere(['franchise_id' => $user->franchise_id]);
+        }
 
+        $this->load($params);
         $query->andFilterWhere(['id' => $this->id]);
 
         return $dataProvider;

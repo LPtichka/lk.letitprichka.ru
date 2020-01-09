@@ -23,6 +23,7 @@ use yii\web\IdentityInterface;
  * @property string $fio
  * @property string $auth_key
  * @property integer $status
+ * @property integer $franchise_id
  * @property integer $created_at
  * @property integer $updated_at
  * @property string $password
@@ -153,7 +154,7 @@ class User extends ActiveRecord implements IdentityInterface
             ['status', 'default', 'value' => self::STATUS_ACTIVE],
             ['status', 'in', 'range' => [self::STATUS_ACTIVE, self::STATUS_INACTIVE], 'on' => self::SCENARIO_CREATE],
             ['status', 'in', 'range' => [self::STATUS_ACTIVE, self::STATUS_SYSTEM, self::STATUS_INACTIVE], 'on' => self::SCENARIO_DEFAULT],
-            [['status'], 'integer'],
+            [['status', 'franchise_id'], 'integer'],
             ['fio', 'string', 'max' => 256],
             ['access_token', 'string', 'length' => 32],
             ['email', 'trim'],

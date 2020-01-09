@@ -29,6 +29,7 @@
                     ['label' => 'Типы оплат', 'icon' => 'file-code-o', 'url' => ['/payment-type/index']],
                     ['label' => 'Подписки', 'icon'  => 'list-ol', 'url'   => ['/subscription/index']],
                     ['label' => \Yii::t('user', 'Users'), 'icon' => 'user-o', 'url' => ['/user/index']],
+                    ['label' => \Yii::t('app', 'Franchise'), 'icon' => 'user-o', 'url' => ['/franchise/index']],
                 ],
             ]
         ) ?>

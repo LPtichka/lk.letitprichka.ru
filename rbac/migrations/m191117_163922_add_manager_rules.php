@@ -55,6 +55,15 @@ class m191117_163922_add_manager_rules extends Migration
         $this->createPermission('/subscription/add-discount');
         $this->addChild('manager', '/subscription/add-discount');
 
+        $this->createPermission('/franchise/index');
+        $this->addChild('manager', '/franchise/index');
+        $this->createPermission('/franchise/create');
+        $this->addChild('manager', '/franchise/create');
+        $this->createPermission('/franchise/delete');
+        $this->addChild('manager', '/franchise/delete');
+        $this->createPermission('/franchise/view');
+        $this->addChild('manager', '/franchise/view');
+
         $this->createPermission('/order/index');
         $this->addChild('manager', '/order/index');
         $this->createPermission('/order/create');
@@ -134,6 +143,15 @@ class m191117_163922_add_manager_rules extends Migration
         $this->removePermission('/subscription/import');
         $this->removeChild('manager', '/subscription/add-discount');
         $this->removePermission('/subscription/add-discount');
+
+        $this->removeChild('manager', '/franchise/index');
+        $this->removePermission('/franchise/index');
+        $this->removeChild('manager', '/franchise/create');
+        $this->removePermission('/franchise/create');
+        $this->removeChild('manager', '/franchise/delete');
+        $this->removePermission('/franchise/delete');
+        $this->removeChild('manager', '/franchise/view');
+        $this->removePermission('/franchise/view');
 
         $this->removeChild('manager', '/order/index');
         $this->removePermission('/order/index');

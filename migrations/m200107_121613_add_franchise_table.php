@@ -3,9 +3,9 @@
 use yii\db\Migration;
 
 /**
- * Handles the creation of table `{{%menu}}`.
- */w
-class m191017_083344_create_menu_table extends Migration
+ * Class m200107_121613_add_franchise_table
+ */
+class m200107_121613_add_franchise_table extends Migration
 {
     /**
      * {@inheritdoc}
@@ -18,9 +18,9 @@ class m191017_083344_create_menu_table extends Migration
             $tableOptions = 'CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE=InnoDB';
         }
 
-        $this->createTable('{{%menu}}', [
+        $this->createTable('{{%franchise}}', [
             'id' => $this->primaryKey(),
-            'week' => $this->string(10)->notNull(),
+            'name' => $this->string(255)->notNull(),
             'created_at' => $this->integer()->notNull(),
             'updated_at' => $this->integer()->notNull(),
         ], $tableOptions);
@@ -31,6 +31,6 @@ class m191017_083344_create_menu_table extends Migration
      */
     public function safeDown()
     {
-        $this->dropTable('{{%menu}}');
+        $this->dropTable('{{%franchise}}');
     }
 }

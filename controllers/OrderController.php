@@ -4,10 +4,12 @@ namespace app\controllers;
 use app\models\Repository\Address;
 use app\models\Repository\Customer;
 use app\models\Repository\Exception;
+use app\models\Repository\Franchise;
 use app\models\Repository\OrderSchedule;
 use app\models\Repository\Subscription;
 use app\models\search\Order;
 use app\models\search\PaymentType;
+use app\models\User;
 use yii\helpers\ArrayHelper;
 use yii\web\Response;
 
@@ -83,12 +85,20 @@ class OrderController extends BaseController
         );
 
         $subscriptionCounts = (new Subscription())->getCounts();
+        $franchiseQuery     = Franchise::find()->where(['status' => Franchise::STATUS_ACTIVE]);
+        /** @var User $user */
+        $user = \Yii::$app->user->identity;
+        if (!empty($user->franchise_id)) {
+            $franchiseQuery->andWhere(['franchise_id' => $user->franchise_id]);
+        }
 
         return $this->render('/order/create', [
             'model'              => $order,
             'payments'           => $paymentTypes,
             'exceptions'         => $exceptions,
+            'franchises'         => ArrayHelper::map($franchiseQuery->asArray()->all(), 'id', 'name'),
             'subscriptions'      => $subscriptions,
+            'intervals'          => (new OrderSchedule())->getIntervals(),
             'customers'          => ArrayHelper::map(Customer::find()->asArray()->all(), 'id', 'fio'),
             'subscriptionCounts' => $subscriptionCounts,
             'title'              => \Yii::t('order', 'Order create'),
@@ -153,13 +163,21 @@ class OrderController extends BaseController
         );
 
         $subscriptionCounts = (new Subscription())->getCounts();
+        $franchiseQuery     = Franchise::find()->where(['status' => Franchise::STATUS_ACTIVE]);
+        /** @var User $user */
+        $user = \Yii::$app->user->identity;
+        if (!empty($user->franchise_id)) {
+            $franchiseQuery->andWhere(['franchise_id' => $user->franchise_id]);
+        }
 
         return $this->render('/order/create', [
             'model'              => $order,
             'payments'           => $paymentTypes,
             'exceptions'         => $exceptions,
             'subscriptions'      => $subscriptions,
+            'franchises'         => ArrayHelper::map($franchiseQuery->asArray()->all(), 'id', 'name'),
             'customers'          => ArrayHelper::map(Customer::find()->asArray()->all(), 'id', 'fio'),
+            'intervals'          => (new OrderSchedule())->getIntervals(),
             'subscriptionCounts' => $subscriptionCounts,
             'title'              => \Yii::t('order', 'Order create'),
         ]);
@@ -312,11 +330,11 @@ class OrderController extends BaseController
         if (!$newDateFrom || !$oldDateFrom) {
             return [
                 'success' => false,
-                'title' => \Yii::t('order', 'Required parameters are not filled'),
+                'title'   => \Yii::t('order', 'Required parameters are not filled'),
             ];
         }
 
-        $transaction = \Yii::$app->db->beginTransaction();
+        $transaction    = \Yii::$app->db->beginTransaction();
         $orderSchedules = OrderSchedule::find()
             ->where(['order_id' => $orderID])
             ->andWhere(['>=', 'date', date('Y-m-d', strtotime($oldDateFrom))])
@@ -330,7 +348,7 @@ class OrderController extends BaseController
                 $transaction->rollBack();
                 return [
                     'success' => false,
-                    'title' => \Yii::t('order', 'Error schedule saving'),
+                    'title'   => \Yii::t('order', 'Error schedule saving'),
                 ];
             }
         }
@@ -340,13 +358,13 @@ class OrderController extends BaseController
         } catch (\yii\db\Exception $e) {
             return [
                 'success' => false,
-                'title' => \Yii::t('order', 'Error saving to database'),
+                'title'   => \Yii::t('order', 'Error saving to database'),
             ];
         }
 
         return [
             'success' => true,
-            'title' => \Yii::t('order', 'Order schedule saved successfully'),
+            'title'   => \Yii::t('order', 'Order schedule saved successfully'),
         ];
     }
 }

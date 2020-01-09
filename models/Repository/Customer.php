@@ -27,6 +27,8 @@ use yii\behaviors\TimestampBehavior;
  */
 class Customer extends \yii\db\ActiveRecord
 {
+    const SCENARIO_NEW_CUSTOMER = 'new_customer';
+
     /**
      * @inheritdoc
      */
@@ -71,7 +73,7 @@ class Customer extends \yii\db\ActiveRecord
             [['fio', 'email', 'phone'], 'string'],
             [['type'], 'default', 'value' => 1],
             [['status'], 'default', 'value' => 10],
-            [['fio', 'email', 'phone'], 'required'],
+            [['fio', 'email', 'phone'], 'required', 'on' => self::SCENARIO_NEW_CUSTOMER],
         ];
     }
 
@@ -102,6 +104,7 @@ class Customer extends \yii\db\ActiveRecord
     public function build(array $data): Customer
     {
         $customer = new Customer();
+        $customer->scenario = self::SCENARIO_NEW_CUSTOMER;
 
         $customer->fio   = trim($data['fio']);
         $customer->email = trim($data['email']);

@@ -162,6 +162,11 @@ OrderAsset::register($this);
             <div class="box-body">
                 <div class="row">
                     <div class="col-sm-6">
+                        <?= $form->field($model, 'franchise_id')->dropDownList(
+                            (count($franchises) > 1) ? (['' => \Yii::t('app', 'Choose')] + $franchises) : $franchises
+                        ) ?>
+                    </div>
+                    <div class="col-sm-6">
                         <?= $form->field($model, 'subscription_id')->dropDownList(
                             ['' => \Yii::t('app', 'Choose')] + $subscriptions
                         ) ?>
@@ -181,6 +186,11 @@ OrderAsset::register($this);
                                 'autoclose' => true
                             ]
                         ]); ?>
+                    </div>
+                    <div class="col-sm-6">
+                        <?= $form->field($model, 'scheduleInterval')->dropDownList(
+                            ['' => \Yii::t('app', 'Choose')] + $intervals
+                        ) ?>
                     </div>
                 </div>
             </div>

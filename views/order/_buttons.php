@@ -6,6 +6,7 @@ use yii\widgets\Pjax;
 
 ?>
 
+<?php if ($order->id):?>
 <div>
     <div class="pull-right" id="pre-request-modal-buttons">
         <?php Pjax::begin(
@@ -38,3 +39,4 @@ use yii\widgets\Pjax;
         <?php endforeach; ?>
     </div>
 </div>
+<?php endif;?>

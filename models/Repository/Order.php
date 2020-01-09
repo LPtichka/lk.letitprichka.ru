@@ -12,6 +12,7 @@ use yii\helpers\ArrayHelper;
  * This is the model class for table "{{%order}}".
  *
  * @property int $id
+ * @property int $franchise_id
  * @property string $shop_order_number
  * @property int $status_id
  * @property int $payment_type
@@ -33,6 +34,7 @@ use yii\helpers\ArrayHelper;
  */
 class Order extends \yii\db\ActiveRecord
 {
+
     const STATUS_NEW = 1;
     const STATUS_PROCESSED = 2;
     const STATUS_CANCELED = 3;
@@ -66,6 +68,7 @@ class Order extends \yii\db\ActiveRecord
 
     public $isNewCustomer = false;
     public $scheduleFirstDate;
+    public $scheduleInterval;
 
     /**
      * @inheritdoc
@@ -100,7 +103,7 @@ class Order extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['status_id', 'payment_type', 'cutlery', 'count', 'total', 'address_id'], 'integer'],
+            [['status_id', 'payment_type', 'cutlery', 'count', 'total', 'address_id', 'franchise_id'], 'integer'],
             [['status_id'], 'in', 'range' => self::STATUSES],
             [['cash_machine'], 'boolean'],
             [['comment', 'shop_order_number'], 'string'],
@@ -215,6 +218,8 @@ class Order extends \yii\db\ActiveRecord
             $customer = new Customer();
             $customer->load($data);
             $this->setCustomer($customer);
+        } else {
+            $this->setCustomer(Customer::findOne($data['Order']['customer_id']));
         }
 
         if (empty($data['Order']['address_id'])) {
@@ -244,6 +249,7 @@ class Order extends \yii\db\ActiveRecord
                     $schedule->cost = $subscriptionDiscount->price / $data['Order']['count'];
                     $schedule->address_id = $address->id ?? null;
                     $schedule->order_id = $this->id;
+                    $schedule->interval = $data['Order']['scheduleInterval'] ?? null;
 
                     $schedules[] = $schedule;
                 }
