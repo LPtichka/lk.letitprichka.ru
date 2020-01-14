@@ -4,7 +4,7 @@ use yii\db\Migration;
 
 /**
  * Handles the creation of table `{{%menu}}`.
- */w
+ */
 class m191017_083344_create_menu_table extends Migration
 {
     /**
