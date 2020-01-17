@@ -5,6 +5,8 @@ namespace app\models\Repository;
 use app\models\Helper\Weight;
 use app\models\Queries\DishQuery;
 use yii\behaviors\TimestampBehavior;
+use yii\db\Query;
+use yii\helpers\ArrayHelper;
 
 /**
  * This is the model class for table "{{%dish}}".
@@ -37,6 +39,11 @@ class Dish extends \yii\db\ActiveRecord
     const TYPE_DESERT = 3;
     const TYPE_SALAD = 4;
     const TYPE_GARNISH = 5;
+
+    const INGESTION_TYPE_BREAKFAST = 1;
+    const INGESTION_TYPE_DINNER = 2;
+    const INGESTION_TYPE_LUNCH = 3;
+    const INGESTION_TYPE_SUPPER = 4;
 
     private $weightUnitDefault = Weight::UNIT_KG;
 
@@ -260,5 +267,53 @@ class Dish extends \yii\db\ActiveRecord
     public function setWeightUnitDefault(string $weightUnitDefault): void
     {
         $this->weightUnitDefault = $weightUnitDefault;
+    }
+
+    /**
+     * @param string $name
+     * @return int|null
+     */
+    public function getIngestionTypeByName(string $name): ?int
+    {
+        switch ($name) {
+            case 'breakfast':
+                return self::INGESTION_TYPE_BREAKFAST;
+            case 'dinner':
+                return self::INGESTION_TYPE_DINNER;
+            case 'lunch':
+                return self::INGESTION_TYPE_LUNCH;
+            case 'supper':
+                return self::INGESTION_TYPE_SUPPER;
+            default:
+                return null;
+        }
+    }
+
+    /**
+     * @return array
+     */
+    public function getIngestionTypes(): array
+    {
+        return [
+            self::INGESTION_TYPE_BREAKFAST,
+            self::INGESTION_TYPE_DINNER,
+            self::INGESTION_TYPE_LUNCH,
+            self::INGESTION_TYPE_SUPPER,
+        ];
+    }
+
+    /**
+     * @return array
+     */
+    public function getExceptionList(): array
+    {
+        $query = (new Query())
+            ->select('product.exception_id')
+            ->from('dish_product')
+            ->leftJoin('product', 'dish_product.product_id = product.id')
+            ->where(['dish_id' => $this->id])
+            ->all();
+
+        return ArrayHelper::getColumn($query, 'exception_id');
     }
 }

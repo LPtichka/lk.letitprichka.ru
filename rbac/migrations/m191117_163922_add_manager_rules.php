@@ -64,6 +64,17 @@ class m191117_163922_add_manager_rules extends Migration
         $this->createPermission('/franchise/view');
         $this->addChild('manager', '/franchise/view');
 
+        $this->createPermission('/menu/index');
+        $this->addChild('manager', '/menu/index');
+        $this->createPermission('/menu/create');
+        $this->addChild('manager', '/menu/create');
+        $this->createPermission('/menu/delete');
+        $this->addChild('manager', '/menu/delete');
+        $this->createPermission('/menu/view');
+        $this->addChild('manager', '/menu/view');
+        $this->createPermission('/menu/get-day-blocks');
+        $this->addChild('manager', '/menu/get-day-blocks');
+
         $this->createPermission('/order/index');
         $this->addChild('manager', '/order/index');
         $this->createPermission('/order/create');
@@ -152,6 +163,17 @@ class m191117_163922_add_manager_rules extends Migration
         $this->removePermission('/franchise/delete');
         $this->removeChild('manager', '/franchise/view');
         $this->removePermission('/franchise/view');
+
+        $this->removeChild('manager', '/menu/index');
+        $this->removePermission('/menu/index');
+        $this->removeChild('manager', '/menu/create');
+        $this->removePermission('/menu/create');
+        $this->removeChild('manager', '/menu/delete');
+        $this->removePermission('/menu/delete');
+        $this->removeChild('manager', '/menu/view');
+        $this->removePermission('/menu/view');
+        $this->removeChild('manager', '/menu/get-day-blocks');
+        $this->removePermission('/menu/get-day-blocks');
 
         $this->removeChild('manager', '/order/index');
         $this->removePermission('/order/index');

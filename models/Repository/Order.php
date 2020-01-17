@@ -14,6 +14,7 @@ use yii\helpers\ArrayHelper;
  * @property int $id
  * @property int $franchise_id
  * @property string $shop_order_number
+ * @property bool $without_soup
  * @property int $status_id
  * @property int $payment_type
  * @property int $customer_id
@@ -34,7 +35,6 @@ use yii\helpers\ArrayHelper;
  */
 class Order extends \yii\db\ActiveRecord
 {
-
     const STATUS_NEW = 1;
     const STATUS_PROCESSED = 2;
     const STATUS_CANCELED = 3;
@@ -105,7 +105,7 @@ class Order extends \yii\db\ActiveRecord
         return [
             [['status_id', 'payment_type', 'cutlery', 'count', 'total', 'address_id', 'franchise_id'], 'integer'],
             [['status_id'], 'in', 'range' => self::STATUSES],
-            [['cash_machine'], 'boolean'],
+            [['cash_machine', 'without_soup'], 'boolean'],
             [['comment', 'shop_order_number'], 'string'],
             [['status_id'], 'default', 'value' => self::STATUS_NEW],
             ['payment_type', 'exist', 'targetClass' => PaymentType::class, 'targetAttribute' => 'id'],
@@ -390,6 +390,38 @@ class Order extends \yii\db\ActiveRecord
                 $transaction->rollBack();
                 return false;
             }
+            // TODO тут нужно сохранить сразу ORDER_SCHEDULE_DISH
+            foreach (OrderSchedule::INGESTION_CONTENT as $key => $ingestion) {
+                if (empty($ingestion)) {
+                    $orderScheduleDish = new OrderScheduleDish();
+
+                    $orderScheduleDish->order_schedule_id = $schedule->id;
+                    $orderScheduleDish->ingestion_type = $key;
+                    $orderScheduleDish->dish_id = null;
+
+                    if (!$orderScheduleDish->validate() || !$orderScheduleDish->save()) {
+                        $transaction->rollBack();
+                        return false;
+                    }
+                } else {
+                    foreach ($ingestion as $iType) {
+                        if ($this->without_soup && $iType == Dish::TYPE_FIRST) {
+                            continue;
+                        }
+
+                        $orderScheduleDish = new OrderScheduleDish();
+                        $orderScheduleDish->order_schedule_id = $schedule->id;
+                        $orderScheduleDish->ingestion_type = $key;
+                        $orderScheduleDish->dish_id = null;
+                        $orderScheduleDish->type = $iType;
+
+                        if (!$orderScheduleDish->validate() || !$orderScheduleDish->save()) {
+                            $transaction->rollBack();
+                            return false;
+                        }
+                    }
+                }
+            }
         }
 
         $transaction->commit();
@@ -408,5 +440,15 @@ class Order extends \yii\db\ActiveRecord
 
         $this->status_id = $statusID;
         return $this->save(false);
+    }
+
+    /**
+     * @return array
+     */
+    public function getExceptionList(): array
+    {
+        return ArrayHelper::getColumn(
+            OrderException::find()->where(['order_id' => $this->id])->asArray()->all(), 'exception_id'
+        );
     }
 }

@@ -1,0 +1,97 @@
+<?php
+
+namespace app\models\search;
+
+use app\models\Repository\Menu as Repository;
+use yii\data\ActiveDataProvider;
+use yii\grid\CheckboxColumn;
+use yii\helpers\Html;
+
+class Menu extends Repository
+{
+    public function formName()
+    {
+        return '';
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function rules()
+    {
+        return [
+            [['id'], 'integer'],
+            [['menu_start_date', 'menu_end_date', 'created_at'], 'string'],
+        ];
+    }
+
+    /**
+     * @param array $params
+     * @return ActiveDataProvider
+     */
+    public function search($params)
+    {
+        $query = Repository::find();
+        $dataProvider = new ActiveDataProvider([
+            'query' => $query,
+            'sort'  => ['defaultOrder' => ['id' => SORT_ASC]],
+        ]);
+
+        $this->load($params);
+
+        return $dataProvider;
+    }
+
+    /**
+     * @param $params
+     * @return iterable
+     */
+    public function export($params): iterable
+    {
+        // TODO
+    }
+
+    /**
+     * Список полей для поиска
+     *
+     * @param Repository $searchModel
+     * @return array
+     */
+    public function getSearchColumns(Repository $searchModel)
+    {
+        $result[] = [
+            'class' => CheckboxColumn::class,
+            'headerOptions' => [
+                'width' => '40px',
+                'data-resizable-column-id' => 'checker'
+            ],
+        ];
+
+        $result['id'] = [
+            'attribute' => 'id',
+            'label' => \Yii::t('menu', 'ID'),
+            'content' => function ($model) {
+                return Html::a($model->id, ['menu/view', 'id' => $model->id]);
+            }
+        ];
+
+        $result['menu_start_date'] = [
+            'attribute' => 'menu_start_date',
+            'label' => \Yii::t('menu', 'Start day'),
+        ];
+
+        $result['menu_end_date'] = [
+            'attribute' => 'menu_end_date',
+            'label' => \Yii::t('menu', 'End day'),
+        ];
+
+        $result['created_at'] = [
+            'attribute' => 'created_at',
+            'label' => \Yii::t('menu', 'Created at'),
+            'content' => function($model) {
+                return date('d.m.Y \в H:i', $model->created_at);
+            }
+        ];
+        return $result;
+    }
+}

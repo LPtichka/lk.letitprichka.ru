@@ -12,12 +12,14 @@ use yii\behaviors\TimestampBehavior;
  * @property int $order_id
  * @property int $status
  * @property string $interval
- * @property int $cost
+ * @property float $cost
  * @property int $address_id
  * @property string $date
  * @property string $comment
  * @property int $created_at
  * @property int $updated_at
+ *
+ * @property Order $order
  */
 class OrderSchedule extends \yii\db\ActiveRecord
 {
@@ -50,10 +52,24 @@ class OrderSchedule extends \yii\db\ActiveRecord
     ];
 
     const BASE_INTERVAL = '10:00 - 19:00';
+
     const INTERVALS = [
         '10:00 - 19:00' => '10:00 - 19:00',
         '10:00 - 14:00' => '10:00 - 14:00',
         '14:00 - 19:00' => '14:00 - 19:00',
+    ];
+
+    const INGESTION_CONTENT = [
+        Dish::INGESTION_TYPE_BREAKFAST => [],
+        Dish::INGESTION_TYPE_DINNER => [
+            Dish::TYPE_FIRST,
+            Dish::TYPE_SECOND,
+        ],
+        Dish::INGESTION_TYPE_LUNCH => [],
+        Dish::INGESTION_TYPE_SUPPER => [
+            Dish::TYPE_FIRST,
+            Dish::TYPE_SECOND,
+        ],
     ];
 
     /**
@@ -87,7 +103,8 @@ class OrderSchedule extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['order_id', 'cost', 'status', 'address_id'], 'integer'],
+            [['order_id', 'status', 'address_id'], 'integer'],
+            [['cost'], 'number'],
             [['interval', 'date', 'comment'], 'string'],
             [['address_id'], 'exist', 'targetClass' => Address::class, 'targetAttribute' => 'id', 'message' => 'Указан не существующий адрес'],
             [['status'], 'in', 'range' => self::STATUSES],
@@ -129,5 +146,13 @@ class OrderSchedule extends \yii\db\ActiveRecord
     public function isEditable(): bool
     {
         return in_array($this->status, self::EDITABLE_STATUSES);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getOrder()
+    {
+        return $this->hasOne(Order::class, ['id' => 'order_id']);
     }
 }

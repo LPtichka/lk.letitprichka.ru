@@ -187,7 +187,7 @@ body.delegate('.action-with-approve', 'click', function (e) {
             }
         });
     });
-   e.preventDefault();
+    e.preventDefault();
 });
 
 body.delegate('.action-with-request', 'click', function (e) {
@@ -240,7 +240,26 @@ body.delegate('.action-with-request', 'click', function (e) {
             console.log(data);
         }
     });
-   e.preventDefault();
+    e.preventDefault();
+});
+
+body.delegate('.add-menu-ingestion', 'click', function (e) {
+    let wrapper = $(this).parent().parent().find('.ingestion-wrapper');
+    let lastIngestion = wrapper.children().last();
+    let lastIngestionID = parseInt(lastIngestion.data('ingestion-id')) + 1;
+    let ingestionClone = lastIngestion.clone();
+
+    ingestionClone.find('option:selected').prop('selected', false);
+    ingestionClone.find('select').each(function () {
+        let newName = $(this).prop('name').replace('[' + (lastIngestionID - 1) + ']', '[' + lastIngestionID + ']');
+        $(this).prop('name', newName)
+    });
+
+    ingestionClone.attr('data-ingestion-id', lastIngestionID.toString());
+
+    wrapper.append(ingestionClone);
+
+    e.preventDefault();
 });
 
 window.parseXML = function (url) {
@@ -386,6 +405,20 @@ window.buildFullAddress = function () {
     }
 
     return fullAddress.join(', ');
+};
+
+window.getMenuBlocks = function (menuID = 0) {
+    let startDate = $('[name="menu_start_date"]').val();
+    let endDate = $('[name="menu_end_date"]').val();
+
+    $.ajax({
+        url: '/menu/get-day-blocks',
+        data: {menuStartDate: startDate, menuEndDate: endDate, menuID: menuID},
+        type: 'POST',
+        success: function (html) {
+            $('#menu-composition').html(html);
+        }
+    });
 };
 
 $(document).ready(function () {

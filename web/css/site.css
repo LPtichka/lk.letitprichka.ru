@@ -301,3 +301,13 @@ hr {
 .order-menu-block-body .completed span {
     text-decoration: line-through;
 }
+
+.ingestion {
+    border: 1px solid #CCC;
+    padding: 10px 10px 0;
+    margin-bottom: 10px;
+}
+
+.ingestion select {
+    margin-bottom: 10px;
+}

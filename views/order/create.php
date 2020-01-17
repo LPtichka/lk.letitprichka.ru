@@ -177,6 +177,17 @@ OrderAsset::register($this);
                         ) ?>
                     </div>
                     <div class="col-sm-6">
+                        <div class="switch detailed-address">
+                            <?= $form->field($model, 'without_soup')->widget(SwitchInput::class, [
+                                'pluginOptions' => [
+                                    'size'    => 'mini',
+                                    'onText'  => 'Вкл',
+                                    'offText' => 'Выкл',
+                                ],
+                            ]); ?>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
                         <?= $form->field($model, 'cutlery') ?>
                     </div>
                     <div class="col-sm-6">
