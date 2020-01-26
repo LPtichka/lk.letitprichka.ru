@@ -50,10 +50,7 @@ class UserController extends BaseController
                 && $authManager->assign($role, $user->id)
             ) {
                 \Yii::$app->session->addFlash('success', \Yii::t('user', 'User was saved successfully'));
-                $this->log('user-create-success', [
-                    'name' => $user->fio,
-                    'id'   => $user->id,
-                ]);
+                $this->log('user-create-success', $user->getAttributes());
                 $transaction->commit();
                 return $this->redirect(['user/index']);
             } else {
@@ -85,10 +82,7 @@ class UserController extends BaseController
         }
 
         if (\Yii::$app->request->post()) {
-            $this->log('user-edit', [
-                'name' => $user->fio,
-                'id'   => $user->id,
-            ]);
+            $this->log('user-edit', $user->getAttributes());
 
             $user->load(\Yii::$app->request->post());
             $isValidate = $user->validate();
@@ -96,17 +90,11 @@ class UserController extends BaseController
             if ($isValidate
                 && $user->save()
             ) {
-                $this->log('user-edit-success', [
-                    'name' => $user->fio,
-                    'id'   => $user->id,
-                ]);
+                $this->log('user-edit-success', $user->getAttributes());
                 \Yii::$app->session->addFlash('success', \Yii::t('user', 'User was saved successfully'));
                 return $this->redirect(['user/index']);
             } else {
-                $this->log('user-edit-fail', [
-                    'name' => $user->fio,
-                    'id'   => $user->id,
-                ]);
+                $this->log('user-edit-fail', $user->getAttributes());
             }
         }
 

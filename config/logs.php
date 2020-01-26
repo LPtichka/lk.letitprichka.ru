@@ -79,5 +79,14 @@ return [
             'maxFileSize' => 102400,
             'maxLogFiles' => 10,
         ],
+        [
+            'class'       => 'yii\log\FileTarget',
+            'logFile'     => '@runtime/logs/franchise.log',
+            'levels'      => ['info'],
+            'categories'  => ['franchise-*'],
+            'logVars'     => [],
+            'maxFileSize' => 102400,
+            'maxLogFiles' => 10,
+        ],
     ],
 ];

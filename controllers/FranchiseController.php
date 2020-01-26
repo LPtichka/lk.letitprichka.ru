@@ -44,10 +44,7 @@ class FranchiseController extends BaseController
 
             if ($isValidate && $franchise->save()) {
                 \Yii::$app->session->addFlash('success', \Yii::t('franchise', 'Franchise was saved successfully'));
-                $this->log('franchise-create-success', [
-                    'name' => $franchise->name,
-                    'id'   => $franchise->id,
-                ]);
+                $this->log('franchise-create-success', $franchise->getAttributes());
                 return $this->redirect(['franchise/index']);
             } else {
                 $this->log('franchise-create-fail', [
@@ -76,19 +73,13 @@ class FranchiseController extends BaseController
         }
 
         if (\Yii::$app->request->post()) {
-            $this->log('franchise-edit', [
-                'name' => $franchise->name,
-                'id'   => $franchise->id,
-            ]);
+            $this->log('franchise-edit', $franchise->getAttributes());
 
             $post = \Yii::$app->request->post();
             $franchise->load($post);
             $isValidate = $franchise->validate();
             if ($isValidate && $franchise->save()) {
-                $this->log('franchise-edit-success', [
-                    'name' => $franchise->name,
-                    'id'   => $franchise->id,
-                ]);
+                $this->log('franchise-edit-success', $franchise->getAttributes());
                 \Yii::$app->session->addFlash('success', \Yii::t('franchise', 'Franchise was saved successfully'));
                 return $this->redirect(['franchise/index']);
             } else {
