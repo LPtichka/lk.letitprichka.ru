@@ -6,9 +6,12 @@ use app\models\Repository\Address as Repository;
 use yii\data\ActiveDataProvider;
 use yii\grid\CheckboxColumn;
 use yii\helpers\Html;
+use yii\helpers\Url;
 
 class Address extends Repository
 {
+    public $customer_fio;
+
     public function formName()
     {
         return '';
@@ -21,7 +24,7 @@ class Address extends Repository
     {
         return [
             [['id', 'customer_id'], 'integer'],
-            ['full_address', 'string'],
+            [['full_address', 'updated_at', 'customer_fio'], 'string'],
         ];
     }
 
@@ -43,6 +46,8 @@ class Address extends Repository
             'id' => $this->id,
         ]);
 
+        $query->leftJoin(['customer'], 'address.customer_id = customer.id');
+
         $query->andFilterWhere([
             'customer_id' => $this->customer_id,
         ]);
@@ -52,6 +57,14 @@ class Address extends Repository
                 'like', 'full_address', $this->full_address
             ]);
         }
+
+        if (!empty($this->customer_fio)) {
+            $query->andFilterWhere([
+                'like', 'customer.fio', $this->customer_fio
+            ]);
+        }
+
+//        echo $query->createCommand()->rawSql;die();
 
         return $dataProvider;
     }
@@ -105,13 +118,29 @@ class Address extends Repository
             'attribute' => 'id',
             'label'     => \Yii::t('address', 'ID'),
             'content'   => function ($model) {
-                return Html::a($model->id, ['address/view', 'id' => $model->id]);
+                return Html::a(
+                    $model->id,
+                    ['address/view', 'id' => $model->id],
+                    [
+                        'data-href'   => Url::to(['address/view', 'id' => $model->id]),
+                        'data-toggle' => 'modal',
+                        'data-target' => '#modal',
+                    ]
+                );
             }
         ];
 
         $result['customer_id'] = [
             'attribute' => 'customer_id',
             'label'     => \Yii::t('address', 'Customer id'),
+        ];
+
+        $result['customer_fio'] = [
+            'attribute' => 'customer_fio',
+            'label'     => \Yii::t('address', 'Customer FIO'),
+            'content'   => function ($model) {
+                return !empty($model->customer->fio) ? $model->customer->fio : '---';
+            }
         ];
 
         $result['full_address'] = [

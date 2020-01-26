@@ -42,14 +42,25 @@ class AddressController extends BaseController
             $isValidate = $address->validate();
             if ($isValidate && $address->save()) {
                 \Yii::$app->session->addFlash('success', \Yii::t('address', 'Address type was saved successfully'));
-                $this->log('payment-create-success', ['name' => $address->full_address]);
-                return $this->redirect(['payment-type/index']);
+                $this->log(
+                    'address-create-success',
+                    $address->getAttributes()
+                );
+                return $this->redirect(['address/index']);
             } else {
-                $this->log('payment-create-fail', ['name' => $address->full_address, 'errors' => json_encode($address->getFirstErrors())]);
+                $this->log(
+                    'payment-create-fail',
+                    [
+                        'name' => $address->full_address,
+                        'post' => \Yii::$app->request->post(),
+                        'errors' => json_encode($address->getFirstErrors())
+                    ]
+                );
             }
         }
-        return $this->render('/address/create', [
+        return $this->renderAjax('/address/create', [
             'model' => $address,
+            'title' => \Yii::t('address', 'Address create'),
             'customers' => ArrayHelper::map(Customer::find()->asArray()->all(), 'id', 'fio'),
         ]);
     }
@@ -101,8 +112,9 @@ class AddressController extends BaseController
             }
         }
 
-        return $this->render('/address/create', [
+        return $this->renderAjax('/address/create', [
             'model' => $address,
+            'title' => \Yii::t('address', 'Address update'),
             'customers' => ArrayHelper::map(Customer::find()->asArray()->all(), 'id', 'fio'),
         ]);
     }

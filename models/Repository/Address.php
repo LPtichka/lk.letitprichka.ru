@@ -25,7 +25,7 @@ use yii\behaviors\TimestampBehavior;
  * @property int $created_at
  * @property int $updated_at
  *
- * @property Exception $exception
+ * @property Customer $customer
  */
 class Address extends \yii\db\ActiveRecord
 {
@@ -158,5 +158,13 @@ class Address extends \yii\db\ActiveRecord
     {
         $address = Address::find()->where(['full_address' => $fullAddress, 'customer_id' => $customerId])->one();
         return $address;
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getCustomer()
+    {
+        return $this->hasOne(Customer::class, ['id' => 'customer_id']);
     }
 }

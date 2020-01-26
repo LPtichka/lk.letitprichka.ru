@@ -200,6 +200,7 @@ thead .form-control {
 .switch .form-group {
     float: left;
     margin-right: 10px;
+    margin-bottom: 10px;
 }
 
 input[type="radio"] {

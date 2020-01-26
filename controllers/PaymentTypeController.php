@@ -35,14 +35,22 @@ class PaymentTypeController extends BaseController
             $isValidate = $payment->validate();
             if ($isValidate && $payment->save()) {
                 \Yii::$app->session->addFlash('success', \Yii::t('payment', 'Payment type was saved successfully'));
-                $this->log('payment-create-success', ['name' => $payment->name]);
+                $this->log('payment-create-success', $payment->getAttributes());
                 return $this->redirect(['payment-type/index']);
             } else {
-                $this->log('payment-create-fail', ['name' => $payment->name, 'errors' => json_encode($payment->getFirstErrors())]);
+                $this->log(
+                    'payment-create-fail',
+                    [
+                        'name'   => $payment->name,
+                        'post'   => json_encode(\Yii::$app->request->post()),
+                        'errors' => json_encode($payment->getFirstErrors())
+                    ]
+                );
             }
         }
-        return $this->render('/payment/create', [
+        return $this->renderAjax('/payment/create', [
             'model' => $payment,
+            'title' => \Yii::t('payment', 'Payment create'),
         ]);
     }
 
@@ -59,19 +67,33 @@ class PaymentTypeController extends BaseController
         }
 
         if (\Yii::$app->request->post()) {
-            $this->log('payment-edit', ['name' => $payment->name]);
+            $this->log('payment-edit',
+                [
+                    $payment->getAttributes()
+                ]
+            );
             $payment->load(\Yii::$app->request->post());
             $isValidate = $payment->validate();
             if ($isValidate && $payment->save()) {
-                $this->log('payment-edit-success', ['name' => $payment->name]);
+                $this->log(
+                    'payment-edit-success',
+                    $payment->getAttributes()
+                );
                 \Yii::$app->session->addFlash('success', \Yii::t('payment', 'Payment type was saved successfully'));
                 return $this->redirect(['payment-type/index']);
             } else {
-                $this->log('payment-edit-fail', ['name' => $payment->name]);
+                $this->log(
+                    'payment-edit-fail',
+                    [
+                        $payment->getAttributes(),
+                        'post' => \Yii::$app->request->post()
+                    ]
+                );
             }
         }
-        return $this->render('/payment/create', [
+        return $this->renderAjax('/payment/create', [
             'model' => $payment,
+            'title' => \Yii::t('payment', 'Payment update'),
         ]);
     }
 
@@ -88,8 +110,9 @@ class PaymentTypeController extends BaseController
         $this->log('payment-delete', $paymentIds);
         $transaction = \Yii::$app->db->beginTransaction();
         foreach ($paymentIds as $id) {
-            $isDelete = \app\models\Repository\PaymentType::deleteAll(['id' => $id]);
-            if (!$isDelete) {
+            $payment = \app\models\Repository\PaymentType::findOne($id);
+            $payment->status = \app\models\Repository\PaymentType::STATUS_DELETED;
+            if (!$payment->save(false)) {
                 $transaction->rollBack();
                 $this->log('payment-delete-fail', $paymentIds);
                 return [

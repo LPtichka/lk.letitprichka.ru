@@ -9,15 +9,20 @@ use yii\widgets\Pjax;
 
 $this->title = \Yii::t('address', 'Addresses');
 ?>
-<?php Pjax::begin([
-    'id'              => 'address-form',
-    'formSelector'    => '#address-form form',
-    'enablePushState' => false,
-]); ?>
+<?php Pjax::begin(); ?>
 <div class="box">
     <div class="box-header with-border">
         <div class="pull-left">
-            <?= Html::a(\Yii::t('address', 'Create address'), ['address/create'], ['class' => 'btn btn-sm btn-warning']) ?>
+            <?= Html::a(
+                '<i class="fa fa-plus"></i> ' . \Yii::t('address', 'Create address'),
+                ['address/create'],
+                [
+                    'class' => 'btn btn-sm btn-warning',
+                    'data-href'   => Url::to(['create']),
+                    'data-toggle' => 'modal',
+                    'data-target' => '#modal',
+                ]
+            ) ?>
         </div>
         <div class="pull-right">
             <?= Html::button('<i class="fa fa-upload"></i> ', ['class' => 'btn btn-sm btn-default import']) ?>
@@ -35,7 +40,6 @@ $this->title = \Yii::t('address', 'Addresses');
                 ]) ?></div>
         </div>
     </div>
-    <?php Pjax::begin(); ?>
     <?= GridView::widget([
         'tableOptions' => [
             'data-resizable-columns-id' => 'address',
@@ -46,7 +50,6 @@ $this->title = \Yii::t('address', 'Addresses');
         'columns'      => (new \app\models\Search\Address())->getSearchColumns($searchModel),
     ]);
     ?>
-    <?php Pjax::end(); ?>
 </div>
 <?php Pjax::end(); ?>
 

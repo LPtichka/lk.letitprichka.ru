@@ -9,15 +9,20 @@ use yii\widgets\Pjax;
 
 $this->title = \Yii::t('payment', 'Payment types');
 ?>
-<?php Pjax::begin([
-    'id'              => 'payment-form',
-    'formSelector'    => '#payment-form form',
-    'enablePushState' => false,
-]); ?>
+<?php Pjax::begin(); ?>
 <div class="box">
     <div class="box-header with-border">
         <div class="pull-left">
-            <?= Html::a(\Yii::t('payment', 'Create payment'), ['payment-type/create'], ['class' => 'btn btn-sm btn-warning']) ?>
+            <?= Html::a(
+                '<i class="fa fa-plus"></i> ' . \Yii::t('payment', 'Create payment'),
+                ['payment-type/create'],
+                [
+                    'class' => 'btn btn-sm btn-warning',
+                    'data-href'   => Url::to(['create']),
+                    'data-toggle' => 'modal',
+                    'data-target' => '#modal',
+                ]
+            ); ?>
         </div>
         <div class="pull-right">
             <?= Html::button('<i class="fa fa-upload"></i> ', ['class' => 'btn btn-sm btn-default import']) ?>
@@ -35,18 +40,16 @@ $this->title = \Yii::t('payment', 'Payment types');
                 ]) ?></div>
         </div>
     </div>
-    <?php Pjax::begin(); ?>
     <?= GridView::widget([
         'tableOptions' => [
-            'data-resizable-columns-id' => 'product',
-            'class'                     => 'table table-bordered'
+            'data-resizable-columns-id' => 'payment',
+            'class'                     => 'table'
         ],
         'dataProvider' => $dataProvider,
         'filterModel'  => $searchModel,
         'columns'      => (new \app\models\Search\PaymentType())->getSearchColumns($searchModel),
     ]);
     ?>
-    <?php Pjax::end(); ?>
 </div>
 <?php Pjax::end(); ?>
 

@@ -3,9 +3,10 @@
 namespace app\models\search;
 
 use app\models\Repository\PaymentType as Repository;
+use app\widgets\Grid\CheckboxColumn;
 use yii\data\ActiveDataProvider;
-use yii\grid\CheckboxColumn;
 use yii\helpers\Html;
+use yii\helpers\Url;
 
 class PaymentType extends Repository
 {
@@ -21,7 +22,7 @@ class PaymentType extends Repository
     {
         return [
             ['id', 'integer'],
-            ['name', 'string'],
+            [['name', 'updated_at'], 'string'],
         ];
     }
 
@@ -44,6 +45,7 @@ class PaymentType extends Repository
         ]);
 
         $query->andFilterWhere(['like', 'name', $this->name]);
+        $query->andFilterWhere(['>', 'status', self::STATUS_DELETED]);
 
         return $dataProvider;
     }
@@ -89,7 +91,15 @@ class PaymentType extends Repository
             'attribute' => 'id',
             'label' => \Yii::t('payment', 'ID'),
             'content' => function ($model) {
-                return Html::a($model->id, ['payment-type/view', 'id' => $model->id]);
+                return Html::a(
+                    $model->id,
+                    ['payment-type/view', 'id' => $model->id],
+                    [
+                        'data-href'   => Url::to(['payment-type/view', 'id' => $model->id]),
+                        'data-toggle' => 'modal',
+                        'data-target' => '#modal',
+                    ]
+                );
             }
         ];
 

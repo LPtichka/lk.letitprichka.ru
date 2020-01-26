@@ -11,4 +11,5 @@ return [
     'Payment was successful deleted'                  => 'Типы оплаты были успешно удалены',
     'Payments was not deleted'                        => 'Типы оплаты не были удалены',
     'Do you really want to delete selected payments?' => 'Вы действительно хотите удалить выбранные типы оплаты?',
+    'Payment type was saved successfully'             => 'Тип оплаты был успешно сохранен',
 ];
