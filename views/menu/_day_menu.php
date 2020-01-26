@@ -6,13 +6,12 @@
 <div>
     <?php foreach ($dates as $key => $date) {
         echo $this->render('_day_block', [
-            'i'            => $key,
-            'date'         => $date,
-            'menu'         => $menu,
-            'breakfasts'   => $breakfasts,
-            'lunches'      => $lunches,
-            'firstDishesSupper'  => $firstDishesSupper,
-            'secondDishesSupper' => $secondDishesSupper,
+            'i'                  => $key,
+            'date'               => $date,
+            'menu'               => $menu,
+            'breakfasts'         => $breakfasts,
+            'lunches'            => $lunches,
+            'suppers'            => $suppers,
             'firstDishesDinner'  => $firstDishesDinner,
             'secondDishesDinner' => $secondDishesDinner,
         ]);

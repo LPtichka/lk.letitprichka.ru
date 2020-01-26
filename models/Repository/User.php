@@ -90,7 +90,7 @@ class User extends \yii\db\ActiveRecord
     public function getStatuses(): array
     {
         return [
-            '' => \Yii::t('app', 'Choose'),
+            '' => '',
             self::STATUS_ACTIVE => \Yii::t('app', 'Active'),
             self::STATUS_DISABLED => \Yii::t('app', 'Disabled'),
         ];

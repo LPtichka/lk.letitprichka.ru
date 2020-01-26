@@ -28,7 +28,6 @@ class FranchiseController extends BaseController
         ]);
     }
 
-
     /**
      * Создание франшизы
      *
@@ -58,7 +57,7 @@ class FranchiseController extends BaseController
             }
         }
 
-        return $this->render('/franchise/create', [
+        return $this->renderAjax('/franchise/create', [
             'model' => $franchise,
             'title' => \Yii::t('franchise', 'Franchise create'),
         ]);
@@ -71,42 +70,71 @@ class FranchiseController extends BaseController
      */
     public function actionView(int $id)
     {
-        $product = \app\models\Repository\Product::findOne($id);
-        if (!$product) {
-            throw new NotFoundHttpException('Продукт не найден');
+        $franchise = \app\models\Repository\Franchise::findOne($id);
+        if (!$franchise) {
+            throw new NotFoundHttpException('Франшиза не найден');
         }
 
         if (\Yii::$app->request->post()) {
-            $this->log('product-edit', [
-                'name' => $product->name,
-                'id'   => $product->id,
+            $this->log('franchise-edit', [
+                'name' => $franchise->name,
+                'id'   => $franchise->id,
             ]);
 
             $post = \Yii::$app->request->post();
-            !empty($post['Product']['weight']) && $post['Product']['weight'] = (new Weight())->convert((float)$post['Product']['weight'], Weight::UNIT_KG);
-
-            $product->load($post);
-            $isValidate = $product->validate();
-            if ($isValidate && $product->save()) {
-                $this->log('product-edit-success', [
-                    'name' => $product->name,
-                    'id'   => $product->id,
+            $franchise->load($post);
+            $isValidate = $franchise->validate();
+            if ($isValidate && $franchise->save()) {
+                $this->log('franchise-edit-success', [
+                    'name' => $franchise->name,
+                    'id'   => $franchise->id,
                 ]);
-                \Yii::$app->session->addFlash('success', \Yii::t('product', 'Product was saved successfully'));
-                return $this->redirect(['product/index']);
+                \Yii::$app->session->addFlash('success', \Yii::t('franchise', 'Franchise was saved successfully'));
+                return $this->redirect(['franchise/index']);
             } else {
-                $this->log('product-edit-fail', [
-                    'name' => $product->name,
-                    'id'   => $product->id,
+                $this->log('franchise-edit-fail', [
+                    'name' => $franchise->name,
+                    'id'   => $franchise->id,
                 ]);
             }
         }
 
-        $product->weight = (new Weight())->setUnit(Weight::UNIT_KG)->convert($product->weight, Weight::UNIT_GR);
-        return $this->render('/product/create', [
-            'model' => $product,
-            'exceptionList' => ArrayHelper::map(Exception::find()->asArray()->all(), 'id', 'name'),
-            'title' => \Yii::t('product', 'Product update'),
+        return $this->renderAjax('/franchise/create', [
+            'model' => $franchise,
+            'title' => \Yii::t('franchise', 'Franchise update'),
         ]);
+    }
+
+    /**
+     * @return array
+     * @throws \yii\db\Exception
+     */
+    public function actionDelete()
+    {
+        $franchiseIds = \Yii::$app->request->post('selection');
+        \Yii::$app->response->format = Response::FORMAT_JSON;
+
+        $this->log('franchise-delete', $franchiseIds);
+        $transaction = \Yii::$app->db->beginTransaction();
+
+        foreach ($franchiseIds as $id) {
+            $franchise = \app\models\Repository\Franchise::findOne($id);
+            $franchise->status = \app\models\Repository\Franchise::STATUS_DELETED;
+            if (!$franchise->save(false)) {
+                $transaction->rollBack();
+                $this->log('franchise-delete-fail', $franchiseIds);
+                return [
+                    'status' => false,
+                    'title'  => \Yii::t('franchise', 'Franchise was not deleted')
+                ];
+            }
+        }
+
+        $transaction->commit();
+        $this->log('franchise-delete-success', $franchiseIds);
+        return [
+            'status' => true,
+            'title'  => \Yii::t('franchise', 'Franchise was successful deleted')
+        ];
     }
 }

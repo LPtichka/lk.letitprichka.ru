@@ -49,7 +49,7 @@ class Alert extends \yii\bootstrap\Widget
      */
     public function run()
     {
-        $session = Yii::$app->session;
+        $session = \Yii::$app->session;
         $flashes = $session->getAllFlashes();
         $appendClass = isset($this->options['class']) ? ' ' . $this->options['class'] : '';
 

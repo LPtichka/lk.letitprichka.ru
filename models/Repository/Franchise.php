@@ -13,6 +13,7 @@ use yii\helpers\ArrayHelper;
  *
  * @property int $id
  * @property string $name
+ * @property int $status
  * @property int $created_at
  * @property int $updated_at
  *
@@ -58,8 +59,10 @@ class Franchise extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
+            [['name'], 'required'],
+            [['name'], 'string', 'min' => 10],
             [['name'], 'unique', 'message' => \Yii::t('product', 'This product has already exists')],
-            [['name'], 'string'],
+
         ];
     }
 

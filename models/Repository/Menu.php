@@ -2,12 +2,8 @@
 
 namespace app\models\Repository;
 
-use app\models\Helper\Weight;
 use app\models\Queries\MenuQuery;
-use app\models\Queries\OrderQuery;
-use app\models\Queries\ProductQuery;
 use yii\behaviors\TimestampBehavior;
-use yii\helpers\ArrayHelper;
 
 /**
  * This is the model class for table "{{%menu}}".
@@ -31,15 +27,6 @@ class Menu extends \yii\db\ActiveRecord
     public static function tableName()
     {
         return '{{%menu}}';
-    }
-
-    /**
-     * @inheritdoc
-     * @return MenuQuery the active query used by this AR class.
-     */
-    public static function find()
-    {
-        return new MenuQuery(get_called_class());
     }
 
     /**
@@ -73,33 +60,34 @@ class Menu extends \yii\db\ActiveRecord
     }
 
     /**
-     * @param array $dishes
-     */
-    public function setDishes(array $dishes): void
-    {
-        $this->dishes = $dishes;
-    }
-
-    /**
      * @return string[]
      */
     public function getDisabledDays(): array
     {
         $startDate = date('Y-m-d', time() - 86400 * 50);
-        $menu = Menu::find()->where(['>', 'menu_start_date', $startDate])->asArray()->all();
+        $menu      = Menu::find()->where(['>', 'menu_start_date', $startDate])->asArray()->all();
 
         $result = [];
         foreach ($menu as $menuItem) {
             $startMenuTimestamp = strtotime($menuItem['menu_start_date']);
-            $i = 0;
+            $i                  = 0;
             do {
-                $date = date('Y-m-d', $startMenuTimestamp + 86400 * $i);
+                $date     = date('Y-m-d', $startMenuTimestamp + 86400 * $i);
                 $result[] = $date;
                 $i++;
             } while ($date < $menuItem['menu_end_date']);
         }
 
         return $result;
+    }
+
+    /**
+     * @inheritdoc
+     * @return MenuQuery the active query used by this AR class.
+     */
+    public static function find()
+    {
+        return new MenuQuery(get_called_class());
     }
 
     /**
@@ -114,20 +102,20 @@ class Menu extends \yii\db\ActiveRecord
         $dishList = [];
         foreach ($data['dish'] as $date => $dayMenu) {
             foreach ($dayMenu as $ingestionType => $ingestion) {
-                if ($ingestionType == 'dinner' || $ingestionType == 'supper') {
+                if ($ingestionType == 'dinner') {
                     foreach ($ingestion as $type => $dishes) {
                         foreach ($dishes as $ingestionId => $dishId) {
                             if ($dishId) {
                                 $menuDish = new MenuDish();
 
-                                $menuDish->dish_id = $dishId;
-                                $menuDish->ingestion = $ingestionId;
+                                $menuDish->dish_id        = $dishId;
+                                $menuDish->ingestion      = $ingestionId;
+                                $menuDish->dish_type      = (new Dish())->getDishTypeByName($type);
                                 $menuDish->ingestion_type = (new Dish())->getIngestionTypeByName($ingestionType);
-                                $menuDish->date = $date;
+                                $menuDish->date           = $date;
 
                                 $dishList[] = $menuDish;
                             }
-
                         }
                     }
                 } else {
@@ -135,10 +123,11 @@ class Menu extends \yii\db\ActiveRecord
                         if ($dishId) {
                             $menuDish = new MenuDish();
 
-                            $menuDish->dish_id = $dishId;
-                            $menuDish->ingestion = $ingestionId;
+                            $menuDish->dish_id        = $dishId;
+                            $menuDish->ingestion      = $ingestionId;
+                            $menuDish->dish_type      = null;
                             $menuDish->ingestion_type = (new Dish())->getIngestionTypeByName($ingestionType);
-                            $menuDish->date = $date;
+                            $menuDish->date           = $date;
 
                             $dishList[] = $menuDish;
                         }
@@ -152,6 +141,14 @@ class Menu extends \yii\db\ActiveRecord
     }
 
     /**
+     * @param array $dishes
+     */
+    public function setDishes(array $dishes): void
+    {
+        $this->dishes = $dishes;
+    }
+
+    /**
      * @return bool
      */
     public function saveAll(): bool
@@ -161,7 +158,7 @@ class Menu extends \yii\db\ActiveRecord
             return false;
         }
 
-        $event = new \app\events\LinkOrderDishes();
+        $event       = new \app\events\LinkOrderDishes();
         $transaction = \Yii::$app->db->beginTransaction();
 
         if (!$this->save()) {
@@ -211,7 +208,7 @@ class Menu extends \yii\db\ActiveRecord
         string $date = '',
         string $type = '',
         int $ingestionType = 0
-    ): int {
+    ): int{
         foreach ($this->dishes as $dish) {
             if ($dish->ingestion == $ingestionID && $dish->date == $date) {
                 if ($type == 'breakfast' && $dish->dish->is_breakfast) {
@@ -223,12 +220,44 @@ class Menu extends \yii\db\ActiveRecord
                 if ($type == 'dinner' && $dish->dish->is_dinner && $ingestionType == $dish->dish->type) {
                     return $dish->dish_id;
                 }
-                if ($type == 'supper' && $dish->dish->is_supper && $ingestionType == $dish->dish->type) {
+                if ($type == 'supper' && $dish->dish->is_supper) {
                     return $dish->dish_id;
                 }
             }
         }
 
         return 0;
+    }
+
+    /**
+     * @param array $data
+     * @return array
+     */
+    public function prepareMenuData(array $data): array
+    {
+        $result = [];
+        foreach ($data['dishes'] as $item) {
+            $indexName                              = sprintf('%s-%d-%d', $item['date'], $item['ingestion_type'], $item['dish_type']);
+            $dish                                   = Dish::findOne($item['dish_id']);
+            $item['exception_list']                 = $dish->getExceptionList();
+            $result[$indexName][$item['ingestion']] = $item;
+        }
+
+        return $result;
+    }
+
+    /**
+     * @return bool
+     * @throws \yii\db\Exception
+     */
+    public function isEquipped(): bool
+    {
+        $sql = 'SELECT COUNT(*) as `count` FROM `order_schedule` AS os 
+                      LEFT JOIN `order_schedule_dish` AS osd
+                        ON os.id = osd.order_schedule_id
+                      WHERE os.date >= "' . $this->menu_start_date . '" AND os.date <= "' . $this->menu_end_date . '" AND osd.dish_id IS NULL';
+
+        $result = \Yii::$app->db->createCommand($sql)->queryOne();
+        return (bool) $result['count'];
     }
 }

@@ -120,6 +120,7 @@ a.desc:after {
 
 .pagination {
     width: 100%;
+    margin: 0;
     position: relative;
 }
 
@@ -185,6 +186,11 @@ a.desc:after {
 thead .form-control {
     padding: 2px 6px;
     height: 28px;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    -o-appearance: none;
+    appearance: none;
+    border-radius: 3px !important;
 }
 
 .switch {
@@ -241,8 +247,8 @@ th {
 }
 
 label {
-    font-weight: normal;
-    color: #777;
+    font-weight: 300;
+    color: #333;
 }
 
 .discount-row, .address-row {
@@ -255,6 +261,7 @@ label {
 
 .content-wrapper .box-body {
     padding: 15px;
+    overflow-y: scroll;
 }
 
 hr {
@@ -310,4 +317,27 @@ hr {
 
 .ingestion select {
     margin-bottom: 10px;
+}
+
+tr.error {
+    background-color: rgba(255,0,0,0.1);
+}
+
+.modal-buttons {
+    margin-top: 15px;
+}
+
+.sweet-alert button {
+    border-radius: 3px !important;
+    font-weight: 300;
+}
+
+.help-block {
+    font-size: 11px;
+    font-weight: 300;
+    font-style: italic;
+}
+
+.box-footer {
+    padding: 15px !important;
 }

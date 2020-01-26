@@ -2,11 +2,12 @@
 
 namespace app\models\search;
 
-use app\models\Helper\Weight;
+use app\models\Helper\Phone;
 use app\models\Repository\User as Repository;
 use yii\data\ActiveDataProvider;
-use yii\grid\CheckboxColumn;
+use app\widgets\Grid\CheckboxColumn;
 use yii\helpers\Html;
+use yii\helpers\Url;
 
 class User extends Repository
 {
@@ -22,7 +23,7 @@ class User extends Repository
     {
         return [
             [['id', 'status'], 'integer'],
-            [['fio', 'phone', 'email'], 'string'],
+            [['fio', 'phone', 'email', 'created_at'], 'string'],
         ];
     }
 
@@ -97,7 +98,15 @@ class User extends Repository
             'attribute' => 'id',
             'label'     => \Yii::t('user', 'ID'),
             'content'   => function ($model) {
-                return Html::a($model->id, ['user/view', 'id' => $model->id]);
+                return Html::a(
+                    $model->id,
+                    ['user/view', 'id' => $model->id],
+                    [
+                        'data-href'   => Url::to(['user/view', 'id' => $model->id]),
+                        'data-toggle' => 'modal',
+                        'data-target' => '#modal',
+                    ]
+                );
             }
         ];
 
@@ -109,6 +118,9 @@ class User extends Repository
         $result['phone'] = [
             'attribute' => 'phone',
             'label'     => \Yii::t('user', 'Phone'),
+            'content'   => function ($model) {
+                return !empty($model->phone) ? (new Phone($model->phone))->getHumanView() : '---';
+            }
         ];
 
         $result['email'] = [

@@ -80,17 +80,9 @@ $dateObject = (new \app\models\Helper\Date($date));
         <div class="ingestion-wrapper">
             <div class="ingestion" id="ingestion_supper_<?php echo $i; ?>">
                 <?php echo \yii\helpers\Html::dropDownList(
-                    'dish[' . $date . '][supper][first][' . $i . ']',
+                    'dish[' . $date . '][supper][' . $i . ']',
                     $menu->getDishIDByParams($i, $date, 'supper', \app\models\Repository\Dish::TYPE_FIRST),
-                    (new \app\models\Helper\Arrays($firstDishesSupper))->getSelectOptions(),
-                    [
-                        'class' => 'form-control input-sm'
-                    ]
-                ); ?>
-                <?php echo \yii\helpers\Html::dropDownList(
-                    'dish[' . $date . '][supper][second][' . $i . ']',
-                    $menu->getDishIDByParams($i, $date, 'supper', \app\models\Repository\Dish::TYPE_SECOND),
-                    (new \app\models\Helper\Arrays($secondDishesSupper))->getSelectOptions(),
+                    (new \app\models\Helper\Arrays($suppers))->getSelectOptions(),
                     [
                         'class' => 'form-control input-sm'
                     ]

@@ -18,18 +18,18 @@
             [
                 'options' => ['class' => 'sidebar-menu tree', 'data-widget' => 'tree'],
                 'items'   => [
-                    ['label' => 'Меню управления', 'options' => ['class' => 'header']],
+                    ['label' => \Yii::t('app', 'Menu'), 'options' => ['class' => 'header']],
                     ['label' => \Yii::t('app', 'Orders'), 'icon' => 'list-ol', 'url' => ['/order/index']],
+                    ['label' => \Yii::t('app', 'Subscribes'), 'icon' => 'tasks', 'url' => ['/subscription/index']],
+                    ['label' => \Yii::t('app', 'Goods'), 'icon' => 'shopping-bag', 'url' => ['/product/index']],
                     ['label' => \Yii::t('app', 'Customers'), 'icon' => 'user-o', 'url' => ['/customer/index']],
+                    ['label' => \Yii::t('app', 'Exceptions'), 'icon' => 'list-ul', 'url' => ['/exception/index']],
                     ['label' => \Yii::t('app', 'Addresses'), 'icon' => 'address-book-o', 'url' => ['/address/index']],
                     ['label' => \Yii::t('app', 'Menu'), 'icon' => 'bars', 'url' => ['/menu/index']],
                     ['label' => \Yii::t('app', 'Dishes'), 'icon' => 'file-code-o', 'url' => ['/dish/index']],
-                    ['label' => \Yii::t('app', 'Exceptions'), 'icon' => 'file-code-o', 'url' => ['/exception/index']],
-                    ['label' => \Yii::t('app', 'Goods'), 'icon' => 'dashboard', 'url' => ['/product/index']],
-                    ['label' => 'Типы оплат', 'icon' => 'file-code-o', 'url' => ['/payment-type/index']],
-                    ['label' => 'Подписки', 'icon'  => 'list-ol', 'url'   => ['/subscription/index']],
-                    ['label' => \Yii::t('user', 'Users'), 'icon' => 'user-o', 'url' => ['/user/index']],
-                    ['label' => \Yii::t('app', 'Franchise'), 'icon' => 'user-o', 'url' => ['/franchise/index']],
+                    ['label' => \Yii::t('app', 'Payment types'), 'icon' => 'money', 'url' => ['/payment-type/index']],
+                    ['label' => \Yii::t('app', 'Users'), 'icon' => 'user-o', 'url' => ['/user/index']],
+                    ['label' => \Yii::t('app', 'Franchise'), 'icon' => 'briefcase', 'url' => ['/franchise/index']],
                 ],
             ]
         ) ?>

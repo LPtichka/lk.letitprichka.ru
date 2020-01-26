@@ -3,10 +3,11 @@
 namespace app\models\search;
 
 use app\models\Repository\Franchise as Repository;
+use app\widgets\Grid\CheckboxColumn;
 use kartik\daterange\DateRangePicker;
 use yii\data\ActiveDataProvider;
-use app\widgets\Grid\CheckboxColumn;
 use yii\helpers\Html;
+use yii\helpers\Url;
 
 class Franchise extends Repository
 {
@@ -89,10 +90,10 @@ class Franchise extends Repository
         ];
 
         $result['created_at'] = [
-            'attribute' => 'created_at',
-            'label'     => \Yii::t('franchise', 'Created at'),
+            'attribute'      => 'created_at',
+            'label'          => \Yii::t('franchise', 'Created at'),
             'contentOptions' => ['style' => 'width:200px;'],
-            'filter' => Html::tag('div',
+            'filter'         => Html::tag('div',
                 DateRangePicker::widget([
                     'name'          => 'created_at',
                     'value'         => $searchModel->created_at,
@@ -107,7 +108,7 @@ class Franchise extends Repository
                     ]
                 ])
             ),
-            'content'   => function ($model) {
+            'content'        => function ($model){
                 return date('d.m.Y \в H:i', $model->updated_at);
             }
         ];
@@ -116,8 +117,16 @@ class Franchise extends Repository
             'attribute'      => 'id',
             'label'          => \Yii::t('franchise', 'ID'),
             'contentOptions' => ['style' => 'width:120px;'],
-            'content'        => function ($model) {
-                return Html::a($model->id, ['subscription/view', 'id' => $model->id]);
+            'content'        => function ($model){
+                return Html::a(
+                    $model->id,
+                    ['franchise/view', 'id' => $model->id],
+                    [
+                        'data-href'   => Url::to(['franchise/view', 'id' => $model->id]),
+                        'data-toggle' => 'modal',
+                        'data-target' => '#modal',
+                    ]
+                );
             }
         ];
 

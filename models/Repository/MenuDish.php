@@ -17,6 +17,7 @@ use yii\helpers\ArrayHelper;
  * @property string $date
  * @property int $menu_id
  * @property int $dish_id
+ * @property int $dish_type
  * @property int $ingestion_type
  * @property int $ingestion
  * @property int $created_at
@@ -58,7 +59,7 @@ class MenuDish extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['dish_id', 'menu_id', 'ingestion', 'ingestion_type'], 'integer'],
+            [['dish_id', 'menu_id', 'ingestion', 'ingestion_type', 'dish_type'], 'integer'],
             [['date'], 'string'],
         ];
     }

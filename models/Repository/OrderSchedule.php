@@ -20,6 +20,7 @@ use yii\behaviors\TimestampBehavior;
  * @property int $updated_at
  *
  * @property Order $order
+ * @property OrderScheduleDish[] $dishes
  */
 class OrderSchedule extends \yii\db\ActiveRecord
 {
@@ -66,10 +67,7 @@ class OrderSchedule extends \yii\db\ActiveRecord
             Dish::TYPE_SECOND,
         ],
         Dish::INGESTION_TYPE_LUNCH => [],
-        Dish::INGESTION_TYPE_SUPPER => [
-            Dish::TYPE_FIRST,
-            Dish::TYPE_SECOND,
-        ],
+        Dish::INGESTION_TYPE_SUPPER => [],
     ];
 
     /**
@@ -154,5 +152,13 @@ class OrderSchedule extends \yii\db\ActiveRecord
     public function getOrder()
     {
         return $this->hasOne(Order::class, ['id' => 'order_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getDishes()
+    {
+        return $this->hasMany(OrderScheduleDish::class, ['order_schedule_id' => 'id']);
     }
 }

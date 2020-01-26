@@ -1,6 +1,7 @@
 <?php
 
 use dmstr\widgets\Alert;
+use yii\bootstrap\Modal;
 use yii\widgets\Breadcrumbs;
 use yii\widgets\Pjax;
 
@@ -17,6 +18,13 @@ use yii\widgets\Pjax;
         <?= Alert::widget() ?>
         <?= $content ?>
     </section>
+
+    <?php Modal::begin([
+        'id'   => 'modal',
+        'size' => 'modal-lg',
+    ]) ?>
+    <div class="text-center"><i class="fa fa-circle-o-notch fa-spin fa-3x fa-fw"></i></div>
+    <?php Modal::end() ?>
 </div>
 
 <footer class="main-footer">

@@ -64,7 +64,7 @@ class UserController extends BaseController
                 ]);
             }
         }
-        return $this->render('/user/create', [
+        return $this->renderAjax('/user/create', [
             'model' => $user,
             'canBlockUser'       => \Yii::$app->user->can('/user/block'),
             'canGrantPrivileges' => \Yii::$app->user->can('/user/grant-privilege'),
@@ -110,7 +110,7 @@ class UserController extends BaseController
             }
         }
 
-        return $this->render('/user/create', [
+        return $this->renderAjax('/user/create', [
             'model'              => $user,
             'canBlockUser'       => \Yii::$app->user->can('/user/block'),
             'canGrantPrivileges' => \Yii::$app->user->can('/user/grant-privilege'),

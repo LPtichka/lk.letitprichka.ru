@@ -290,6 +290,22 @@ class Dish extends \yii\db\ActiveRecord
     }
 
     /**
+     * @param string $name
+     * @return int|null
+     */
+    public function getDishTypeByName(string $name): ?int
+    {
+        switch ($name) {
+            case 'first':
+                return self::TYPE_FIRST;
+            case 'second':
+                return self::TYPE_SECOND;
+            default:
+                return null;
+        }
+    }
+
+    /**
      * @return array
      */
     public function getIngestionTypes(): array

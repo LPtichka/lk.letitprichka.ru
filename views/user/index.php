@@ -9,15 +9,19 @@ use yii\widgets\Pjax;
 
 $this->title = \Yii::t('user', 'Users');
 ?>
-<?php Pjax::begin([
-    'id'              => 'user-form',
-    'formSelector'    => '#user-form form',
-    'enablePushState' => false,
-]); ?>
+<?php Pjax::begin(); ?>
 <div class="box">
     <div class="box-header with-border">
         <div class="pull-left">
-            <?= Html::a(\Yii::t('user', 'Create user'), ['user/create'], ['class' => 'btn btn-sm btn-warning']) ?>
+            <?= Html::a('<i class="fa fa-plus"></i> ' . \Yii::t('user', 'Create user'),
+                ['user/create'],
+                [
+                    'class'       => 'btn btn-sm btn-warning',
+                    'data-href'   => Url::to(['create']),
+                    'data-toggle' => 'modal',
+                    'data-target' => '#modal',
+                ]
+            ) ?>
         </div>
         <div class="pull-right">
             <?= Html::button('<i class="fa fa-download"></i> ', [
@@ -31,18 +35,16 @@ $this->title = \Yii::t('user', 'Users');
             ]); ?>
         </div>
     </div>
-    <?php Pjax::begin(); ?>
     <?= GridView::widget([
         'tableOptions' => [
             'data-resizable-columns-id' => 'user',
-            'class'                     => 'table table-bordered'
+            'class'                     => 'table'
         ],
         'dataProvider' => $dataProvider,
         'filterModel'  => $searchModel,
         'columns'      => (new \app\models\Search\User())->getSearchColumns($searchModel),
     ]);
     ?>
-    <?php Pjax::end(); ?>
 </div>
 <?php Pjax::end(); ?>
 
