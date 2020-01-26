@@ -3,7 +3,7 @@
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
-/** @var \app\models\search\PaymentType $searchModel */
+/** @var \app\models\Search\PaymentType $searchModel */
 
 $this->title = $title
 

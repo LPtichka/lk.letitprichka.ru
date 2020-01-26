@@ -4,7 +4,7 @@ namespace app\controllers;
 use app\models\Helper\Excel;
 use app\models\Helper\ExcelParser;
 use app\models\Repository\Address;
-use app\models\search\Customer;
+use app\models\Search\Customer;
 use yii\helpers\ArrayHelper;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;

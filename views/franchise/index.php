@@ -5,7 +5,7 @@ use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\widgets\Pjax;
 
-/** @var \app\models\search\Exception $searchModel */
+/** @var \app\models\Search\Exception $searchModel */
 /** @var string $title */
 
 $this->title = $title;

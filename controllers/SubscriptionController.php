@@ -2,7 +2,7 @@
 namespace app\controllers;
 
 use app\models\Repository\SubscriptionDiscount;
-use app\models\search\Subscription;
+use app\models\Search\Subscription;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
 

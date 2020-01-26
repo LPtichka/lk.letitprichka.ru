@@ -5,7 +5,7 @@ use app\models\Helper\Excel;
 use app\models\Helper\ExcelParser;
 use app\models\Helper\Weight;
 use app\models\Repository\Exception;
-use app\models\search\Franchise;
+use app\models\Search\Franchise;
 use app\models\Search\Product;
 use yii\helpers\ArrayHelper;
 use yii\web\NotFoundHttpException;

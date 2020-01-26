@@ -1,6 +1,6 @@
 <?php
 
-namespace app\models\search;
+namespace app\models\Search;
 
 use app\models\Helper\Phone;
 use app\models\Repository\Customer as Repository;

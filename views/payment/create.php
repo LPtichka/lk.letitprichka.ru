@@ -5,7 +5,7 @@ use yii\widgets\ActiveForm;
 use yii\widgets\Pjax;
 use \app\widgets\Alert;
 
-/** @var \app\models\search\PaymentType $searchModel */
+/** @var \app\models\Search\PaymentType $searchModel */
 
 $this->title = \Yii::t('payment', 'Payment create');
 ?>

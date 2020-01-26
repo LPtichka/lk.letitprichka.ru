@@ -3,8 +3,8 @@ namespace app\controllers;
 
 use app\models\Helper\Excel;
 use app\models\Helper\ExcelParser;
-use app\models\search\PaymentType;
-use app\models\search\Product;
+use app\models\Search\PaymentType;
+use app\models\Search\Product;
 use app\models\User;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;

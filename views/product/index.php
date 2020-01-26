@@ -5,7 +5,7 @@ use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\widgets\Pjax;
 
-/** @var \app\models\search\PaymentType $searchModel */
+/** @var \app\models\Search\PaymentType $searchModel */
 
 $this->title = \Yii::t('product', 'Products');
 ?>

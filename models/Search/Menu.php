@@ -1,6 +1,6 @@
 <?php
 
-namespace app\models\search;
+namespace app\models\Search;
 
 use app\models\Repository\Menu as Repository;
 use yii\data\ActiveDataProvider;

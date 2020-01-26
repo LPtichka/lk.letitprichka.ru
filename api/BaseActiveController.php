@@ -1,7 +1,7 @@
 <?php
 namespace app\api;
 
-use app\models\search\SearchModelInterface;
+use app\models\Search\SearchModelInterface;
 use app\rbac\ControllerAccessEvent;
 use yii\rest\ActiveController;
 

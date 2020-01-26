@@ -6,7 +6,7 @@ use app\models\Builder\Suggestions;
 use app\models\Helper\Excel;
 use app\models\Helper\ExcelParser;
 use app\models\Repository\Customer;
-use app\models\search\Address;
+use app\models\Search\Address;
 use app\models\Search\PaymentType;
 use yii\helpers\ArrayHelper;
 use yii\web\NotFoundHttpException;

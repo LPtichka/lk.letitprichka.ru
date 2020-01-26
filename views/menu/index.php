@@ -5,7 +5,7 @@ use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\widgets\Pjax;
 
-/** @var \app\models\search\Menu $searchModel */
+/** @var \app\models\Search\Menu $searchModel */
 
 $this->title = \Yii::t('subscription', 'Menu');
 ?>

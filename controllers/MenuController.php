@@ -2,7 +2,7 @@
 namespace app\controllers;
 
 use app\models\Repository\Dish;
-use app\models\search\Menu;
+use app\models\Search\Menu;
 use yii\helpers\ArrayHelper;
 use yii\web\NotFoundHttpException;
 

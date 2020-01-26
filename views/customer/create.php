@@ -5,7 +5,7 @@ use yii\helpers\Url;
 use yii\widgets\ActiveForm;
 use yii\widgets\MaskedInput;
 
-/** @var \app\models\search\Customer $searchModel */
+/** @var \app\models\Search\Customer $searchModel */
 /** @var \app\models\Repository\Customer $model */
 
 $this->title = $title;
