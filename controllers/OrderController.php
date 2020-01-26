@@ -1,6 +1,7 @@
 <?php
 namespace app\controllers;
 
+use app\models\Helper\Excel;
 use app\models\Repository\Address;
 use app\models\Repository\Customer;
 use app\models\Repository\Exception;
@@ -300,10 +301,10 @@ class OrderController extends BaseController
 
         $dates = ArrayHelper::map(
             $schedules,
-            function ($schedule) {
+            function ($schedule){
                 return date('d.m.Y', strtotime($schedule['date']));
             },
-            function ($schedule) {
+            function ($schedule){
                 return date('d.m.Y', strtotime($schedule['date']));
             }
         );
@@ -366,5 +367,48 @@ class OrderController extends BaseController
             'success' => true,
             'title'   => \Yii::t('order', 'Order schedule saved successfully'),
         ];
+    }
+
+    /**
+     * @return string
+     */
+    public function actionGetRouteSheet()
+    {
+        $orderRoutes = [];
+
+        if (\Yii::$app->request->post()) {
+            $date        = \Yii::$app->request->post('date');
+            $orderRoutes = (new \app\models\Repository\Order())->getRoutesForDate($date);
+        }
+
+        return $this->renderAjax('/order/_get_route_sheet', [
+            'routes' => $orderRoutes,
+            'date'   => $date ?? '',
+            'title'  => \Yii::t('order', 'Order sheet'),
+        ]);
+    }
+
+    /**
+     * @return array
+     */
+    public function actionSaveRouteSheet()
+    {
+        $orderRoutes = [];
+
+        if (\Yii::$app->request->post()) {
+            $date        = \Yii::$app->request->post('date');
+            $orderRoutes = (new \app\models\Repository\Order())->getRoutesForDate($date);
+
+            $excel = new Excel();
+            $excel->loadFromTemplate('files/templates/base.xlsx');
+            $excel->prepare($orderRoutes, Excel::MODEL_ROUTE_SHEET, \Yii::$app->request->post());
+            $excel->save('route_sheet.xlsx', 'temp');
+
+            \Yii::$app->response->format = Response::FORMAT_JSON;
+
+            return [
+                'url' => $excel->getUrl()
+            ];
+        }
     }
 }

@@ -2,6 +2,7 @@
 
 namespace app\models\Repository;
 
+use app\models\Common\Route;
 use app\models\Helper\Weight;
 use app\models\Queries\OrderQuery;
 use app\models\Queries\ProductQuery;
@@ -30,6 +31,7 @@ use yii\helpers\ArrayHelper;
  *
  * @property Customer $customer
  * @property Address $address
+ * @property PaymentType $payment
  * @property Exception[] $exceptions
  * @property OrderSchedule[] $schedules
  */
@@ -170,6 +172,13 @@ class Order extends \yii\db\ActiveRecord
     public function getCustomer()
     {
         return $this->hasOne(Customer::class, ['id' => 'customer_id']);
+    }
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getPayment()
+    {
+        return $this->hasOne(PaymentType::class, ['id' => 'payment_type']);
     }
 
     /**
@@ -450,5 +459,56 @@ class Order extends \yii\db\ActiveRecord
         return ArrayHelper::getColumn(
             OrderException::find()->where(['order_id' => $this->id])->asArray()->all(), 'exception_id'
         );
+    }
+
+    /**
+     * @param string $date
+     * @return array
+     */
+    public function getRoutesForDate(string $date): array
+    {
+        $time = strtotime($date);
+        $orderSchedules = OrderSchedule::find()->where(['date' => date('Y-m-d', $time)])->all();
+        $routes = [];
+        foreach ($orderSchedules as $schedule) {
+            $route = new Route(
+                $schedule->order->customer->fio,
+                $schedule->address->full_address,
+                $schedule->order->customer->phone
+            );
+            $route->setInterval($schedule->interval);
+            !empty($schedule->comment) && $route->setComment($schedule->comment);
+
+            if ($schedule->order->isNeedPaymentForDate($schedule->date)) {
+                $payment = $schedule->order->total;
+                if ($schedule->order->cash_machine) {
+                    $payment .= ' + касса';
+                }
+                $route->setPayment($payment);
+            }
+
+            $routes[] = $route;
+        }
+
+        return $routes;
+    }
+
+    /**
+     * @param string $date
+     * @return bool
+     */
+    public function isNeedPaymentForDate(string $date): bool
+    {
+        $orderSchedule = OrderSchedule::find()->where(['order_id' => $this->id])->orderBy(['date' => SORT_ASC])->one();
+
+        if ($orderSchedule->date != $date) {
+            return false;
+        }
+
+        if ($orderSchedule->order->payment->type == PaymentType::TYPE_FULL_PAY) {
+            return true;
+        }
+
+        return false;
     }
 }

@@ -17,9 +17,21 @@ $this->title = \Yii::t('order', 'Orders');
 <div class="box">
     <div class="box-header with-border">
         <div class="pull-left">
-            <?= Html::a(\Yii::t('order', 'Create order'), ['order/create'], ['class' => 'btn btn-sm btn-warning']) ?>
+            <?= Html::a(
+                '<i class="fa fa-plus"></i> ' . \Yii::t('order', 'Create order'),
+                ['order/create'],
+                ['class' => 'btn btn-sm btn-warning']
+            ) ?>
         </div>
         <div class="pull-right">
+            <?= Html::a('<i class="fa fa-truck"></i> ',
+                ['order/get-route-sheet'],
+                [
+                    'class'       => 'btn btn-sm btn-default',
+                    'data-href'   => Url::to(['order/get-route-sheet']),
+                    'data-toggle' => 'modal',
+                    'data-target' => '#modal',
+                ]); ?>
             <?= Html::button('<i class="fa fa-upload"></i> ', ['class' => 'btn btn-sm btn-default import']) ?>
             <?= Html::button('<i class="fa fa-download"></i> ', [
                 'class'     => 'btn btn-sm btn-default export',
@@ -30,9 +42,11 @@ $this->title = \Yii::t('order', 'Orders');
                 'data-title' => \Yii::t('order', 'Do you really want to delete selected products?'),
                 'data-href'  => Url::to(['product/delete']),
             ]); ?>
-            <div class="hidden"><?= Html::fileInput('import', '', [
+            <div class="hidden">
+                <?= Html::fileInput('import', '', [
                     'data-href' => Url::to(['product/import'])
-                ]) ?></div>
+                ]) ?>
+            </div>
         </div>
     </div>
     <?php Pjax::begin(); ?>

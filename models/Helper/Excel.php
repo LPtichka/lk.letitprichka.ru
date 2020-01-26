@@ -1,6 +1,7 @@
-<?php declare(strict_types=1);
+<?php declare(strict_types = 1);
 namespace app\models\Helper;
 
+use app\models\Common\Route;
 use app\models\Repository\Dish;
 
 class Excel
@@ -13,6 +14,7 @@ class Excel
     const MODEL_EXCEPTION = 'exception';
     const MODEL_USER = 'user';
     const MODEL_CUSTOMER = 'customer';
+    const MODEL_ROUTE_SHEET = 'route_sheet';
 
     const COLUMN_NAMES = [
         1  => 'А',
@@ -50,6 +52,14 @@ class Excel
                 'style' => \PHPExcel_Style_Border::BORDER_THIN,
                 'color' => ['rgb' => '000000'],
             ]
+        ]
+    ];
+
+    /** @var array */
+    private $fillGreen = [
+        'fill' => [
+            'type' => \PHPExcel_Style_Fill::FILL_SOLID,
+            'color' => ['rgb' => '39B739'],
         ]
     ];
 
@@ -119,7 +129,7 @@ class Excel
                     $value = $cell->getValue();
 
                     if (!is_numeric($value)) {
-                        if (!empty($value) && (substr((string)$value, 0, 1) === '=') && (strlen((string)$value) > 1)) {
+                        if (!empty($value) && (substr((string) $value, 0, 1) === '=') && (strlen((string) $value) > 1)) {
                             $value = trim($cell->getOldCalculatedValue());
                         }
                     }
@@ -155,13 +165,16 @@ class Excel
      *
      * @param iterable $data
      * @param string $model
+     * @param array $params
      * @return bool
      * @throws \PHPExcel_Exception
      */
-    public function prepare(iterable $data, string $model): bool
+    public function prepare(iterable $data, string $model, array $params = []): bool
     {
         if ($model === self::MODEL_DISH) {
             return $this->prepareDish($data);
+        } elseif ($model === self::MODEL_ROUTE_SHEET) {
+            return $this->prepareRouteSheet($data, $params);
         }
 
         $objWorksheet = $this->fileName->getActiveSheet();
@@ -219,7 +232,7 @@ class Excel
 
             $lastCell = 4 + $productCount;
             $objWorksheet->mergeCells("J5:J" . $lastCell);
-            $objWorksheet->mergeCells("J".($lastCell + 2).":J" . ($lastCell + 3));
+            $objWorksheet->mergeCells("J" . ($lastCell + 2) . ":J" . ($lastCell + 3));
             $objWorksheet->getCellByColumnAndRow(0, 1)->setValue($dish->name);
 
             $objWorksheet->getColumnDimension('J')->setWidth(50);
@@ -337,6 +350,60 @@ class Excel
 
         $objWorksheet->mergeCells('J' . ($row + 1) . ':J' . ($row + 2));
         $objWorksheet->setCellValue('J' . ($row + 1), 'Технологический процесс изготовления, оформления и подачи блюда (изделия), условия и сроки реализации');
+    }
+
+    /**
+     * @param Route[]|iterable $routes
+     * @param array $params
+     * @return bool
+     */
+    public function prepareRouteSheet(iterable $routes, array $params): bool
+    {
+        $objWorksheet = $this->fileName->getActiveSheet();
+        $objWorksheet->setTitle('Маршрутный лист');
+
+        $objWorksheet->getCellByColumnAndRow(0, 1)->setValue('Дата');
+        $objWorksheet->getCellByColumnAndRow(1, 1)->setValue($params['date'] ?? '');
+
+        $objWorksheet->getCellByColumnAndRow(0, 3)->setValue('Клиент');
+        $objWorksheet->getCellByColumnAndRow(1, 3)->setValue('Адрес');
+        $objWorksheet->getCellByColumnAndRow(2, 3)->setValue('Время');
+        $objWorksheet->getCellByColumnAndRow(3, 3)->setValue('Комментарий');
+        $objWorksheet->getCellByColumnAndRow(4, 3)->setValue('Телефон');
+        $objWorksheet->getCellByColumnAndRow(5, 3)->setValue('Оплата');
+
+        $i = 4;
+        foreach ($routes as $key => $route) {
+            $objWorksheet->getCellByColumnAndRow(0, ($i + $key))->setValue($route->getFio());
+            $cell = $objWorksheet->getCellByColumnAndRow(0, ($i + $key));
+            $objWorksheet->getColumnDimension($cell->getColumn())->setAutoSize(true);
+
+            $objWorksheet->getCellByColumnAndRow(1, ($i + $key))->setValue($route->getAddress());
+            $cell = $objWorksheet->getCellByColumnAndRow(1, ($i + $key));
+            $objWorksheet->getColumnDimension($cell->getColumn())->setAutoSize(true);
+
+            $objWorksheet->getCellByColumnAndRow(2, ($i + $key))->setValue($route->getInterval());
+            $cell = $objWorksheet->getCellByColumnAndRow(2, ($i + $key));
+            $objWorksheet->getColumnDimension($cell->getColumn())->setAutoSize(true);
+
+            $objWorksheet->getCellByColumnAndRow(3, ($i + $key))->setValue($route->getComment());
+            $cell = $objWorksheet->getCellByColumnAndRow(3, ($i + $key));
+            $objWorksheet->getColumnDimension($cell->getColumn())->setAutoSize(true);
+
+            $objWorksheet->getCellByColumnAndRow(4, ($i + $key))->setValue($route->getPhone());
+            $cell = $objWorksheet->getCellByColumnAndRow(4, ($i + $key));
+            $objWorksheet->getColumnDimension($cell->getColumn())->setAutoSize(true);
+
+            $objWorksheet->getCellByColumnAndRow(5, ($i + $key))->setValue($route->getPayment());
+            $cell = $objWorksheet->getCellByColumnAndRow(5, ($i + $key));
+            $objWorksheet->getColumnDimension($cell->getColumn())->setAutoSize(true);
+        }
+
+        $objWorksheet->getStyle('A3' . ':F' . (count($routes) + 3))->applyFromArray($this->borderAll);
+        $objWorksheet->getStyle('A1:B1')->applyFromArray($this->fillGreen);
+        $objWorksheet->getStyle('A3:F3')->applyFromArray($this->fillGreen);
+
+        return true;
     }
 
     /**

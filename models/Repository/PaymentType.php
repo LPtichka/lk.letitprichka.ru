@@ -9,6 +9,7 @@ use yii\behaviors\TimestampBehavior;
  * This is the model class for table "{{%payment_type}}".
  *
  * @property int $id
+ * @property string $type
  * @property string $name
  * @property int $status
  * @property boolean $cash_machine
@@ -19,6 +20,9 @@ class PaymentType extends \yii\db\ActiveRecord
 {
     const STATUS_ACTIVE = 10;
     const STATUS_DELETED = 0;
+
+    const TYPE_FULL_PAY = 'full_pay';
+    const TYPE_NO_PAY = 'no_pay';
 
     /**
      * @inheritdoc
