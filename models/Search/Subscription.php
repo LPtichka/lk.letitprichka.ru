@@ -7,6 +7,7 @@ use kartik\daterange\DateRangePicker;
 use yii\data\ActiveDataProvider;
 use app\widgets\Grid\CheckboxColumn;
 use yii\helpers\Html;
+use yii\helpers\Url;
 
 class Subscription extends Repository
 {
@@ -130,7 +131,15 @@ class Subscription extends Repository
             'label'          => \Yii::t('subscription', 'ID'),
             'contentOptions' => ['style' => 'width:120px;'],
             'content'        => function ($model) {
-                return Html::a($model->id, ['subscription/view', 'id' => $model->id]);
+                return Html::a(
+                    $model->id,
+                    ['subscription/view', 'id' => $model->id],
+                    [
+                        'data-href'   => Url::to(['subscription/view', 'id' => $model->id]),
+                        'data-toggle' => 'modal',
+                        'data-target' => '#modal',
+                    ]
+                );
             }
         ];
 

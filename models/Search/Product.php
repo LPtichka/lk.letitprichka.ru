@@ -8,6 +8,7 @@ use app\models\Repository\Product as Repository;
 use app\widgets\Grid\CheckboxColumn;
 use yii\data\ActiveDataProvider;
 use yii\helpers\Html;
+use yii\helpers\Url;
 
 class Product extends Repository
 {
@@ -34,7 +35,7 @@ class Product extends Repository
      */
     public function search($params)
     {
-        $query = Repository::find();
+        $query        = Repository::find();
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
             'sort'  => ['defaultOrder' => ['id' => SORT_ASC]],
@@ -76,62 +77,71 @@ class Product extends Repository
         $products = $paymentsQuery->asArray()->all();
         foreach ($products as $product) {
             yield [
-                'id' => $product['product_id'],
-                'name' => $product['product_name'],
-                'count' => $product['product_count'],
-                'weight' => (new Weight())->format($product['product_weight'], Weight::UNIT_KG),
+                'id'           => $product['product_id'],
+                'name'         => $product['product_name'],
+                'count'        => $product['product_count'],
+                'weight'       => (new Weight())->format($product['product_weight'], Weight::UNIT_KG),
                 'Exception ID' => $product['exception_name'] ?? '',
-                'created_at' => date('d.m.Y \в H:i', $product['product_created_at']),
-                'updated_at' => date('d.m.Y \в H:i', $product['product_updated_at']),
+                'created_at'   => date('d.m.Y \в H:i', $product['product_created_at']),
+                'updated_at'   => date('d.m.Y \в H:i', $product['product_updated_at']),
             ];
         }
     }
 
     /**
      * Список полей для поиска
+     *
      * @param Repository $searchModel
      * @return array
      */
     public function getSearchColumns(Repository $searchModel)
     {
         $result[] = [
-            'class' => CheckboxColumn::class,
+            'class'         => CheckboxColumn::class,
             'headerOptions' => [
-                'width' => '40px',
+                'width'                    => '40px',
                 'data-resizable-column-id' => 'checker'
             ],
         ];
 
         $result['id'] = [
-            'attribute' => 'id',
+            'attribute'      => 'id',
             'contentOptions' => ['style' => 'width:120px;'],
-            'label' => \Yii::t('product', 'ID'),
-            'content' => function ($model) {
-                return Html::a($model->id, ['product/view', 'id' => $model->id]);
+            'label'          => \Yii::t('product', 'ID'),
+            'content'        => function ($model){
+                return Html::a(
+                    $model->id,
+                    ['product/view', 'id' => $model->id],
+                    [
+                        'data-href'   => Url::to(['product/view', 'id' => $model->id]),
+                        'data-toggle' => 'modal',
+                        'data-target' => '#modal',
+                    ]
+                );
             }
         ];
 
         $result['name'] = [
             'attribute' => 'name',
-            'label' => \Yii::t('product', 'Name'),
+            'label'     => \Yii::t('product', 'Name'),
         ];
 
         $result['count'] = [
             'attribute' => 'count',
-            'label' => \Yii::t('app', 'Count'),
+            'label'     => \Yii::t('app', 'Count'),
         ];
 
         $result['weight'] = [
             'attribute' => 'weight',
-            'label' => \Yii::t('app', 'Weight'),
-            'content' => function($model) {
+            'label'     => \Yii::t('app', 'Weight'),
+            'content'   => function ($model){
                 return (new Weight())->format($model->weight, Weight::UNIT_KG);
             }
         ];
 
         $result['exception_id'] = [
             'attribute' => 'exception_id',
-            'label' => \Yii::t('product', 'Exception ID'),
+            'label'     => \Yii::t('product', 'Exception ID'),
             'filter'    => Html::tag('div', Html::dropDownList(
                 'exception_id',
                 $searchModel->exception_id,
@@ -140,15 +150,15 @@ class Product extends Repository
             ),
                 ['class' => 'select_wrapper']
             ),
-            'content' => function($model) {
+            'content'   => function ($model){
                 return $model->exception->name ?? '';
             }
         ];
 
         $result['updated_at'] = [
             'attribute' => 'updated_at',
-            'label' => \Yii::t('payment', 'Updated at'),
-            'content' => function($model) {
+            'label'     => \Yii::t('payment', 'Updated at'),
+            'content'   => function ($model){
                 return date('d.m.Y \в H:i', $model->updated_at);
             }
         ];

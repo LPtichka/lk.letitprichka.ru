@@ -342,3 +342,19 @@ tr.error {
 .box-footer {
     padding: 15px !important;
 }
+
+.checkbox-list label {
+    font-size: 13px;
+}
+
+.checkbox-list label input {
+    margin-right: 5px;
+}
+
+hr.devider {
+    margin-top: 10px !important;
+}
+
+#add-discount {
+    ma
+}

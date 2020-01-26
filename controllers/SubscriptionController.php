@@ -34,10 +34,14 @@ class SubscriptionController extends BaseController
             $this->log('subscriptions-create', []);
             if ($subscription->build(\Yii::$app->request->post()) && $subscription->validateAll() && $subscription->saveAll()) {
                 \Yii::$app->session->addFlash('success', \Yii::t('subscription', 'Subscription type was saved successfully'));
-                $this->log('subscriptions-create-success', ['name' => $subscription->name]);
+                $this->log('subscriptions-create-success', $subscription->getAttributes());
                 return $this->redirect(['subscription/index']);
             } else {
-                $this->log('subscriptions-create-fail', ['name' => $subscription->name, 'errors' => json_encode($subscription->getFirstErrors())]);
+                $this->log('subscriptions-create-fail', [
+                    'name'   => $subscription->name,
+                    'errors' => json_encode($subscription->getFirstErrors()),
+                    'post'   => \Yii::$app->request->post(),
+                ]);
             }
         }
 
@@ -45,8 +49,9 @@ class SubscriptionController extends BaseController
             $subscription->setDiscounts([new SubscriptionDiscount()]);
         }
 
-        return $this->render('/subscription/create', [
+        return $this->renderAjax('/subscription/create', [
             'model' => $subscription,
+            'title' => \Yii::t('subscription', 'Create subscription'),
         ]);
     }
 
@@ -64,13 +69,17 @@ class SubscriptionController extends BaseController
         }
 
         if (\Yii::$app->request->post()) {
-            $this->log('subscriptions-update', []);
+            $this->log('subscriptions-update', $subscription->getAttributes());
             if ($subscription->build(\Yii::$app->request->post()) && $subscription->validateAll() && $subscription->saveAll()) {
                 \Yii::$app->session->addFlash('success', \Yii::t('subscription', 'Subscription type was saved successfully'));
-                $this->log('subscriptions-update-success', ['name' => $subscription->name]);
+                $this->log('subscriptions-update-success', $subscription->getAttributes());
                 return $this->redirect(['subscription/view', 'id' => $subscription->id]);
             } else {
-                $this->log('subscriptions-update-fail', ['name' => $subscription->name, 'errors' => json_encode($subscription->getFirstErrors())]);
+                $this->log('subscriptions-update-fail', [
+                    'name'   => $subscription->name,
+                    'errors' => json_encode($subscription->getFirstErrors()),
+                    'post'   => \Yii::$app->request->post(),
+                ]);
             }
         }
 
@@ -78,8 +87,9 @@ class SubscriptionController extends BaseController
             $subscription->setDiscounts([new SubscriptionDiscount()]);
         }
 
-        return $this->render('/subscription/create', [
+        return $this->renderAjax('/subscription/create', [
             'model' => $subscription,
+            'title' => \Yii::t('subscription', 'Update subscription'),
         ]);
     }
 

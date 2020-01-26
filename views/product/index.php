@@ -9,15 +9,19 @@ use yii\widgets\Pjax;
 
 $this->title = \Yii::t('product', 'Products');
 ?>
-<?php Pjax::begin([
-    'id'              => 'product-form',
-    'formSelector'    => '#product-form form',
-    'enablePushState' => false,
-]); ?>
+<?php Pjax::begin(); ?>
 <div class="box">
     <div class="box-header with-border">
         <div class="pull-left">
-            <?= Html::a(\Yii::t('product', 'Create product'), ['product/create'], ['class' => 'btn btn-sm btn-warning']) ?>
+            <?= Html::a(
+                '<i class="fa fa-plus"></i> ' . \Yii::t('product', 'Create product'),
+                ['product/create'],
+                [
+                    'class'       => 'btn btn-sm btn-warning',
+                    'data-href'   => Url::to(['create']),
+                    'data-toggle' => 'modal',
+                    'data-target' => '#modal',
+                ]) ?>
         </div>
         <div class="pull-right">
             <?= Html::button('<i class="fa fa-upload"></i> ', ['class' => 'btn btn-sm btn-default import']) ?>
@@ -35,7 +39,6 @@ $this->title = \Yii::t('product', 'Products');
                 ]) ?></div>
         </div>
     </div>
-    <?php Pjax::begin(); ?>
     <?= GridView::widget([
         'tableOptions' => [
             'data-resizable-columns-id' => 'product',
@@ -46,7 +49,6 @@ $this->title = \Yii::t('product', 'Products');
         'columns'      => (new \app\models\Search\Product())->getSearchColumns($searchModel),
     ]);
     ?>
-    <?php Pjax::end(); ?>
 </div>
 <?php Pjax::end(); ?>
 

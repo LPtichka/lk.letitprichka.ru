@@ -23,7 +23,9 @@ $this->title = \Yii::t('payment', 'Payment create');
         <?php $form = ActiveForm::begin(); ?>
         <div class="row">
             <div class="col-sm-12">
-                <?= $form->field($model, 'name') ?>
+                <?= $form->field($model, 'name')->textInput([
+
+                ]) ?>
             </div>
         </div>
         <div class="row modal-buttons">

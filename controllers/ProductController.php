@@ -40,22 +40,20 @@ class ProductController extends BaseController
 
             if ($isValidate && $product->save()) {
                 \Yii::$app->session->addFlash('success', \Yii::t('product', 'Product was saved successfully'));
-                $this->log('product-create-success', [
-                    'name' => $product->name,
-                    'id'   => $product->id,
-                ]);
+                $this->log('product-create-success', $product->getAttributes());
                 return $this->redirect(['product/index']);
             } else {
                 $this->log('product-create-fail', [
                     'name'   => $product->name,
+                    'post'   => \Yii::$app->request->post(),
                     'errors' => json_encode($product->getFirstErrors()),
                 ]);
             }
         }
-        return $this->render('/product/create', [
-            'model' => $product,
+        return $this->renderAjax('/product/create', [
+            'model'         => $product,
             'exceptionList' => ArrayHelper::map(Exception::find()->asArray()->all(), 'id', 'name'),
-            'title' => \Yii::t('product', 'Product create'),
+            'title'         => \Yii::t('product', 'Product create'),
         ]);
     }
 
@@ -72,36 +70,29 @@ class ProductController extends BaseController
         }
 
         if (\Yii::$app->request->post()) {
-            $this->log('product-edit', [
-                'name' => $product->name,
-                'id'   => $product->id,
-            ]);
+            $this->log('product-edit', $product->getAttributes());
 
             $post = \Yii::$app->request->post();
-            !empty($post['Product']['weight']) && $post['Product']['weight'] = (new Weight())->convert((float)$post['Product']['weight'], Weight::UNIT_KG);
-
             $product->load($post);
             $isValidate = $product->validate();
             if ($isValidate && $product->save()) {
-                $this->log('product-edit-success', [
-                    'name' => $product->name,
-                    'id'   => $product->id,
-                ]);
+                $this->log('product-edit-success', $product->getAttributes());
                 \Yii::$app->session->addFlash('success', \Yii::t('product', 'Product was saved successfully'));
                 return $this->redirect(['product/index']);
             } else {
                 $this->log('product-edit-fail', [
                     'name' => $product->name,
                     'id'   => $product->id,
+                    'post' => $post,
                 ]);
             }
         }
 
         $product->weight = (new Weight())->setUnit(Weight::UNIT_KG)->convert($product->weight, Weight::UNIT_GR);
-        return $this->render('/product/create', [
-            'model' => $product,
+        return $this->renderAjax('/product/create', [
+            'model'         => $product,
             'exceptionList' => ArrayHelper::map(Exception::find()->asArray()->all(), 'id', 'name'),
-            'title' => \Yii::t('product', 'Product update'),
+            'title'         => \Yii::t('product', 'Product update'),
         ]);
     }
 
@@ -148,7 +139,7 @@ class ProductController extends BaseController
      */
     public function actionDelete()
     {
-        $productIDs = \Yii::$app->request->post('selection');
+        $productIDs                  = \Yii::$app->request->post('selection');
         \Yii::$app->response->format = Response::FORMAT_JSON;
 
         $this->log('product-delete', $productIDs);
@@ -157,7 +148,7 @@ class ProductController extends BaseController
             $isDelete = \app\models\Repository\Product::deleteAll(['id' => $id]);
             if (!$isDelete) {
                 $transaction->rollBack();
-                $this->log('product-delete-fail', ['id' => (string)$id]);
+                $this->log('product-delete-fail', ['id' => (string) $id]);
                 return [
                     'status' => false,
                     'title'  => \Yii::t('product', 'Products was not deleted')
@@ -202,7 +193,7 @@ class ProductController extends BaseController
     {
         return $this->renderAjax('/dish/_product', [
             'product' => new \app\models\Repository\DishProduct(),
-            'i'            => ++$counter,
+            'i'       => ++$counter,
         ]);
     }
 
@@ -217,16 +208,16 @@ class ProductController extends BaseController
         $products = \app\models\Repository\Product::find()
             ->select(['*', $element . ' as value'])
             ->andFilterWhere(['like', $element, $term])
-            ->orderBy(['count'   => SORT_DESC])
+            ->orderBy(['count' => SORT_DESC])
             ->asArray()
             ->all();
 
         $result = [];
         foreach ($products as $product) {
             $result[] = [
-                'name' => $product['name'],
-                'weight' => $product['weight'],
-                'count' => $product['count'],
+                'name'       => $product['name'],
+                'weight'     => $product['weight'],
+                'count'      => $product['count'],
                 'product_id' => $product['id'],
             ];
         }

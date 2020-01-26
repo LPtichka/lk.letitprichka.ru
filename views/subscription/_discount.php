@@ -10,7 +10,7 @@ use app\widgets\Html;
 
 <div class="discount-row" id="group-<?= $i ?>">
     <div class="row">
-        <div class="col-sm-1 col-print-1 text-center">
+        <div class="col-sm-1 col-print-1">
             <span class="counter"><?= $i + 1 ?></span>
         </div>
         <div class="col-sm-4 col-print-4">

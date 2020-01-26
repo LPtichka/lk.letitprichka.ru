@@ -20,7 +20,7 @@ class Arrays
      */
     public function getSelectOptions(): array
     {
-        $result = ['' => \Yii::t('app', 'Choose element')];
+        $result = ['' => ''];
         return $result + $this->data;
     }
 }

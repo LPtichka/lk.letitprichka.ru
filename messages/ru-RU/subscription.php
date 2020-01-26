@@ -18,5 +18,6 @@ return [
     'Price'                                                => 'Базовая стоимость',
     'Subscription create'                                  => 'Создание подписки',
     'Subscription type was saved successfully'             => 'Подписка была успешно сохранена',
+    'Update subscription'                                  => 'Обновление подписки',
     'Subscriptions'                                        => 'Подписки',
 ];
