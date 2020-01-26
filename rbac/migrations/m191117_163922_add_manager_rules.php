@@ -164,16 +164,16 @@ class m191117_163922_add_manager_rules extends Migration
         $this->removeChild('manager', '/franchise/view');
         $this->removePermission('/franchise/view');
 
-        $this->removeChild('manager', '/menu/index');
-        $this->removePermission('/menu/index');
-        $this->removeChild('manager', '/menu/create');
-        $this->removePermission('/menu/create');
-        $this->removeChild('manager', '/menu/delete');
-        $this->removePermission('/menu/delete');
-        $this->removeChild('manager', '/menu/view');
-        $this->removePermission('/menu/view');
-        $this->removeChild('manager', '/menu/get-day-blocks');
-        $this->removePermission('/menu/get-day-blocks');
+//        $this->removeChild('manager', '/menu/index');
+//        $this->removePermission('/menu/index');
+//        $this->removeChild('manager', '/menu/create');
+//        $this->removePermission('/menu/create');
+//        $this->removeChild('manager', '/menu/delete');
+//        $this->removePermission('/menu/delete');
+//        $this->removeChild('manager', '/menu/view');
+//        $this->removePermission('/menu/view');
+//        $this->removeChild('manager', '/menu/get-day-blocks');
+//        $this->removePermission('/menu/get-day-blocks');
 
         $this->removeChild('manager', '/order/index');
         $this->removePermission('/order/index');

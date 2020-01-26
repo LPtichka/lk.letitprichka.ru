@@ -64,8 +64,6 @@ class Address extends Repository
             ]);
         }
 
-//        echo $query->createCommand()->rawSql;die();
-
         return $dataProvider;
     }
 
