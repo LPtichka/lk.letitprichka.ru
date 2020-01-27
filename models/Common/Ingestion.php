@@ -12,9 +12,20 @@ use yii\base\Model;
 class Ingestion extends Model
 {
     const BREAKFAST = 1;
-    const LUNCH = 2;
-    const DINNER = 3;
+    const LUNCH = 3;
+    const DINNER = 2;
     const SUPPER = 4;
+
+    const FIRST = 1;
+    const SECOND = 2;
+
+    const BREAKFAST_NAME = 'завтрак';
+    const LUNCH_NAME = 'перекус';
+    const DINNER_NAME = 'обед';
+    const SUPPER_NAME = 'ужин';
+
+    const DINNER_FIRST_NAME = 'первое';
+    const DINNER_SECOND_NAME = 'второе';
 
     /** @var Dish */
     private $dish;
@@ -89,5 +100,43 @@ class Ingestion extends Model
     public function isSupper(): bool
     {
         return $this->eatingType === self::SUPPER;
+    }
+
+    /**
+     * @param int $ingestionType
+     * @param int $type
+     * @return string
+     */
+    public function getIngestionName(int $ingestionType, int $type = 0): string
+    {
+        $name = '';
+
+        switch ($ingestionType) {
+            case self::BREAKFAST:
+                $name = self::BREAKFAST_NAME;
+                break;
+            case self::DINNER:
+                $name = self::DINNER_NAME;
+                break;
+            case self::LUNCH:
+                $name = self::LUNCH_NAME;
+                break;
+            case self::SUPPER:
+                $name = self::SUPPER_NAME;
+                break;
+        }
+
+        if (!empty($type)) {
+            switch ($type) {
+                case self::FIRST:
+                    $name .= ' ' . self::DINNER_FIRST_NAME;
+                    break;
+                case self::SECOND:
+                    $name .= ' ' . self::DINNER_SECOND_NAME;
+                    break;
+            }
+        }
+
+        return $name;
     }
 }

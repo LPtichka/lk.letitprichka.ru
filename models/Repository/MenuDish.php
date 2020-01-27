@@ -2,6 +2,8 @@
 
 namespace app\models\Repository;
 
+use app\models\Common\Ingestion;
+use app\models\Common\MarriageDish;
 use app\models\Helper\Weight;
 use app\models\Queries\MenuDishQuery;
 use app\models\Queries\MenuQuery;
@@ -80,5 +82,29 @@ class MenuDish extends \yii\db\ActiveRecord
         return [
             TimestampBehavior::class,
         ];
+    }
+
+    /**
+     * @param string $date
+     * @return array
+     */
+    public function getMarriageForDate(string $date): array
+    {
+        $result = [];
+        $time = strtotime($date);
+        $dishes = MenuDish::find()->where(['date' => date('Y-m-d', $time)])->orderBy(['ingestion_type' => SORT_ASC])->all();
+        $time = date("H:i", time());
+        foreach ($dishes as $dish) {
+            if (!empty($dish->dish_type)) {
+                $ingestionName = (new Ingestion())->getIngestionName($dish->ingestion_type, $dish->dish_type);
+            } else {
+                $ingestionName = (new Ingestion())->getIngestionName($dish->ingestion_type);
+            }
+
+            $marriageDish = new MarriageDish($time, $ingestionName, $dish->dish->name);
+            $marriageDish->setResult('проба снята, разрешено к выдачи');
+            $result[] = $marriageDish;
+        }
+        return $result;
     }
 }

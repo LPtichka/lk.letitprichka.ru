@@ -1,6 +1,7 @@
 <?php declare(strict_types = 1);
 namespace app\models\Helper;
 
+use app\models\Common\MarriageDish;
 use app\models\Common\Route;
 use app\models\Repository\Dish;
 
@@ -15,6 +16,7 @@ class Excel
     const MODEL_USER = 'user';
     const MODEL_CUSTOMER = 'customer';
     const MODEL_ROUTE_SHEET = 'route_sheet';
+    const MODEL_MARRIAGE_SHEET = 'marriage_sheet';
 
     const COLUMN_NAMES = [
         1  => 'А',
@@ -175,6 +177,8 @@ class Excel
             return $this->prepareDish($data);
         } elseif ($model === self::MODEL_ROUTE_SHEET) {
             return $this->prepareRouteSheet($data, $params);
+        } elseif ($model === self::MODEL_MARRIAGE_SHEET) {
+            return $this->prepareMarriageSheet($data, $params);
         }
 
         $objWorksheet = $this->fileName->getActiveSheet();
@@ -402,6 +406,59 @@ class Excel
         $objWorksheet->getStyle('A3' . ':F' . (count($routes) + 3))->applyFromArray($this->borderAll);
         $objWorksheet->getStyle('A1:B1')->applyFromArray($this->fillGreen);
         $objWorksheet->getStyle('A3:F3')->applyFromArray($this->fillGreen);
+
+        return true;
+    }
+
+    /**
+     * @param MarriageDish[]|iterable $marriageDish
+     * @param array $params
+     * @return bool
+     */
+    public function prepareMarriageSheet(iterable $marriageDish, array $params): bool
+    {
+        $objWorksheet = $this->fileName->getActiveSheet();
+        $objWorksheet->setTitle('Лист бракеражной комиссии');
+
+        $objWorksheet->getCellByColumnAndRow(0, 1)->setValue('дата');
+        $objWorksheet->getCellByColumnAndRow(1, 1)->setValue('время бракеража');
+        $objWorksheet->getCellByColumnAndRow(2, 1)->setValue('тип');
+        $objWorksheet->getCellByColumnAndRow(3, 1)->setValue('наименование изделия');
+        $objWorksheet->getCellByColumnAndRow(4, 1)->setValue('результат органолептической оценки и степени готовности');
+        $objWorksheet->getCellByColumnAndRow(5, 1)->setValue('разрешение к реализации');
+        $objWorksheet->getCellByColumnAndRow(6, 1)->setValue('подписи членов бракеражной комиссии');
+
+        $i = 2;
+        foreach ($marriageDish as $key => $dish) {
+            $objWorksheet->getCellByColumnAndRow(1, ($i + $key))->setValue($dish->getTime());
+            $cell = $objWorksheet->getCellByColumnAndRow(0, ($i + $key));
+            $objWorksheet->getColumnDimension($cell->getColumn())->setAutoSize(true);
+
+            $objWorksheet->getCellByColumnAndRow(2, ($i + $key))->setValue($dish->getType());
+            $cell = $objWorksheet->getCellByColumnAndRow(1, ($i + $key));
+            $objWorksheet->getColumnDimension($cell->getColumn())->setAutoSize(true);
+
+            $objWorksheet->getCellByColumnAndRow(3, ($i + $key))->setValue($dish->getDishName());
+            $cell = $objWorksheet->getCellByColumnAndRow(2, ($i + $key));
+            $objWorksheet->getColumnDimension($cell->getColumn())->setAutoSize(true);
+
+            $objWorksheet->getCellByColumnAndRow(4, ($i + $key))->setValue($dish->getRating());
+            $cell = $objWorksheet->getCellByColumnAndRow(3, ($i + $key));
+            $objWorksheet->getColumnDimension($cell->getColumn())->setAutoSize(true);
+
+            $objWorksheet->getCellByColumnAndRow(5, ($i + $key))->setValue($dish->getResult());
+            $cell = $objWorksheet->getCellByColumnAndRow(4, ($i + $key));
+            $objWorksheet->getColumnDimension($cell->getColumn())->setAutoSize(true);
+
+            $objWorksheet->getCellByColumnAndRow(6, ($i + $key))->setValue($dish->getSignature());
+            $cell = $objWorksheet->getCellByColumnAndRow(5, ($i + $key));
+            $objWorksheet->getColumnDimension($cell->getColumn())->setAutoSize(true);
+        }
+
+        $objWorksheet->mergeCells('A2:A' . (count($marriageDish) + 1));
+        $objWorksheet->getCellByColumnAndRow(0, 2)->setValue($params['date'] ?? '');
+
+        $objWorksheet->getStyle('A1:G1')->applyFromArray($this->fillGreen);
 
         return true;
     }

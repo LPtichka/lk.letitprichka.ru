@@ -1,10 +1,12 @@
 <?php
 namespace app\controllers;
 
+use app\models\Helper\Excel;
 use app\models\Repository\Dish;
 use app\models\Search\Menu;
 use yii\helpers\ArrayHelper;
 use yii\web\NotFoundHttpException;
+use yii\web\Response;
 
 class MenuController extends BaseController
 {
@@ -132,5 +134,48 @@ class MenuController extends BaseController
             'firstDishesDinner'  => ArrayHelper::map(Dish::find()->where(['type' => Dish::TYPE_FIRST, 'is_dinner' => true])->asArray()->all(), 'id', 'name'),
             'secondDishesDinner' => ArrayHelper::map(Dish::find()->where(['type' => Dish::TYPE_SECOND, 'is_dinner' => true])->asArray()->all(), 'id', 'name'),
         ]);
+    }
+
+    /**
+     * @return string
+     */
+    public function actionGetMarriageSheet()
+    {
+        $ingestions = [];
+
+        if (\Yii::$app->request->post()) {
+            $date       = \Yii::$app->request->post('date');
+            $ingestions = (new \app\models\Repository\MenuDish())->getMarriageForDate($date);
+        }
+
+        return $this->renderAjax('/menu/_get_marriage_sheet', [
+            'ingestions' => $ingestions,
+            'date'       => $date ?? '',
+            'title'      => \Yii::t('order', 'Marriage sheet'),
+        ]);
+    }
+
+    /**
+     * @return string
+     */
+    public function actionSaveMarriageSheet()
+    {
+        $ingestions = [];
+
+        if (\Yii::$app->request->post()) {
+            $date       = \Yii::$app->request->post('date');
+            $ingestions = (new \app\models\Repository\MenuDish())->getMarriageForDate($date);
+
+            $excel = new Excel();
+            $excel->loadFromTemplate('files/templates/base.xlsx');
+            $excel->prepare($ingestions, Excel::MODEL_MARRIAGE_SHEET, \Yii::$app->request->post());
+            $excel->save('marriage_sheet.xlsx', 'temp');
+
+            \Yii::$app->response->format = Response::FORMAT_JSON;
+
+            return [
+                'url' => $excel->getUrl()
+            ];
+        }
     }
 }

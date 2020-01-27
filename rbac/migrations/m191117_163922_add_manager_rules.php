@@ -74,6 +74,10 @@ class m191117_163922_add_manager_rules extends Migration
         $this->addChild('manager', '/menu/view');
         $this->createPermission('/menu/get-day-blocks');
         $this->addChild('manager', '/menu/get-day-blocks');
+        $this->createPermission('/menu/get-marriage-sheet');
+        $this->addChild('manager', '/menu/get-marriage-sheet');
+        $this->createPermission('/menu/save-marriage-sheet');
+        $this->addChild('manager', '/menu/save-marriage-sheet');
 
         $this->createPermission('/order/index');
         $this->addChild('manager', '/order/index');
@@ -178,6 +182,10 @@ class m191117_163922_add_manager_rules extends Migration
         $this->removePermission('/menu/view');
         $this->removeChild('manager', '/menu/get-day-blocks');
         $this->removePermission('/menu/get-day-blocks');
+        $this->removeChild('manager', '/menu/get-marriage-sheet');
+        $this->removePermission('/menu/get-marriage-sheet');
+        $this->removeChild('manager', '/menu/save-marriage-sheet');
+        $this->removePermission('/menu/save-marriage-sheet');
 
         $this->removeChild('manager', '/order/index');
         $this->removePermission('/order/index');

@@ -20,6 +20,14 @@ $this->title = \Yii::t('subscription', 'Menu');
                 <?= Html::a(\Yii::t('subscription', 'Create menu'), ['menu/create'], ['class' => 'btn btn-sm btn-warning']) ?>
             </div>
             <div class="pull-right">
+                <?= Html::a('<i class="fa fa-users"></i> ',
+                    ['order/get-route-sheet'],
+                    [
+                        'class'       => 'btn btn-sm btn-default',
+                        'data-href'   => Url::to(['menu/get-marriage-sheet']),
+                        'data-toggle' => 'modal',
+                        'data-target' => '#modal',
+                    ]) ?>
                 <?= Html::submitButton('<i class="fa fa-times"></i> ', [
                     'class'      => 'btn btn-sm btn-danger delete',
                     'data-title' => \Yii::t('menu', 'Do you really want to delete selected subscriptions?'),
