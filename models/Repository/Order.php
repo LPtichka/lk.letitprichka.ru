@@ -293,6 +293,7 @@ class Order extends \yii\db\ActiveRecord
         !empty($data['schedule']['count']) && $this->count = $data['schedule']['count'];
         !empty($data['payment_type']) && $this->payment_type = $data['payment_type'];
         !empty($data['comment']) && $this->comment = $data['comment'];
+        !empty($data['franchise_id']) && $this->franchise_id = $data['franchise_id'];
 
         $paymentType = PaymentType::findOne($this->payment_type);
         if (!$paymentType) {
