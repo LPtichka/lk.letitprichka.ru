@@ -294,6 +294,7 @@ class Order extends \yii\db\ActiveRecord
         !empty($data['payment_type']) && $this->payment_type = $data['payment_type'];
         !empty($data['comment']) && $this->comment = $data['comment'];
         !empty($data['franchise_id']) && $this->franchise_id = $data['franchise_id'];
+        !empty($data['options']) && $this->without_soup = in_array('without_soup', $data['options']);
 
         $paymentType = PaymentType::findOne($this->payment_type);
         if (!$paymentType) {
