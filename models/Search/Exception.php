@@ -6,6 +6,7 @@ use app\models\Repository\Exception as Repository;
 use app\widgets\Grid\CheckboxColumn;
 use yii\data\ActiveDataProvider;
 use yii\helpers\Html;
+use yii\helpers\Url;
 
 class Exception extends Repository
 {
@@ -45,6 +46,7 @@ class Exception extends Repository
         $query->andFilterWhere([
             'id' => $this->id,
         ]);
+        $query->andFilterWhere(['status' => self::STATUS_ACTIVE]);
 
         $query->andFilterWhere(['like', 'name', $this->name]);
 
@@ -93,7 +95,18 @@ class Exception extends Repository
             'label' => \Yii::t('exception', 'ID'),
             'contentOptions' => ['style' => 'width:120px;'],
             'content' => function ($model) {
-                return Html::a($model->id, ['exception/view', 'id' => $model->id]);
+                return Html::a(
+                    $model->id,
+                    [
+                        'exception/view',
+                        'id' => $model->id,
+                    ],
+                    [
+                        'data-href'   => Url::to(['exception/view', 'id' => $model->id]),
+                        'data-toggle' => 'modal',
+                        'data-target' => '#modal',
+                    ]
+                );
             }
         ];
 

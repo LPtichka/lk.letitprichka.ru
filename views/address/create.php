@@ -114,7 +114,7 @@ $this->title = \Yii::t('address', 'Address create');
                 </div>
                 <div class="col-md-6">
                     <div class="form-group text-right">
-                        <?= Html::a(\Yii::t('app', 'Cancel'), ['payment-type/index'], ['class' => 'btn btn-sm btn-default']) ?>
+                        <?= Html::a(\Yii::t('app', 'Cancel'), ['address/index'], ['class' => 'btn btn-sm btn-default']) ?>
                     </div>
                 </div>
             </div>

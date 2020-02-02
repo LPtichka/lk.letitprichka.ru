@@ -10,15 +10,20 @@ use yii\widgets\Pjax;
 
 $this->title = $title;
 ?>
-<?php Pjax::begin([
-    'id'              => 'exception-form',
-    'formSelector'    => '#exception-form form',
-    'enablePushState' => false,
-]); ?>
+<?php Pjax::begin(); ?>
 <div class="box">
     <div class="box-header with-border">
         <div class="pull-left">
-            <?= Html::a(\Yii::t('exception', 'Create exception'), ['exception/create'], ['class' => 'btn btn-sm btn-warning']) ?>
+            <?= Html::a(
+                '<i class="fa fa-plus"></i> ' . \Yii::t('exception', 'Create exception'),
+                ['exception/create'],
+                [
+                    'class'       => 'btn btn-sm btn-warning',
+                    'data-href'   => Url::to(['create']),
+                    'data-toggle' => 'modal',
+                    'data-target' => '#modal',
+                ]
+            ); ?>
         </div>
         <div class="pull-right">
             <?= Html::button('<i class="fa fa-upload"></i> ', ['class' => 'btn btn-sm btn-default import']) ?>
@@ -36,7 +41,6 @@ $this->title = $title;
                 ]) ?></div>
         </div>
     </div>
-    <?php Pjax::begin(); ?>
     <?= GridView::widget([
         'tableOptions' => [
             'data-resizable-columns-id' => 'exception',
@@ -47,7 +51,6 @@ $this->title = $title;
         'columns'      => (new \app\models\Search\Exception())->getSearchColumns($searchModel),
     ]);
     ?>
-    <?php Pjax::end(); ?>
 </div>
 <?php Pjax::end(); ?>
 

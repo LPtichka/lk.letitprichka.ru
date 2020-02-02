@@ -43,7 +43,7 @@ class ExceptionController extends BaseController
                 $this->log('exception-create-fail', ['name' => $exception->name, 'errors' => json_encode($exception->getFirstErrors())]);
             }
         }
-        return $this->render('/exception/create', [
+        return $this->renderAjax('/exception/create', [
             'model' => $exception,
             'title' => \Yii::t('exception', 'Exception create'),
         ]);
@@ -73,7 +73,7 @@ class ExceptionController extends BaseController
                 $this->log('exception-edit-fail', ['name' => $exception->name]);
             }
         }
-        return $this->render('/exception/create', [
+        return $this->renderAjax('/exception/create', [
             'model' => $exception,
             'title' => \Yii::t('exception', 'Exception update'),
         ]);
@@ -86,25 +86,14 @@ class ExceptionController extends BaseController
     public function actionDelete()
     {
         $exceptionsIDs = \Yii::$app->request->post('selection');
-
         \Yii::$app->response->format = Response::FORMAT_JSON;
 
         $this->log('exception-delete', $exceptionsIDs);
         $transaction = \Yii::$app->db->beginTransaction();
         foreach ($exceptionsIDs as $id) {
-            try {
-                $isDelete = \app\models\Repository\Exception::deleteAll(['id' => $id]);
-            } catch (IntegrityException $e) {
-                $transaction->rollBack();
-                $this->log('exception-delete-fail', [$e->getMessage()]);
-                return [
-                    'status' => false,
-                    'title'  => \Yii::t('order', 'Error'),
-                    'description'  => \Yii::t('order', 'Exception was not deleted because has links with products'),
-                ];
-            }
-
-            if (!$isDelete) {
+            $exception = \app\models\Repository\Exception::findOne($id);
+            $exception->status = \app\models\Repository\Exception::STATUS_DELETED;
+            if (!$exception->save(false)) {
                 $transaction->rollBack();
                 $this->log('exception-delete-fail', $exceptionsIDs);
                 return [

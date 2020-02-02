@@ -10,6 +10,7 @@ use yii\behaviors\TimestampBehavior;
  *
  * @property int $id
  * @property string $name
+ * @property int $status
  * @property int $created_at
  * @property int $updated_at
  *
@@ -64,7 +65,8 @@ class Exception extends \yii\db\ActiveRecord
     {
         return [
             ['name', 'unique', 'message' => \Yii::t('exception', 'This exception has already exists')],
-            ['name', 'string'],
+            ['name', 'string', 'min' => 5],
+            ['status', 'default', 'value' => self::STATUS_ACTIVE],
             [['name'], 'required'],
         ];
     }

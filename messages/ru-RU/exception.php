@@ -14,4 +14,5 @@ return [
     'Updated at'                                        => 'Дата обновления',
     'Exception was imported successfully'               => 'Исключения были успешно импортированы',
     'Product count'                                     => 'Количество продуктов',
+    'Exception was successful deleted'                  => 'Исключение были удалены',
 ];

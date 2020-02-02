@@ -328,6 +328,15 @@ tr.error {
     margin-top: 15px;
 }
 
+.modal-body {
+    padding: 20px 20px 5px;
+}
+
+.modal-header {
+    padding-left: 20px;
+    padding-right: 20px;
+}
+
 .sweet-alert button {
     border-radius: 3px !important;
     font-weight: 300;
@@ -353,4 +362,8 @@ tr.error {
 
 hr.devider {
     margin-top: 10px !important;
+}
+
+#add-discount {
+    margin-right: 15px;
 }
