@@ -80,4 +80,12 @@ class Exception extends \yii\db\ActiveRecord
             TimestampBehavior::class,
         ];
     }
+
+    /**
+     * @return array
+     */
+    public function getExceptionList(): array
+    {
+        return Exception::find()->where(['status' => self::STATUS_ACTIVE])->asArray()->all();
+    }
 }

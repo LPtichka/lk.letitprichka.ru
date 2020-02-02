@@ -8,6 +8,7 @@ use kartik\daterange\DateRangePicker;
 use yii\data\ActiveDataProvider;
 use yii\grid\CheckboxColumn;
 use yii\helpers\Html;
+use yii\helpers\Url;
 
 class Customer extends Repository
 {
@@ -134,17 +135,25 @@ class Customer extends Repository
                     ]
                 ])
             ),
-            'content'        => function ($model) {
+            'content'        => function ($model){
                 return date('d.m.Y \в H:i', $model->updated_at);
             }
         ];
 
         $result['id'] = [
-            'attribute' => 'id',
+            'attribute'      => 'id',
             'contentOptions' => ['style' => 'width:120px;'],
-            'label'     => \Yii::t('customer', 'ID'),
-            'content'   => function ($model) {
-                return Html::a($model->id, ['customer/view', 'id' => $model->id]);
+            'label'          => \Yii::t('customer', 'ID'),
+            'content'        => function ($model){
+                return Html::a($model->id,
+                    ['customer/view', 'id' => $model->id],
+                    [
+
+                        'data-href'   => Url::to(['customer/view', 'id' => $model->id]),
+                        'data-toggle' => 'modal',
+                        'data-target' => '#modal',
+                    ]
+                );
             }
         ];
 
@@ -156,7 +165,7 @@ class Customer extends Repository
         $result['phone'] = [
             'attribute' => 'phone',
             'label'     => \Yii::t('customer', 'Phone'),
-            'content'   => function ($model) {
+            'content'   => function ($model){
                 return (new Phone($model->phone))->getHumanView();
             }
         ];
@@ -169,7 +178,7 @@ class Customer extends Repository
         $result['default_address_id'] = [
             'attribute' => 'default_address_id',
             'label'     => \Yii::t('customer', 'Default address ID'),
-            'content'   => function ($model) {
+            'content'   => function ($model){
                 return $model->getDefaultAddress() ? $model->getDefaultAddress()->full_address : '---';
             }
         ];

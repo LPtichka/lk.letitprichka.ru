@@ -52,7 +52,7 @@ class ProductController extends BaseController
         }
         return $this->renderAjax('/product/create', [
             'model'         => $product,
-            'exceptionList' => ArrayHelper::map(Exception::find()->asArray()->all(), 'id', 'name'),
+            'exceptionList' => ArrayHelper::map((new Exception())->getExceptionList(), 'id', 'name'),
             'title'         => \Yii::t('product', 'Product create'),
         ]);
     }
@@ -91,7 +91,7 @@ class ProductController extends BaseController
         $product->weight = (new Weight())->setUnit(Weight::UNIT_KG)->convert($product->weight, Weight::UNIT_GR);
         return $this->renderAjax('/product/create', [
             'model'         => $product,
-            'exceptionList' => ArrayHelper::map(Exception::find()->asArray()->all(), 'id', 'name'),
+            'exceptionList' => ArrayHelper::map((new Exception())->getExceptionList(), 'id', 'name'),
             'title'         => \Yii::t('product', 'Product update'),
         ]);
     }

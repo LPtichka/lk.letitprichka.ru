@@ -1,14 +1,16 @@
 <?php
 
+use app\widgets\Alert;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\widgets\ActiveForm;
 use yii\widgets\MaskedInput;
+use yii\widgets\Pjax;
 
 /** @var \app\models\Search\Customer $searchModel */
 /** @var \app\models\Repository\Customer $model */
 
-$this->title = $title;
+$this->title                   = $title;
 $this->params['breadcrumbs'][] = ['label' => \Yii::t('app', 'Customers'), 'url' => Url::to(['customer/index'])];
 if ($model->id) {
     $this->params['breadcrumbs'][] = \Yii::t('app', 'Customer № {id}', ['id' => $model->id]);
@@ -16,71 +18,60 @@ if ($model->id) {
     $this->params['breadcrumbs'][] = \Yii::t('app', 'New Customer');
 }
 ?>
+<?php Pjax::begin([
+    'id'              => 'customer-form',
+    'formSelector'    => '#customer-form form',
+    'enablePushState' => false,
+]); ?>
 <div class="row">
-    <div class="col-md-8">
+    <?= Alert::widget(['options' => ['style' => 'margin-bottom:20px']]) ?>
+
+    <title><?= Html::encode($this->title) ?></title>
+    <h1><?= Html::encode($this->title) ?></h1>
+    <div class="col-md-12">
         <?php $form = ActiveForm::begin(); ?>
-        <div class="box box-primary">
-            <div class="box-header with-border">
-                <h3 class="box-title"><?php echo \Yii::t('customer', 'Base information'); ?></h3>
+        <div class="row">
+            <div class="col-sm-12">
+                <?= $form->field($model, 'fio')->textInput([
+                    'class' => 'form-control input-sm'
+                ]) ?>
             </div>
-            <div class="box-body">
-                <div class="row">
-                    <div class="col-sm-12">
-                        <?= $form->field($model, 'fio')->textInput([
-                            'class' => 'form-control input-sm'
-                        ]) ?>
-                    </div>
-                    <div class="col-sm-6">
-                        <?= $form->field($model, 'email')->textInput([
-                            'class' => 'form-control input-sm'
-                        ]) ?>
-                    </div>
-                    <div class="col-sm-6">
-                        <?= $form->field($model, 'phone')->widget(
-                            MaskedInput::class,
-                            [
-                                'mask'          => '+7 (999) 999-99-99',
-                                'clientOptions' => ['onincomplete' => 'function(){$("#user-phone").removeAttr("value").attr("value","");}'],
-                                'options'       => [
-                                    'class'       => 'form-control input-sm',
-                                    'placeholder' => '+7 (___) ___-__-__',
-                                ]
-                            ]) ?>
-                    </div>
-                </div>
+            <div class="col-sm-6">
+                <?= $form->field($model, 'email')->textInput([
+                    'class' => 'form-control input-sm'
+                ]) ?>
+            </div>
+            <div class="col-sm-6">
+                <?= $form->field($model, 'phone')->widget(
+                    MaskedInput::class,
+                    [
+                        'mask'          => '+7 (999) 999-99-99',
+                        'clientOptions' => ['onincomplete' => 'function(){$("#user-phone").removeAttr("value").attr("value","");}'],
+                        'options'       => [
+                            'class'       => 'form-control input-sm',
+                            'placeholder' => '+7 (___) ___-__-__',
+                        ]
+                    ]) ?>
             </div>
         </div>
-        <div class="box box-primary">
-            <div class="box-header with-border">
-                <h3 class="box-title"><?php echo \Yii::t('customer', 'Addresses'); ?></h3>
+
+        <div class="addresses">
+            <hr/>
+            <div class="row">
+                <div class="col-sm-4 col-print-4"><label>Полный адрес</label></div>
+                <div class="col-sm-6 col-print-6"><label>Комментарий</label></div>
+                <div class="col-sm-2 col-print-2"><label>Основной</label></div>
             </div>
-            <div class="box-body">
-                <div class="addresses">
-                    <div class="row">
-                        <div class="col-sm-4 col-print-4"><label>Полный адрес</label></div>
-                        <div class="col-sm-6 col-print-6"><label>Комментарий</label></div>
-                        <div class="col-sm-2 col-print-2"><label>Основной</label></div>
-                    </div>
-                    <?php foreach ($model->addresses as $i => $address) : ?>
-                        <?= $this->render('_address', [
-                            'address'          => $address,
-                            'i'                => $i,
-                            'defaultAddressId' => $model->default_address_id,
-                        ]) ?>
-                    <?php endforeach; ?>
-                </div>
-                <hr />
-                <div class="row">
-                    <div class="col-sm-12 product-buttons">
-                        <a href="javascript:void(0)" id="add-address"
-                           class="btn btn-sm btn-primary pull-right">
-                            <i class="fa fa-plus"></i>
-                            <?= Yii::t('customer', 'Add address') ?>
-                        </a>
-                    </div>
-                </div>
-            </div>
+            <hr class="devider"/>
+            <?php foreach ($model->addresses as $i => $address) : ?>
+                <?= $this->render('_address', [
+                    'address'          => $address,
+                    'i'                => $i,
+                    'defaultAddressId' => $model->default_address_id,
+                ]) ?>
+            <?php endforeach; ?>
         </div>
+        <hr/>
         <div class="row">
             <div class="col-md-6">
                 <div class="form-group">
@@ -89,7 +80,15 @@ if ($model->id) {
             </div>
             <div class="col-md-6">
                 <div class="form-group text-right">
-                    <?= Html::a(\Yii::t('app', 'Cancel'), ['customer/index'], ['class' => 'btn btn-sm btn-default']) ?>
+                    <a href="javascript:void(0)" id="add-address"
+                       class="btn btn-sm btn-primary mr-15">
+                        <i class="fa fa-plus"></i>
+                        <?= Yii::t('customer', 'Add address') ?>
+                    </a>
+                    <?= Html::a(\Yii::t('app', 'Cancel'), '#', [
+                        'class'        => 'btn btn-sm btn-default',
+                        'data-dismiss' => 'modal'
+                    ]) ?>
                 </div>
             </div>
         </div>

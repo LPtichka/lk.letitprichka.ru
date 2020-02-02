@@ -44,157 +44,10 @@ class CustomerController extends BaseController
             $customer->setAddresses([new Address()]);
         }
 
-        return $this->render('/customer/create', [
+        return $this->renderAjax('/customer/create', [
             'title' => \Yii::t('customer', 'Customer create'),
             'model' => $customer,
         ]);
-    }
-
-
-    /**
-     * @param int $id
-     * @return string
-     * @throws NotFoundHttpException
-     * @throws \yii\db\Exception
-     */
-    public function actionView(int $id)
-    {
-        $customer = \app\models\Repository\Customer::findOne($id);
-        if (!$customer) {
-            throw new NotFoundHttpException('Покупатель не найден');
-        }
-
-        if ($post = \Yii::$app->request->post()) {
-            if ($this->saveCustomer($customer, $post)) {
-                return $this->redirect(['customer/view', 'id' => $customer->id]);
-            }
-        }
-
-        if (empty($customer->addresses)) {
-            $customer->setAddresses([new Address()]);
-        }
-
-        return $this->render('/customer/create', [
-            'model' => $customer,
-            'title' => \Yii::t('customer', 'Customer update: #') . $customer->id . '<small> '.$customer->fio.' </small>',
-        ]);
-    }
-
-    /**
-     * @return array
-     * @throws \yii\db\Exception
-     */
-    public function actionDelete()
-    {
-        $customerIDs = \Yii::$app->request->post('selection');
-
-        \Yii::$app->response->format = Response::FORMAT_JSON;
-
-        $this->log('customer-delete', $customerIDs);
-        $transaction = \Yii::$app->db->beginTransaction();
-        foreach ($customerIDs as $id) {
-            $customer         = \app\models\Repository\Customer::findOne($id);
-            $customer->status = 0;
-            if (!$customer->save()) {
-                $transaction->rollBack();
-                $this->log('customer-delete-fail', ['id' => (string)$id]);
-                return [
-                    'status' => false,
-                    'title'  => \Yii::t('product', 'Customers was not deleted')
-                ];
-            }
-        }
-
-        $transaction->commit();
-        $this->log('customer-delete-success', $customerIDs);
-        return [
-            'status'      => true,
-            'title'       => \Yii::t('product', 'Customer was successful deleted'),
-            'description' => \Yii::t('product', 'Chosen customers was successful deleted'),
-        ];
-    }
-
-
-    /**
-     * @return array
-     * @throws \PHPExcel_Exception
-     * @throws \PHPExcel_Reader_Exception
-     */
-    public function actionExport()
-    {
-        $customers = (new Customer())->export(\Yii::$app->request->post());
-
-        $excel = new Excel();
-        $excel->loadFromTemplate('files/templates/base.xlsx');
-        $excel->prepare($customers, Excel::MODEL_CUSTOMER);
-        $excel->save('customer.xlsx', 'temp');
-
-        \Yii::$app->response->format = Response::FORMAT_JSON;
-        return [
-            'url' => $excel->getUrl(),
-        ];
-    }
-
-    /**
-     * Импорт товаров из Excel
-     *
-     * @throws \PHPExcel_Exception
-     * @throws \Exception
-     */
-    public function actionImport()
-    {
-        $inputFile = $_FILES['xml'];
-        $excel     = new Excel();
-        $excel->load($inputFile);
-        if (!$excel->validate()) {
-            throw new \Exception(\Yii::t('file', 'Customer file is not suitable'));
-        }
-
-        \Yii::$app->response->format = Response::FORMAT_JSON;
-
-        $parserData  = $excel->parse();
-        $transaction = \Yii::$app->db->beginTransaction();
-        foreach ($parserData as $customerData) {
-            $parsedData = (new ExcelParser($customerData, ExcelParser::MODEL_CUSTOMER))->getParsedArray();
-            $customer    = (new \app\models\Repository\Customer())->build($parsedData);
-            if (!($customer->validate() && $customer->save())) {
-                $transaction->rollBack();
-                \Yii::$app->session->addFlash('danger', \Yii::t('customer', 'Customer type import was failed'));
-                return ['success' => false];
-            }
-
-            if (!empty($customer->addresses)) {
-                foreach ($customer->addresses as $key => $address) {
-                    $address->customer_id = $customer->id;
-                    if (!($address->validate() && $address->save())) {
-                        $transaction->rollBack();
-                        \Yii::$app->session->addFlash('danger', \Yii::t('customer', 'Customer import was failed'));
-                        return ['success' => false];
-                    }
-                    $customer->default_address_id = $address->id;
-                    $customer->save();
-                }
-            }
-        }
-
-        $transaction->commit();
-        \Yii::$app->session->addFlash('success', \Yii::t('customer', 'Customers was imported successfully'));
-
-        return [
-            'success' => true,
-        ];
-    }
-
-    public function getCustomerByFio(string $fio)
-    {
-        $customers = \app\models\Repository\Customer::find()->where([
-            'LIKE', 'fio', $fio
-        ])->asArray()->all();
-
-        \Yii::$app->response->format = Response::FORMAT_JSON;
-        return [
-            ArrayHelper::map($customers, 'id', 'fio')
-        ];
     }
 
     /**
@@ -276,5 +129,150 @@ class CustomerController extends BaseController
             $this->log('customer-create-fail', ['name' => $customer->fio, 'errors' => json_encode($customer->getFirstErrors())]);
             return false;
         }
+    }
+
+    /**
+     * @param int $id
+     * @return string
+     * @throws NotFoundHttpException
+     * @throws \yii\db\Exception
+     */
+    public function actionView(int $id)
+    {
+        $customer = \app\models\Repository\Customer::findOne($id);
+        if (!$customer) {
+            throw new NotFoundHttpException('Покупатель не найден');
+        }
+
+        if ($post = \Yii::$app->request->post()) {
+            if ($this->saveCustomer($customer, $post)) {
+                return $this->redirect(['customer/view', 'id' => $customer->id]);
+            }
+        }
+
+        if (empty($customer->addresses)) {
+            $customer->setAddresses([new Address()]);
+        }
+
+        return $this->renderAjax('/customer/create', [
+            'model' => $customer,
+            'title' => \Yii::t('customer', 'Customer update: #') . $customer->id . '<small> ' . $customer->fio . ' </small>',
+        ]);
+    }
+
+    /**
+     * @return array
+     * @throws \yii\db\Exception
+     */
+    public function actionDelete()
+    {
+        $customerIDs = \Yii::$app->request->post('selection');
+
+        \Yii::$app->response->format = Response::FORMAT_JSON;
+
+        $this->log('customer-delete', $customerIDs);
+        $transaction = \Yii::$app->db->beginTransaction();
+        foreach ($customerIDs as $id) {
+            $customer         = \app\models\Repository\Customer::findOne($id);
+            $customer->status = 0;
+            if (!$customer->save()) {
+                $transaction->rollBack();
+                $this->log('customer-delete-fail', ['id' => (string) $id]);
+                return [
+                    'status' => false,
+                    'title'  => \Yii::t('product', 'Customers was not deleted')
+                ];
+            }
+        }
+
+        $transaction->commit();
+        $this->log('customer-delete-success', $customerIDs);
+        return [
+            'status'      => true,
+            'title'       => \Yii::t('customer', 'Customer was successful deleted'),
+            'description' => \Yii::t('customer', 'Chosen customers was successful deleted'),
+        ];
+    }
+
+    /**
+     * @return array
+     * @throws \PHPExcel_Exception
+     * @throws \PHPExcel_Reader_Exception
+     */
+    public function actionExport()
+    {
+        $customers = (new Customer())->export(\Yii::$app->request->post());
+
+        $excel = new Excel();
+        $excel->loadFromTemplate('files/templates/base.xlsx');
+        $excel->prepare($customers, Excel::MODEL_CUSTOMER);
+        $excel->save('customer.xlsx', 'temp');
+
+        \Yii::$app->response->format = Response::FORMAT_JSON;
+        return [
+            'url' => $excel->getUrl(),
+        ];
+    }
+
+    /**
+     * Импорт товаров из Excel
+     *
+     * @throws \PHPExcel_Exception
+     * @throws \Exception
+     */
+    public function actionImport()
+    {
+        $inputFile = $_FILES['xml'];
+        $excel     = new Excel();
+        $excel->load($inputFile);
+        if (!$excel->validate()) {
+            throw new \Exception(\Yii::t('file', 'Customer file is not suitable'));
+        }
+
+        \Yii::$app->response->format = Response::FORMAT_JSON;
+
+        $parserData  = $excel->parse();
+        $transaction = \Yii::$app->db->beginTransaction();
+        foreach ($parserData as $customerData) {
+            $parsedData = (new ExcelParser($customerData, ExcelParser::MODEL_CUSTOMER))->getParsedArray();
+            $customer   = (new \app\models\Repository\Customer())->build($parsedData);
+            if (!($customer->validate() && $customer->save())) {
+                $transaction->rollBack();
+                \Yii::$app->session->addFlash('danger', \Yii::t('customer', 'Customer type import was failed'));
+                return ['success' => false];
+            }
+
+            if (!empty($customer->addresses)) {
+                foreach ($customer->addresses as $key => $address) {
+                    $address->customer_id = $customer->id;
+                    if (!($address->validate() && $address->save())) {
+                        $transaction->rollBack();
+                        \Yii::$app->session->addFlash('danger', \Yii::t('customer', 'Customer import was failed'));
+                        return ['success' => false];
+                    }
+                    $customer->default_address_id = $address->id;
+                    $customer->save();
+                }
+            }
+        }
+
+        $transaction->commit();
+        \Yii::$app->session->addFlash('success', \Yii::t('customer', 'Customers was imported successfully'));
+
+        return [
+            'success' => true,
+        ];
+    }
+
+    public function getCustomerByFio(string $fio)
+    {
+        $customers = \app\models\Repository\Customer::find()->where([
+            'LIKE', 'fio', $fio
+        ])->asArray()->all();
+
+        \Yii::$app->response->format = Response::FORMAT_JSON;
+        return [
+            ArrayHelper::map($customers, 'id', 'fio')
+        ];
     }
 }

@@ -364,6 +364,10 @@ hr.devider {
     margin-top: 10px !important;
 }
 
-#add-discount {
+.mr-15 {
     margin-right: 15px;
+}
+
+input[type="radio"].input-sm {
+    margin-top: 0;
 }

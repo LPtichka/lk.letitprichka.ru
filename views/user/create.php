@@ -62,7 +62,10 @@ $this->title = $title;
             </div>
             <div class="col-md-6">
                 <div class="form-group text-right">
-                    <?= Html::a(\Yii::t('app', 'Cancel'), ['product/index'], ['class' => 'btn btn-sm btn-default']) ?>
+                    <?= Html::a(\Yii::t('app', 'Cancel'), '#', [
+                        'class'        => 'btn btn-sm btn-default',
+                        'data-dismiss' => 'modal'
+                    ]) ?>
                 </div>
             </div>
         </div>

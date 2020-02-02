@@ -79,4 +79,14 @@ class LoginForm extends Model
         }
         return false;
     }
+
+    /**
+     * @return array
+     */
+    public function attributeLabels()
+    {
+        return [
+            'rememberMe' => \Yii::t('app', 'Remember me'),
+        ];
+    }
 }

@@ -10,14 +10,21 @@ use yii\widgets\Pjax;
 $this->title = \Yii::t('customer', 'Customers');
 ?>
 <?php Pjax::begin([
-    'id'              => 'customer-form',
-    'formSelector'    => '#customer-form form',
     'enablePushState' => false,
+    'enableReplaceState' => true,
 ]); ?>
 <div class="box">
     <div class="box-header with-border">
         <div class="pull-left">
-            <?= Html::a(\Yii::t('customer', 'Create customer'), ['customer/create'], ['class' => 'btn btn-sm btn-warning']) ?>
+            <?= Html::a('<i class="fa fa-plus"></i> ' . \Yii::t('customer', 'Create customer'),
+                ['customer/create'],
+                [
+                    'class'       => 'btn btn-sm btn-warning',
+                    'data-href'   => Url::to(['create']),
+                    'data-toggle' => 'modal',
+                    'data-target' => '#modal',
+                ]
+            ) ?>
         </div>
         <div class="pull-right">
             <?= Html::button('<i class="fa fa-upload"></i> ', ['class' => 'btn btn-sm btn-default import']) ?>
@@ -35,7 +42,6 @@ $this->title = \Yii::t('customer', 'Customers');
                 ]) ?></div>
         </div>
     </div>
-    <?php Pjax::begin(); ?>
     <?= GridView::widget([
         'tableOptions' => [
             'data-resizable-columns-id' => 'customer',
@@ -46,7 +52,6 @@ $this->title = \Yii::t('customer', 'Customers');
         'columns'      => (new \app\models\Search\Customer())->getSearchColumns($searchModel),
     ]);
     ?>
-    <?php Pjax::end(); ?>
 </div>
 <?php Pjax::end(); ?>
 

@@ -66,11 +66,6 @@ $this->title = $title;
                 <?php endforeach; ?>
             </div>
             <hr/>
-            <div class="row">
-                <div class="col-sm-12 discount-buttons">
-
-                </div>
-            </div>
         </div>
         <div class="row">
             <div class="col-md-6">
@@ -85,7 +80,7 @@ $this->title = $title;
                        data-href="<?php echo Url::to(['subscription/add-discount']); ?>"
                        data-block="discounts"
                        data-row="discount-row"
-                       class="btn btn-sm btn-primary add-row-action"
+                       class="btn btn-sm btn-primary add-row-action mr-15"
                     >
                         <i class="fa fa-plus"></i>
                         <?= Yii::t('subscription', 'Add discount') ?>

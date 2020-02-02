@@ -14,4 +14,6 @@ return [
     'Add address'                                      => 'Добавить адрес',
     'Addresses'                                        => 'Адреса',
     'Base information'                                 => 'Основная информация',
+    'Customer was successful deleted'                  => 'Покупатели были успешно удалены',
+    'Chosen customers was successful deleted'          => 'Выбранные покупатели были удалены.',
 ];

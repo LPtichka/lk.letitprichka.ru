@@ -21,11 +21,11 @@ $fieldOptions2 = [
 
 <div class="login-box">
     <div class="login-logo">
-        <a href="#"><b>Admin</b>LTE</a>
+        <a href="#"><b>Личный кабинет</b> LP</a>
     </div>
     <!-- /.login-logo -->
     <div class="login-box-body">
-        <p class="login-box-msg">Sign in to start your session</p>
+        <p class="login-box-msg"><?= \Yii::t('app', 'Sign in to start your session');?></p>
 
         <?php $form = ActiveForm::begin(['id' => 'login-form', 'enableClientValidation' => false]); ?>
 
@@ -45,15 +45,14 @@ $fieldOptions2 = [
             </div>
             <!-- /.col -->
             <div class="col-xs-4">
-                <?= Html::submitButton('Sign in', ['class' => 'btn btn-primary btn-block btn-flat', 'name' => 'login-button']) ?>
+                <?= Html::submitButton(\Yii::t('app', 'Sign in'), ['class' => 'btn btn-primary btn-block btn-flat', 'name' => 'login-button']) ?>
             </div>
             <!-- /.col -->
         </div>
 
         <?php ActiveForm::end(); ?>
 
-        <!--<a href="<?= Url::to(['/main/forgot-password']) ?>">I forgot my password</a><br>
-        <a href="<?= Url::to(['/main/signup']) ?>" class="text-center">Register a new membership</a>-->
+        <a href="#"><?= \Yii::t('app', 'I forgot my password');?></a>
 
     </div>
     <!-- /.login-box-body -->

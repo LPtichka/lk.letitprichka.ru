@@ -21,8 +21,6 @@ $this->title = $title;
 <h1><?= Html::encode($this->title) ?></h1>
 <div class="row exception-form">
     <?= Alert::widget(['options' => ['style' => 'margin-bottom:20px']]) ?>
-
-
     <div class="col-sm-12">
         <?php $form = ActiveForm::begin(); ?>
         <div class="row">
@@ -40,7 +38,10 @@ $this->title = $title;
             </div>
             <div class="col-md-6">
                 <div class="form-group text-right">
-                    <?= Html::a(\Yii::t('app', 'Cancel'), ['exception/index'], ['class' => 'btn btn-sm btn-default']) ?>
+                    <?= Html::a(\Yii::t('app', 'Cancel'), '#', [
+                        'class'        => 'btn btn-sm btn-default',
+                        'data-dismiss' => 'modal'
+                    ]) ?>
                 </div>
             </div>
         </div>

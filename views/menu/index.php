@@ -7,7 +7,7 @@ use yii\widgets\Pjax;
 
 /** @var \app\models\Search\Menu $searchModel */
 
-$this->title = \Yii::t('subscription', 'Menu');
+$this->title = \Yii::t('menu', 'Menu');
 ?>
 <?php Pjax::begin([
     'id'              => 'menu-form',
@@ -17,10 +17,10 @@ $this->title = \Yii::t('subscription', 'Menu');
     <div class="box">
         <div class="box-header with-border">
             <div class="pull-left">
-                <?= Html::a(\Yii::t('subscription', 'Create menu'), ['menu/create'], ['class' => 'btn btn-sm btn-warning']) ?>
+                <?= Html::a(\Yii::t('menu', 'Create menu'), ['menu/create'], ['class' => 'btn btn-sm btn-warning']) ?>
             </div>
             <div class="pull-right">
-                <?= Html::a('<i class="fa fa-users"></i> ',
+                <?= Html::a(\Yii::t('menu', 'Marriage sheet'),
                     ['order/get-route-sheet'],
                     [
                         'class'       => 'btn btn-sm btn-default',
@@ -35,7 +35,6 @@ $this->title = \Yii::t('subscription', 'Menu');
                 ]) ?>
             </div>
         </div>
-        <?php Pjax::begin(); ?>
         <?= GridView::widget([
             'tableOptions' => [
                 'data-resizable-columns-id' => 'menu',
@@ -54,6 +53,5 @@ $this->title = \Yii::t('subscription', 'Menu');
             'columns'      => (new \app\models\Search\Menu())->getSearchColumns($searchModel),
         ]);
         ?>
-        <?php Pjax::end(); ?>
     </div>
 <?php Pjax::end(); ?>
