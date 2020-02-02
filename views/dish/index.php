@@ -17,7 +17,11 @@ $this->title = \Yii::t('app', 'Dishes');
 <div class="box">
     <div class="box-header with-border">
         <div class="pull-left">
-            <?= Html::a(\Yii::t('dish', 'Create dish'), ['dish/create'], ['class' => 'btn btn-sm btn-warning']) ?>
+            <?= Html::a(
+                '<i class="fa fa-plus"></i> ' . \Yii::t('dish', 'Create dish'),
+                ['dish/create'],
+                ['class' => 'btn btn-sm btn-warning']
+            ) ?>
         </div>
         <div class="pull-right">
             <?= Html::button('<i class="fa fa-upload"></i> ', ['class' => 'btn btn-sm btn-default import']) ?>
@@ -35,18 +39,16 @@ $this->title = \Yii::t('app', 'Dishes');
                 ]) ?></div>
         </div>
     </div>
-    <?php Pjax::begin(); ?>
     <?= GridView::widget([
         'tableOptions' => [
             'data-resizable-columns-id' => 'dish',
-            'class'                     => 'table table-bordered'
+            'class'                     => 'table'
         ],
         'dataProvider' => $dataProvider,
         'filterModel'  => $searchModel,
         'columns'      => (new \app\models\Search\Dish())->getSearchColumns($searchModel),
     ]);
     ?>
-    <?php Pjax::end(); ?>
 </div>
 <?php Pjax::end(); ?>
 

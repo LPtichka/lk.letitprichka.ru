@@ -146,8 +146,8 @@ a.desc:after {
 }
 
 .product-row {
-    border-bottom: 1px solid #CCC;
-    padding-bottom: 15px;
+    border-bottom: 1px solid #f2f2f2;
+    padding-bottom: 0;
     margin-bottom: 15px;
 }
 
@@ -156,7 +156,6 @@ a.desc:after {
 }
 
 .delete-product {
-    margin-top: 25px;
 }
 
 .ui-menu-item {
@@ -257,11 +256,11 @@ label {
 }
 
 .content-wrapper .box-header {
-    padding: 15px;
+    padding: 15px 20px;
 }
 
 .content-wrapper .box-body {
-    padding: 15px;
+    padding: 20px;
     overflow-y: scroll;
 }
 
@@ -370,4 +369,12 @@ hr.devider {
 
 input[type="radio"].input-sm {
     margin-top: 0;
+}
+
+.label-block {
+    padding-top: 25px;
+}
+
+label input[type="checkbox"] {
+    margin-right: 5px;
 }

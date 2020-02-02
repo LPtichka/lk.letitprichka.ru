@@ -19,7 +19,7 @@ return [
     'Primary parameters'                            => 'Основные параметры',
     'Products'                                      => 'Продукты',
     'Proteins'                                      => 'Белки',
-    'Type'                                      => 'Тип блюда',
+    'Type'                                          => 'Тип блюда',
     'Supper'                                        => 'Ужин',
     'Weight'                                        => 'Вес (кг.)',
     'With garnish'                                  => 'С гарниром',
@@ -29,4 +29,5 @@ return [
     'Second course'                                 => 'Второе',
     'Dessert'                                       => 'Десерт',
     'Salad'                                         => 'Салат',
+    'Updated at'                                    => 'Обновлено',
 ];

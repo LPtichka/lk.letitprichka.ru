@@ -43,7 +43,7 @@ $this->title = \Yii::t('address', 'Addresses');
     <?= GridView::widget([
         'tableOptions' => [
             'data-resizable-columns-id' => 'address',
-            'class'                     => 'table table-bordered'
+            'class'                     => 'table'
         ],
         'dataProvider' => $dataProvider,
         'filterModel'  => $searchModel,

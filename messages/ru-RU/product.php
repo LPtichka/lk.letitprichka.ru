@@ -21,6 +21,7 @@ return [
     'Carbohydrates'                                   => 'Углеводы',
     'Netto'                                           => 'Нетто',
     'Brutto'                                          => 'Брутто',
+    'Brutto on 1 kg'                                  => 'Брутто на 1кг',
     'Count'                                           => 'Количество',
 
     'count'        => 'Количество (шт.)',

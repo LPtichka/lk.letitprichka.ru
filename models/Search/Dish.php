@@ -5,8 +5,8 @@ namespace app\models\Search;
 use app\models\Helper\Arrays;
 use app\models\Helper\Weight;
 use app\models\Repository\Dish as Repository;
+use app\widgets\Grid\CheckboxColumn;
 use yii\data\ActiveDataProvider;
-use yii\grid\CheckboxColumn;
 use yii\helpers\Html;
 
 class Dish extends Repository

@@ -53,8 +53,7 @@ $selectExp = new JsExpression('function(event, ui) {
 
 <div class="product-row" id="group-<?= $i ?>">
     <div class="row">
-        <div class="col-sm-6 col-print-6">
-            <label><?= \Yii::t('product', 'Name');?></label>
+        <div class="col-sm-2">
             <?= AutoComplete::widget([
                 'model'         => $product,
                 'attribute'     => "[$i]name",
@@ -69,45 +68,34 @@ $selectExp = new JsExpression('function(event, ui) {
                 ],
             ]) ?>
         </div>
-        <div class="col-sm-2 col-print-2">
-            <label><?= \Yii::t('product', 'Weight');?></label>
+        <div class="col-sm-1">
             <?= Html::activeInput('text', $product, "[$i]weight", ['class' => 'form-control input-sm', 'autocomplete' => false]) ?>
         </div>
-        <div class="col-sm-2 col-print-2">
-            <label><?= \Yii::t('product', 'Brutto');?></label>
+        <div class="col-sm-1">
             <?= Html::activeInput('text', $product, "[$i]brutto", ['class' => 'form-control input-sm', 'autocomplete' => false]) ?>
         </div>
-        <div class="col-sm-2 col-print-2">
-            <label><?= \Yii::t('product', 'Netto');?></label>
+        <div class="col-sm-1">
             <?= Html::activeInput('text', $product, "[$i]netto", ['class' => 'form-control input-sm', 'autocomplete' => false]) ?>
         </div>
-    </div>
-    <div class="row">
-        <div class="col-sm-2 col-print-2">
-            <label><?= \Yii::t('product', 'Brutto on 1 kg');?></label>
+        <div class="col-sm-1">
             <?= Html::activeInput('text', $product, "[$i]brutto_on_1_kg", ['class' => 'form-control input-sm', 'autocomplete' => false]) ?>
         </div>
-        <div class="col-sm-2 col-print-2">
-            <label><?= \Yii::t('product', 'Kkal');?></label>
+        <div class="col-sm-1">
             <?= Html::activeInput('text', $product, "[$i]kkal", ['class' => 'form-control input-sm', 'autocomplete' => false]) ?>
         </div>
-        <div class="col-sm-2 col-print-2">
-            <label><?= \Yii::t('product', 'Proteins');?></label>
+        <div class="col-sm-1">
             <?= Html::activeInput('text', $product, "[$i]proteins", ['class' => 'form-control input-sm', 'autocomplete' => false]) ?>
         </div>
-        <div class="col-sm-2 col-print-2">
-            <label><?= \Yii::t('product', 'Fat');?></label>
+        <div class="col-sm-1">
             <?= Html::activeInput('text', $product, "[$i]fat", ['class' => 'form-control input-sm', 'autocomplete' => false]) ?>
         </div>
-        <div class="col-sm-2 col-print-2">
-            <label><?= \Yii::t('product', 'Carbohydrates');?></label>
+        <div class="col-sm-1">
             <?= Html::activeInput('text', $product, "[$i]carbohydrates", ['class' => 'form-control input-sm', 'autocomplete' => false]) ?>
         </div>
-        <div class="col-sm-1 col-print-1">
-            <label><?= \Yii::t('product', 'Count');?></label>
+        <div class="col-sm-1">
             <?= Html::activeInput('text', $product, "[$i]count", ['class' => 'form-control input-sm', 'autocomplete' => false]) ?>
         </div>
-        <div class="col-sm-1 col-print-1">
+        <div class="col-sm-1">
             <?= Html::activeInput('hidden', $product, "[$i]product_id") ?>
             <button class="btn btn-sm btn-default delete-product pull-right" type="button"><i class="fa fa-trash"></i></button>
         </div>

@@ -15,4 +15,5 @@ return [
     'Housing'        => 'Корпус',
     'Postcode'       => 'Индекс',
     'Street'         => 'Улица',
+    'Addresses'      => 'Адреса',
 ];

@@ -4,9 +4,9 @@ namespace app\models\Search;
 
 use app\models\Helper\Phone;
 use app\models\Repository\Customer as Repository;
+use app\widgets\Grid\CheckboxColumn;
 use kartik\daterange\DateRangePicker;
 use yii\data\ActiveDataProvider;
-use yii\grid\CheckboxColumn;
 use yii\helpers\Html;
 use yii\helpers\Url;
 

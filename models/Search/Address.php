@@ -3,8 +3,8 @@
 namespace app\models\Search;
 
 use app\models\Repository\Address as Repository;
+use app\widgets\Grid\CheckboxColumn;
 use yii\data\ActiveDataProvider;
-use yii\grid\CheckboxColumn;
 use yii\helpers\Html;
 use yii\helpers\Url;
 
@@ -99,7 +99,7 @@ class Address extends Repository
     /**
      * Список полей для поиска
      *
-     * @param Address $searchModel
+     * @param \app\models\Repository\Address $searchModel
      * @return array
      */
     public function getSearchColumns(\app\models\Repository\Address $searchModel)
