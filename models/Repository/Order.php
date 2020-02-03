@@ -3,9 +3,7 @@
 namespace app\models\Repository;
 
 use app\models\Common\Route;
-use app\models\Helper\Weight;
 use app\models\Queries\OrderQuery;
-use app\models\Queries\ProductQuery;
 use yii\behaviors\TimestampBehavior;
 use yii\helpers\ArrayHelper;
 
@@ -95,7 +93,15 @@ class Order extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'subscription_id' => \Yii::t('order', 'Subscription ID'),
+            'subscription_id'   => \Yii::t('order', 'Subscription ID'),
+            'franchise_id'      => \Yii::t('order', 'Franchise ID'),
+            'count'             => \Yii::t('order', 'Count'),
+            'cutlery'           => \Yii::t('order', 'Cutlery'),
+            'without_soup'      => \Yii::t('order', 'Without soup'),
+            'scheduleFirstDate' => \Yii::t('order', 'Schedule first date'),
+            'scheduleInterval'  => \Yii::t('order', 'Schedule interval'),
+            'payment_type'      => \Yii::t('order', 'Payment type'),
+            'cash_machine'      => \Yii::t('order', 'Cash machine'),
         ];
     }
 
@@ -136,34 +142,11 @@ class Order extends \yii\db\ActiveRecord
     }
 
     /**
-     * @param Customer $customer
-     */
-    public function setCustomer(Customer $customer): void
-    {
-        $this->customer = $customer;
-    }
-    /**
      * @param Address $address
      */
     public function setAddress(Address $address): void
     {
         $this->address = $address;
-    }
-
-    /**
-     * @param Exception[] $exceptions
-     */
-    public function setExceptions(array $exceptions): void
-    {
-        $this->exceptions = $exceptions;
-    }
-
-    /**
-     * @param OrderSchedule[] $schedules
-     */
-    public function setSchedules(array $schedules): void
-    {
-        $this->schedules = $schedules;
     }
 
     /**
@@ -173,6 +156,7 @@ class Order extends \yii\db\ActiveRecord
     {
         return $this->hasOne(Customer::class, ['id' => 'customer_id']);
     }
+
     /**
      * @return \yii\db\ActiveQuery
      */
@@ -221,7 +205,7 @@ class Order extends \yii\db\ActiveRecord
             ->orderBy(['count' => SORT_DESC])
             ->limit(1)
             ->one();
-        $this->total = $subscriptionDiscount->price;
+        $this->total          = $subscriptionDiscount->price;
 
         if (empty($data['Order']['customer_id']) || !empty($data['Order']['isNewCustomer'])) {
             $customer = new Customer();
@@ -254,22 +238,22 @@ class Order extends \yii\db\ActiveRecord
                 for ($i = 0; $i < $data['Order']['count']; $i++) {
                     $schedule = new OrderSchedule();
 
-                    $schedule->date = date('Y-m-d', $firstDateTime + $i * 86400);
-                    $schedule->cost = $subscriptionDiscount->price / $data['Order']['count'];
+                    $schedule->date       = date('Y-m-d', $firstDateTime + $i * 86400);
+                    $schedule->cost       = $subscriptionDiscount->price / $data['Order']['count'];
                     $schedule->address_id = $address->id ?? null;
-                    $schedule->order_id = $this->id;
-                    $schedule->interval = $data['Order']['scheduleInterval'] ?? null;
+                    $schedule->order_id   = $this->id;
+                    $schedule->interval   = $data['Order']['scheduleInterval'] ?? null;
 
                     $schedules[] = $schedule;
                 }
             }
         } else {
             foreach ($data['OrderSchedule'] as $scheduleId => $schedule) {
-                $scheduleData = OrderSchedule::findOne($scheduleId);
+                $scheduleData             = OrderSchedule::findOne($scheduleId);
                 $scheduleData->address_id = $schedule['address_id'];
-                $scheduleData->interval = $schedule['interval'];
-                $scheduleData->comment = $schedule['comment'];
-                $schedules[$scheduleId] = $scheduleData;
+                $scheduleData->interval   = $schedule['interval'];
+                $scheduleData->comment    = $schedule['comment'];
+                $schedules[$scheduleId]   = $scheduleData;
             }
         }
 
@@ -278,6 +262,29 @@ class Order extends \yii\db\ActiveRecord
         return true;
     }
 
+    /**
+     * @param Customer $customer
+     */
+    public function setCustomer(Customer $customer): void
+    {
+        $this->customer = $customer;
+    }
+
+    /**
+     * @param Exception[] $exceptions
+     */
+    public function setExceptions(array $exceptions): void
+    {
+        $this->exceptions = $exceptions;
+    }
+
+    /**
+     * @param OrderSchedule[] $schedules
+     */
+    public function setSchedules(array $schedules): void
+    {
+        $this->schedules = $schedules;
+    }
 
     /**
      * Собрать заказ из массива данные в API
@@ -302,7 +309,7 @@ class Order extends \yii\db\ActiveRecord
         }
 
         $this->cash_machine = $paymentType->cash_machine;
-        $this->cutlery = $data['cutlery'] ?? 1;
+        $this->cutlery      = $data['cutlery'] ?? 1;
 
         $customer = (new Customer())->getByParams($data['customer']);
         if (empty($customer->id)) {
@@ -328,18 +335,18 @@ class Order extends \yii\db\ActiveRecord
         $exceptions = [];
         foreach ($data['exceptions'] as $exception) {
             if ($exceptionData = Exception::find()->where(['name' => $exception])->one())
-            $exceptions[] = $exceptionData;
+                $exceptions[] = $exceptionData;
         }
         $this->setExceptions($exceptions);
 
         $scheduleFirstDate = !empty($data['schedule']['start_date']) ? strtotime($data['schedule']['start_date']) : null;
-        $schedules = [];
+        $schedules         = [];
         if ($scheduleFirstDate !== null) {
             for ($i = 0; $i < $data['schedule']['count']; $i++) {
-                $schedule = new OrderSchedule();
+                $schedule       = new OrderSchedule();
                 $schedule->date = date('Y-m-d', $scheduleFirstDate + $i * 86400);
                 $schedule->cost = $data['total'] / $data['schedule']['count'];
-                $schedules[] = $schedule;
+                $schedules[]    = $schedule;
             }
         }
         $this->setSchedules($schedules);
@@ -378,15 +385,15 @@ class Order extends \yii\db\ActiveRecord
             }
         }
         $this->customer_id = $this->customer->id;
-        $this->address_id = $this->customer->addresses[0]->id;
+        $this->address_id  = $this->customer->addresses[0]->id;
         if (!$this->save()) {
             $transaction->rollBack();
             return false;
         }
 
         foreach ($this->exceptions as $exception) {
-            $oException = new OrderException();
-            $oException->order_id = $this->id;
+            $oException               = new OrderException();
+            $oException->order_id     = $this->id;
             $oException->exception_id = $exception->id;
             if (!$oException->validate() || !$oException->save()) {
                 $transaction->rollBack();
@@ -407,8 +414,8 @@ class Order extends \yii\db\ActiveRecord
                     $orderScheduleDish = new OrderScheduleDish();
 
                     $orderScheduleDish->order_schedule_id = $schedule->id;
-                    $orderScheduleDish->ingestion_type = $key;
-                    $orderScheduleDish->dish_id = null;
+                    $orderScheduleDish->ingestion_type    = $key;
+                    $orderScheduleDish->dish_id           = null;
 
                     if (!$orderScheduleDish->validate() || !$orderScheduleDish->save()) {
                         $transaction->rollBack();
@@ -420,11 +427,11 @@ class Order extends \yii\db\ActiveRecord
                             continue;
                         }
 
-                        $orderScheduleDish = new OrderScheduleDish();
+                        $orderScheduleDish                    = new OrderScheduleDish();
                         $orderScheduleDish->order_schedule_id = $schedule->id;
-                        $orderScheduleDish->ingestion_type = $key;
-                        $orderScheduleDish->dish_id = null;
-                        $orderScheduleDish->type = $iType;
+                        $orderScheduleDish->ingestion_type    = $key;
+                        $orderScheduleDish->dish_id           = null;
+                        $orderScheduleDish->type              = $iType;
 
                         if (!$orderScheduleDish->validate() || !$orderScheduleDish->save()) {
                             $transaction->rollBack();
@@ -469,9 +476,9 @@ class Order extends \yii\db\ActiveRecord
      */
     public function getRoutesForDate(string $date): array
     {
-        $time = strtotime($date);
+        $time           = strtotime($date);
         $orderSchedules = OrderSchedule::find()->where(['date' => date('Y-m-d', $time)])->all();
-        $routes = [];
+        $routes         = [];
         foreach ($orderSchedules as $schedule) {
             $route = new Route(
                 $schedule->order->customer->fio,

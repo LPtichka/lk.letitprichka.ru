@@ -17,7 +17,10 @@ $this->title = \Yii::t('menu', 'Menu');
     <div class="box">
         <div class="box-header with-border">
             <div class="pull-left">
-                <?= Html::a(\Yii::t('menu', 'Create menu'), ['menu/create'], ['class' => 'btn btn-sm btn-warning']) ?>
+                <?= Html::a('<i class="fa fa-plus"></i> ' . \Yii::t('menu', 'Create menu'),
+                    ['menu/create'],
+                    ['class' => 'btn btn-sm btn-warning']
+                ) ?>
             </div>
             <div class="pull-right">
                 <?= Html::a(\Yii::t('menu', 'Marriage sheet'),

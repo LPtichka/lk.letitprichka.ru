@@ -36,7 +36,8 @@ $this->title = $title
                 ]) ?>
             </div>
             <div class="col-md-6">
-                <?= $form->field($model, 'weight')->textInput([
+                <?= $form->field($model, 'unit')->dropDownList(
+                    \app\models\Helper\Unit::UNITS, [
                     'class' => 'form-control input-sm',
                 ]) ?>
             </div>

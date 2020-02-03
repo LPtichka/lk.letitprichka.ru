@@ -93,9 +93,6 @@ $selectExp = new JsExpression('function(event, ui) {
             <?= Html::activeInput('text', $product, "[$i]carbohydrates", ['class' => 'form-control input-sm', 'autocomplete' => false]) ?>
         </div>
         <div class="col-sm-1">
-            <?= Html::activeInput('text', $product, "[$i]count", ['class' => 'form-control input-sm', 'autocomplete' => false]) ?>
-        </div>
-        <div class="col-sm-1">
             <?= Html::activeInput('hidden', $product, "[$i]product_id") ?>
             <button class="btn btn-sm btn-default delete-product pull-right" type="button"><i class="fa fa-trash"></i></button>
         </div>

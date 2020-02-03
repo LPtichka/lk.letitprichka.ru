@@ -151,7 +151,7 @@ class MenuController extends BaseController
         return $this->renderAjax('/menu/_get_marriage_sheet', [
             'ingestions' => $ingestions,
             'date'       => $date ?? '',
-            'title'      => \Yii::t('order', 'Marriage sheet'),
+            'title'      => \Yii::t('menu', 'Marriage sheet'),
         ]);
     }
 

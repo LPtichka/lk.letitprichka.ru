@@ -3,6 +3,7 @@
 namespace app\models\Search;
 
 use app\models\Helper\Arrays;
+use app\models\Helper\Unit;
 use app\models\Helper\Weight;
 use app\models\Repository\Product as Repository;
 use app\widgets\Grid\CheckboxColumn;
@@ -45,7 +46,6 @@ class Product extends Repository
 
         $query->andFilterWhere(['id' => $this->id]);
         $query->andFilterWhere(['count' => $this->count]);
-        $query->andFilterWhere(['weight' => $this->weight]);
         $query->andFilterWhere(['exception_id' => $this->exception_id]);
         $query->andFilterWhere(['like', 'name', $this->name]);
 
@@ -62,7 +62,7 @@ class Product extends Repository
             'product.id as product_id, 
             product.name as product_name, 
             product.count as product_count, 
-            product.weight as product_weight, 
+            product.unit as product_unit, 
             product.created_at as product_created_at, 
             product.updated_at as product_updated_at,
             exception.name as exception_name'
@@ -79,8 +79,7 @@ class Product extends Repository
             yield [
                 'id'           => $product['product_id'],
                 'name'         => $product['product_name'],
-                'count'        => $product['product_count'],
-                'weight'       => (new Weight())->format($product['product_weight'], Weight::UNIT_KG),
+                'count'        => (new Unit($product['product_unit']))->format($product['product_count']),
                 'Exception ID' => $product['exception_name'] ?? '',
                 'created_at'   => date('d.m.Y \в H:i', $product['product_created_at']),
                 'updated_at'   => date('d.m.Y \в H:i', $product['product_updated_at']),
@@ -128,14 +127,9 @@ class Product extends Repository
 
         $result['count'] = [
             'attribute' => 'count',
-            'label'     => \Yii::t('app', 'Count'),
-        ];
-
-        $result['weight'] = [
-            'attribute' => 'weight',
-            'label'     => \Yii::t('app', 'Weight'),
+            'label'     => \Yii::t('product', 'Remains'),
             'content'   => function ($model){
-                return (new Weight())->format($model->weight, Weight::UNIT_KG);
+                return (new Unit($model->unit))->format($model->count);
             }
         ];
 

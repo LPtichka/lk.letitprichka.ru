@@ -23,6 +23,7 @@ $this->title = \Yii::t('menu', 'Menu create');
                                 'name'          => 'menu_start_date',
                                 'value'         => $model->menu_start_date,
                                 'type'          => DatePicker::TYPE_RANGE,
+                                'separator'     => ' - ',
                                 'name2'         => 'menu_end_date',
                                 'disabled'      => !empty($model->id),
                                 'value2'        => $model->menu_end_date,
@@ -40,11 +41,6 @@ $this->title = \Yii::t('menu', 'Menu create');
                             ]); ?>
                         </div>
                     </div>
-                </div>
-            </div>
-            <div class="box box-primary">
-                <div class="box-header with-border">
-                    <h3 class="box-title"><?php echo \Yii::t('menu', 'Menu composition'); ?></h3>
                 </div>
                 <div class="box-body" id="menu-composition">
                     <div class="row">

@@ -17,6 +17,7 @@ Pjax::begin([
         <title><?= $title; ?></title>
         <?php $form = ActiveForm::begin(); ?>
         <div>
+            <label><?= \Yii::t('menu', 'Choose date'); ?></label>
             <?php echo DatePicker::widget([
                 'name'          => 'date',
                 'removeButton'  => false,
@@ -29,12 +30,22 @@ Pjax::begin([
         <div class="row modal-buttons">
             <div class="col-md-6">
                 <div class="form-group">
-                    <?= Html::submitButton('<i class="fa fa-check"></i> ' . Yii::t('app', 'Save'), ['class' => 'btn btn-sm btn-warning']) ?>
+                    <?= Html::submitButton(
+                        '<i class="fa fa-check"></i> ' . \Yii::t('app', 'Unload'),
+                        ['class' => 'btn btn-sm btn-warning']
+                    ) ?>
                 </div>
             </div>
             <div class="col-md-6">
                 <div class="form-group text-right">
-                    <?= Html::a(\Yii::t('app', 'Cancel'), ['menu/index'], ['class' => 'btn btn-sm btn-default']) ?>
+                    <?= Html::a(
+                        \Yii::t('app', 'Cancel'),
+                        '#',
+                        [
+                            'class'        => 'btn btn-sm btn-default',
+                            'data-dismiss' => 'modal'
+                        ]
+                    ) ?>
                 </div>
             </div>
         </div>
@@ -42,38 +53,35 @@ Pjax::begin([
     </div>
 <?php else: ?>
     <div class="route-row">
-        <div class="row">
-            <div class="col-sm-2">дата приготовления блюда</div>
+        <div class="row header-table">
+            <div class="col-sm-2">Дата</div>
             <div class="col-sm-10">
                 <div class="row">
-                    <div class="col-sm-2">время бракеража</div>
-                    <div class="col-sm-2">тип</div>
-                    <div class="col-sm-2">наименование изделия</div>
-                    <div class="col-sm-2">результат органолептической оценки и степени готовности</div>
-                    <div class="col-sm-2">разрешение к реализации</div>
-                    <div class="col-sm-2">подписи членов бракеражной комиссии</div>
+                    <div class="col-sm-2">Время</div>
+                    <div class="col-sm-2">Тип</div>
+                    <div class="col-sm-2">Наименование</div>
+                    <div class="col-sm-2">Результат</div>
+                    <div class="col-sm-2">Разрешение</div>
+                    <div class="col-sm-2">Подписи</div>
                 </div>
             </div>
-
         </div>
         <hr/>
         <div class="row">
-            <div class="col-sm-2">
-                <?= $date;?>
+            <div class="col-sm-2 left-element">
+                <?= $date; ?>
             </div>
             <div class="col-sm-10">
-                <div class="row">
-                    <?php foreach ($ingestions as $ingestion): ?>
-                        <div class="row">
-                            <div class="col-sm-2"><?php echo $ingestion->getTime(); ?></div>
-                            <div class="col-sm-2"><?php echo $ingestion->getType(); ?></div>
-                            <div class="col-sm-2"><?php echo $ingestion->getDishName(); ?></div>
-                            <div class="col-sm-2"><?php echo $ingestion->getRating(); ?></div>
-                            <div class="col-sm-2"><?php echo $ingestion->getResult(); ?></div>
-                            <div class="col-sm-2"><?php echo $ingestion->getSignature(); ?></div>
-                        </div>
-                    <?php endforeach; ?>
-                </div>
+                <?php foreach ($ingestions as $ingestion): ?>
+                    <div class="row list-element">
+                        <div class="col-sm-2"><?php echo $ingestion->getTime(); ?></div>
+                        <div class="col-sm-2"><?php echo $ingestion->getType(); ?></div>
+                        <div class="col-sm-2"><?php echo $ingestion->getDishName(); ?></div>
+                        <div class="col-sm-2"><?php echo $ingestion->getRating(); ?></div>
+                        <div class="col-sm-2"><?php echo $ingestion->getResult(); ?></div>
+                        <div class="col-sm-2"><?php echo $ingestion->getSignature(); ?></div>
+                    </div>
+                <?php endforeach; ?>
             </div>
         </div>
 
@@ -82,10 +90,10 @@ Pjax::begin([
             <div class="col-md-6">
                 <div class="form-group">
                     <?= Html::a(
-                        '<i class="fa fa-check"></i> ' . \Yii::t('app', 'Save'),
+                        '<i class="fa fa-download"></i> ' . \Yii::t('app', 'Download'),
                         ['menu/save-marriage-sheet'],
                         [
-                            'class' => 'btn btn-sm btn-warning save-marriage-sheet',
+                            'class'     => 'btn btn-sm btn-warning save-marriage-sheet',
                             'data-date' => $date,
                         ]
                     ) ?>
@@ -93,7 +101,14 @@ Pjax::begin([
             </div>
             <div class="col-md-6">
                 <div class="form-group text-right">
-                    <?= Html::a(\Yii::t('app', 'Cancel'), ['menu/index'], ['class' => 'btn btn-sm btn-default']) ?>
+                    <?= Html::a(
+                        \Yii::t('app', 'Cancel'),
+                        '#',
+                        [
+                            'class'        => 'btn btn-sm btn-default',
+                            'data-dismiss' => 'modal'
+                        ]
+                    ) ?>
                 </div>
             </div>
         </div>

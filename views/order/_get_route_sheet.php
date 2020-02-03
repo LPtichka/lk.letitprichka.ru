@@ -17,6 +17,7 @@ Pjax::begin([
         <title><?= $title; ?></title>
         <?php $form = ActiveForm::begin(); ?>
         <div>
+            <label><?= \Yii::t('order', 'Choose date'); ?></label>
             <?php echo DatePicker::widget([
                 'name'          => 'date',
                 'removeButton'  => false,
@@ -29,12 +30,22 @@ Pjax::begin([
         <div class="row modal-buttons">
             <div class="col-md-6">
                 <div class="form-group">
-                    <?= Html::submitButton('<i class="fa fa-check"></i> ' . Yii::t('app', 'Save'), ['class' => 'btn btn-sm btn-warning']) ?>
+                    <?= Html::submitButton(
+                        '<i class="fa fa-check"></i> ' . \Yii::t('app', 'Unload'),
+                        ['class' => 'btn btn-sm btn-warning']
+                    ) ?>
                 </div>
             </div>
             <div class="col-md-6">
                 <div class="form-group text-right">
-                    <?= Html::a(\Yii::t('app', 'Cancel'), ['order/index'], ['class' => 'btn btn-sm btn-default']) ?>
+                    <?= Html::a(
+                        \Yii::t('app', 'Cancel'),
+                        '#',
+                        [
+                            'class'        => 'btn btn-sm btn-default',
+                            'data-dismiss' => 'modal'
+                        ]
+                    ) ?>
                 </div>
             </div>
         </div>
@@ -42,21 +53,19 @@ Pjax::begin([
     </div>
 <?php else: ?>
     <div class="route-row">
-        <div class="row">
+        <div class="row header-table">
             <div class="col-sm-2"><?php echo \Yii::t('order', 'Client'); ?></div>
-            <div class="col-sm-3"><?php echo \Yii::t('order', 'Address'); ?></div>
-            <div class="col-sm-1"><?php echo \Yii::t('order', 'Interval'); ?></div>
-            <div class="col-sm-2"><?php echo \Yii::t('order', 'Comment'); ?></div>
+            <div class="col-sm-4"><?php echo \Yii::t('order', 'Address'); ?></div>
+            <div class="col-sm-2"><?php echo \Yii::t('order', 'Interval'); ?></div>
             <div class="col-sm-2"><?php echo \Yii::t('order', 'Phone'); ?></div>
             <div class="col-sm-2"><?php echo \Yii::t('order', 'Payment'); ?></div>
         </div>
         <hr/>
         <?php foreach ($routes as $route): ?>
-            <div class="row">
+            <div class="row list-element">
                 <div class="col-sm-2"><?php echo $route->getFio(); ?></div>
-                <div class="col-sm-3"><?php echo $route->getAddress(); ?></div>
-                <div class="col-sm-1"><?php echo $route->getInterval(); ?></div>
-                <div class="col-sm-2"><?php echo $route->getComment(); ?></div>
+                <div class="col-sm-4"><?php echo $route->getAddress(); ?></div>
+                <div class="col-sm-2"><?php echo $route->getInterval(); ?></div>
                 <div class="col-sm-2"><?php echo $route->getPhone(); ?></div>
                 <div class="col-sm-2"><?php echo $route->getPayment(); ?></div>
             </div>
@@ -66,10 +75,10 @@ Pjax::begin([
             <div class="col-md-6">
                 <div class="form-group">
                     <?= Html::a(
-                        '<i class="fa fa-check"></i> ' . \Yii::t('app', 'Save'),
+                        '<i class="fa fa-check"></i> ' . \Yii::t('app', 'Download'),
                         ['order/save-route-sheet'],
                         [
-                            'class' => 'btn btn-sm btn-warning save-route-sheet',
+                            'class'     => 'btn btn-sm btn-warning save-route-sheet',
                             'data-date' => $date,
                         ]
                     ) ?>
@@ -77,7 +86,14 @@ Pjax::begin([
             </div>
             <div class="col-md-6">
                 <div class="form-group text-right">
-                    <?= Html::a(\Yii::t('app', 'Cancel'), ['order/index'], ['class' => 'btn btn-sm btn-default']) ?>
+                    <?= Html::a(
+                        \Yii::t('app', 'Cancel'),
+                        '#',
+                        [
+                            'class'        => 'btn btn-sm btn-default',
+                            'data-dismiss' => 'modal'
+                        ]
+                    ) ?>
                 </div>
             </div>
         </div>

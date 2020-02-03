@@ -5,10 +5,19 @@
 
 $dateObject = (new \app\models\Helper\Date($date));
 ?>
-<div>Меню на <?php echo $dateObject->getWeekdayName(); ?> <?php echo $dateObject->getFormattedDate(); ?></div>
+<div><strong><i>Меню на <?php echo $dateObject->getWeekdayName(); ?> <?php echo $dateObject->getFormattedDate(); ?></i></strong></div>
+<hr />
 <div class="row">
     <div class="col-sm-3">
-        <h5>Завтрак</h5>
+        <div class="ingestion-header">
+            <div class="pull-right">
+                <?php echo \yii\helpers\Html::button(\Yii::t('menu', 'Add'), [
+                    'class' => 'btn btn-default btm-sm pull-right add-menu-ingestion'
+                ]); ?>
+            </div>
+            <h5><?= \Yii::t('menu', 'Breakfast');?></h5>
+            <div class="clearfix"></div>
+        </div>
         <div class="ingestion-wrapper">
             <div class="ingestion" data-ingestion-id="<?php echo $i; ?>">
                 <?php echo \yii\helpers\Html::dropDownList(
@@ -21,14 +30,17 @@ $dateObject = (new \app\models\Helper\Date($date));
                 ); ?>
             </div>
         </div>
-        <div>
-            <?php echo \yii\helpers\Html::button(\Yii::t('menu', 'Add'), [
-                'class' => 'btn btn-primary btm-sm pull-right add-menu-ingestion'
-            ]); ?>
-        </div>
     </div>
     <div class="col-sm-3">
-        <h5>Обед</h5>
+        <div class="ingestion-header">
+            <div class="pull-right">
+                <?php echo \yii\helpers\Html::button(\Yii::t('menu', 'Add'), [
+                    'class' => 'btn btn-default btm-sm pull-right add-menu-ingestion'
+                ]); ?>
+            </div>
+            <h5><?= \Yii::t('menu', 'Supper');?></h5>
+            <div class="clearfix"></div>
+        </div>
         <div class="ingestion-wrapper">
             <div class="ingestion" data-ingestion-id="<?php echo $i; ?>">
                 <?php echo \yii\helpers\Html::dropDownList(
@@ -49,14 +61,17 @@ $dateObject = (new \app\models\Helper\Date($date));
                 ); ?>
             </div>
         </div>
-        <div>
-            <?php echo \yii\helpers\Html::button(\Yii::t('menu', 'Add'), [
-                'class' => 'btn btn-primary btm-sm pull-right add-menu-ingestion'
-            ]); ?>
-        </div>
     </div>
     <div class="col-sm-3">
-        <h5>Перекус</h5>
+        <div class="ingestion-header">
+            <div class="pull-right">
+                <?php echo \yii\helpers\Html::button(\Yii::t('menu', 'Add'), [
+                    'class' => 'btn btn-default btm-sm pull-right add-menu-ingestion'
+                ]); ?>
+            </div>
+            <h5><?= \Yii::t('menu', 'Lunch');?></h5>
+            <div class="clearfix"></div>
+        </div>
         <div class="ingestion-wrapper">
             <div class="ingestion" id="ingestion_lunch_<?php echo $i; ?>">
                 <?php echo \yii\helpers\Html::dropDownList(
@@ -69,14 +84,17 @@ $dateObject = (new \app\models\Helper\Date($date));
                 ); ?>
             </div>
         </div>
-        <div>
-            <?php echo \yii\helpers\Html::button(\Yii::t('menu', 'Add'), [
-                'class' => 'btn btn-primary btm-sm pull-right add-menu-ingestion'
-            ]); ?>
-        </div>
     </div>
     <div class="col-sm-3">
-        <h5>Ужин</h5>
+        <div class="ingestion-header">
+            <div class="pull-right">
+                <?php echo \yii\helpers\Html::button(\Yii::t('menu', 'Add'), [
+                    'class' => 'btn btn-default btm-sm pull-right add-menu-ingestion'
+                ]); ?>
+            </div>
+            <h5><?= \Yii::t('menu', 'Supper');?></h5>
+            <div class="clearfix"></div>
+        </div>
         <div class="ingestion-wrapper">
             <div class="ingestion" id="ingestion_supper_<?php echo $i; ?>">
                 <?php echo \yii\helpers\Html::dropDownList(
@@ -88,11 +106,6 @@ $dateObject = (new \app\models\Helper\Date($date));
                     ]
                 ); ?>
             </div>
-        </div>
-        <div>
-            <?php echo \yii\helpers\Html::button(\Yii::t('menu', 'Add'), [
-                'class' => 'btn btn-primary btm-sm pull-right add-menu-ingestion'
-            ]); ?>
         </div>
     </div>
 </div>

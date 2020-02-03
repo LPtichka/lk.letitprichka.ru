@@ -21,6 +21,8 @@ return [
     'Profile'                       => 'Профиль',
     'Registered from'               => 'Зарегистрирован с',
     'Save'                          => 'Сохранить',
+    'Download'                      => 'Скачать',
+    'Unload'                        => 'Выгрузить',
     'Sign in'                       => 'Войти',
     'Sign in to start your session' => 'Авторизуйтесь для начала работы.',
     'Sign out'                      => 'Выйти',

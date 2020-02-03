@@ -3,6 +3,7 @@ namespace app\controllers;
 
 use app\models\Helper\Excel;
 use app\models\Helper\ExcelParser;
+use app\models\Helper\Unit;
 use app\models\Helper\Weight;
 use app\models\Repository\Exception;
 use app\models\Search\Product;
@@ -88,7 +89,9 @@ class ProductController extends BaseController
             }
         }
 
-        $product->weight = (new Weight())->setUnit(Weight::UNIT_KG)->convert($product->weight, Weight::UNIT_GR);
+        if ($product->unit == Unit::UNIT_KG || $product->unit == Unit::UNIT_LITER) {
+            $product->count = (new Weight())->setUnit(Weight::UNIT_KG)->convert($product->count, Weight::UNIT_GR);
+        }
         return $this->renderAjax('/product/create', [
             'model'         => $product,
             'exceptionList' => ArrayHelper::map((new Exception())->getExceptionList(), 'id', 'name'),
@@ -216,8 +219,7 @@ class ProductController extends BaseController
         foreach ($products as $product) {
             $result[] = [
                 'name'       => $product['name'],
-                'weight'     => $product['weight'],
-                'count'      => $product['count'],
+                'weight'     => (new Unit($product['unit']))->format($product['count']),
                 'product_id' => $product['id'],
             ];
         }

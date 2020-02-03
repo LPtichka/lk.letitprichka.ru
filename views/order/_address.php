@@ -5,7 +5,7 @@ use app\widgets\Html;
 /* @var $address \app\models\Repository\Address */
 ?>
 
-<div class="row collapse" id="collapse-address">
+<div class="collapse" id="collapse-address">
     <div class="col-sm-12">
         <div class="form-group">
             <label><?= \Yii::t('order', 'Full address'); ?></label>

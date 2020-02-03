@@ -31,8 +31,6 @@ class DishProduct extends \yii\db\ActiveRecord
 {
     /** @var string */
     public $name;
-    /** @var int */
-    public $count;
 
     private $weightUnitDefault = Weight::UNIT_KG;
 

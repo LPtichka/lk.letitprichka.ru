@@ -244,7 +244,7 @@ body.delegate('.action-with-request', 'click', function (e) {
 });
 
 body.delegate('.add-menu-ingestion', 'click', function (e) {
-    let wrapper = $(this).parent().parent().find('.ingestion-wrapper');
+    let wrapper = $(this).parent().parent().parent().find('.ingestion-wrapper');
     let lastIngestion = wrapper.children().last();
     let lastIngestionID = parseInt(lastIngestion.data('ingestion-id')) + 1;
     let ingestionClone = lastIngestion.clone();
