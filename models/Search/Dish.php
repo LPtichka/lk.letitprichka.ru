@@ -23,7 +23,7 @@ class Dish extends Repository
     {
         return [
             [['id', 'fat', 'weight', 'proteins', 'kkal', 'type', 'carbohydrates'], 'integer'],
-            ['name', 'string'],
+            [['name', 'updated_at'], 'string'],
         ];
     }
 
@@ -89,6 +89,9 @@ class Dish extends Repository
         $result['id'] = [
             'attribute' => 'id',
             'label' => \Yii::t('dish', 'ID'),
+            'headerOptions' => [
+                'width' => '80px',
+            ],
             'content' => function ($model) {
                 return Html::a($model->id, ['dish/view', 'id' => $model->id]);
             }
@@ -118,6 +121,9 @@ class Dish extends Repository
         $result['weight'] = [
             'attribute' => 'weight',
             'label' => \Yii::t('dish', 'Weight'),
+            'headerOptions' => [
+                'width' => '80px',
+            ],
             'content' => function ($model) {
                 return (new Weight())->setUnit(Weight::UNIT_KG)->convert($model->weight, Weight::UNIT_GR);
             }
@@ -126,26 +132,41 @@ class Dish extends Repository
 
         $result['kkal'] = [
             'attribute' => 'kkal',
+            'headerOptions' => [
+                'width' => '80px',
+            ],
             'label' => \Yii::t('dish', 'KKal'),
         ];
 
         $result['fat'] = [
             'attribute' => 'fat',
+            'headerOptions' => [
+                'width' => '80px',
+            ],
             'label' => \Yii::t('dish', 'Fat'),
         ];
 
         $result['proteins'] = [
             'attribute' => 'proteins',
+            'headerOptions' => [
+                'width' => '80px',
+            ],
             'label' => \Yii::t('dish', 'Proteins'),
         ];
 
         $result['carbohydrates'] = [
             'attribute' => 'carbohydrates',
+            'headerOptions' => [
+                'width' => '80px',
+            ],
             'label' => \Yii::t('dish', 'Carbohydrates'),
         ];
 
         $result['updated_at'] = [
             'attribute' => 'updated_at',
+            'headerOptions' => [
+                'width' => '160px',
+            ],
             'label' => \Yii::t('dish', 'Updated at'),
             'content' => function($model) {
                 return date('d.m.Y \в H:i', $model->updated_at);

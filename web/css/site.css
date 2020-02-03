@@ -16,8 +16,8 @@ body {
 
 .footer {
     height: 60px;
-    background-color: #f5f5f5;
-    border-top: 1px solid #ddd;
+    background-color: #F5F5F5;
+    border-top: 1px solid #DDD;
     padding-top: 20px;
 }
 
@@ -32,7 +32,7 @@ body {
 }
 
 .not-set {
-    color: #c55;
+    color: #C55;
     font-style: italic;
 }
 
@@ -83,9 +83,9 @@ a.desc:after {
 }
 
 .error-summary {
-    color: #a94442;
-    background: #fdf7f7;
-    border-left: 3px solid #eed3d7;
+    color: #A94442;
+    background: #FDF7F7;
+    border-left: 3px solid #EED3D7;
     padding: 10px 20px;
     margin: 0 0 15px 0;
 }
@@ -96,9 +96,9 @@ a.desc:after {
     border: none;
 }
 
-@media(max-width:767px) {
+@media (max-width: 767px) {
     .nav li > form > button.logout {
-        display:block;
+        display: block;
         text-align: left;
         width: 100%;
         padding: 10px 15px;
@@ -118,25 +118,32 @@ a.desc:after {
     color: #333;
 }
 
+
 .pagination {
     width: 100%;
     margin: 0;
     position: relative;
 }
 
-.pagination>li>a {
-    background: #fafafa;
+.pagination > li > a {
+    background: #FAFAFA;
     color: #666;
     padding: 5px 10px;
     font-size: 12px;
     line-height: 1.5;
 }
 
-.pagination>li>span {
-    border: none;
+.pagination > li > span {
+    /*border: none;*/
 }
 
-.pagination>li>span:hover {
+.pagination > li > i {
+    font-size: 12px;
+    color:#999;
+    margin: 0 5px;
+}
+
+.pagination > li > span:hover {
     background: none;
 }
 
@@ -146,7 +153,7 @@ a.desc:after {
 }
 
 .product-row {
-    border-bottom: 1px solid #f2f2f2;
+    border-bottom: 1px solid #F2F2F2;
     padding-bottom: 0;
     margin-bottom: 15px;
 }
@@ -160,11 +167,11 @@ a.desc:after {
 
 .ui-menu-item {
     font-size: 12px;
-    color:#333;
+    color: #333;
 }
 
 .ui-state-active, .ui-widget-content .ui-state-active {
-    background: #f2f2f2;
+    background: #F2F2F2;
     border-top: none;
     border-bottom: none;
 }
@@ -174,12 +181,12 @@ a.desc:after {
 }
 
 .ui-menu {
-    padding:  5px 0;
+    padding: 5px 0;
 }
 
 .ui-menu .ui-menu-item {
     list-style-image: none;
-    color:#999;
+    color: #999;
 }
 
 thead .form-control {
@@ -265,7 +272,7 @@ label {
 }
 
 hr {
-    border-top: 1px solid #f4f4f4 !important;
+    border-top: 1px solid #F4F4F4 !important;
     margin: 15px 0 !important;
 }
 
@@ -310,11 +317,11 @@ hr {
 }
 
 .ingestion {
-    border: 1px solid #f2f2f2;
+    border: 1px solid #F2F2F2;
     border-radius: 5px;
     padding: 10px 10px 0;
     margin-bottom: 10px;
-    box-shadow: 3px 3px 10px rgba(0,0,0,.1);
+    box-shadow: 3px 3px 10px rgba(0, 0, 0, .1);
 }
 
 .ingestion select {
@@ -322,7 +329,7 @@ hr {
 }
 
 tr.error {
-    background-color: rgba(255,0,0,0.1);
+    background-color: rgba(255, 0, 0, 0.1);
 }
 
 .modal-buttons {
@@ -382,7 +389,7 @@ label input[type="checkbox"] {
 }
 
 .list-element {
-    border-bottom: 1px solid #f2f2f2;
+    border-bottom: 1px solid #F2F2F2;
 }
 
 .list-element:last-child {

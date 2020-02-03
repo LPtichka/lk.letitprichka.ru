@@ -41,6 +41,9 @@ class DishController extends BaseController
 
             $dishProducts = [];
             foreach ($post['DishProduct'] as $dishProduct) {
+                if (empty($dishProduct['product_id'])) {
+                    continue;
+                }
                 $product = new DishProduct();
                 $product->load($dishProduct, '');
                 $dishProducts[] = $product;
@@ -103,6 +106,9 @@ class DishController extends BaseController
 
             $dishProducts = [];
             foreach ($post['DishProduct'] as $dishProduct) {
+                if (empty($dishProduct['product_id'])) {
+                    continue;
+                }
                 $product = new DishProduct();
                 $product->load($dishProduct, '');
                 $dishProducts[] = $product;

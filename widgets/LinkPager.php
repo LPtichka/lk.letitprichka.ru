@@ -30,10 +30,10 @@ class LinkPager extends \yii\widgets\LinkPager
     public function __construct($config = [])
     {
         if (!isset($config['nextPageLabel'])) {
-            $config['nextPageLabel'] = Yii::t('app', 'next');
+            $config['nextPageLabel'] = Yii::t('app', 'след');
         }
         if (!isset($config['prevPageLabel'])) {
-            $config['prevPageLabel'] = Yii::t('app', 'prev');
+            $config['prevPageLabel'] = Yii::t('app', 'пред');
         }
 
         parent::__construct($config);
@@ -98,7 +98,7 @@ class LinkPager extends \yii\widgets\LinkPager
         if ($this->pageIput !== false) {
             $pageParam = $this->pagination->pageParam;
             if ($this->pageIput == null || $this->pageIput === true) {
-                $buttons[] = Html::tag('li', '<span>перейти к странице: </span>' . Html::input('text', $pageParam, Yii::$app->request->get($pageParam), ['id' => 'current-page', 'class' => 'form-control input-sm']));
+                $buttons[] = Html::tag('li', '<i>перейти к странице: </i>' . Html::input('text', $pageParam, Yii::$app->request->get($pageParam), ['id' => 'current-page', 'class' => 'form-control input-sm']));
             } else {
                 $buttons[] = $this->pageIput;
             }
@@ -120,8 +120,8 @@ JS
             if ($this->sizeInput == null || $this->sizeInput === true) {
                 $buttons[] = Html::tag(
                     'li',
-                    '<span>кол-во строк в таблице: </span>' . Html::input('text', $sizeParam, Yii::$app->request->get($sizeParam, $defaultSize), ['id' => 'size-page', 'class' => 'form-control input-sm']),
-                    ['style' => 'position: absolute; right: 0; margin-right: 50px;']
+                    '<i>кол-во строк в таблице: </i>' . Html::input('text', $sizeParam, Yii::$app->request->get($sizeParam, $defaultSize), ['id' => 'size-page', 'class' => 'form-control input-sm']),
+                    ['style' => 'position: absolute; right: 0;']
                 );
             } else {
                 $buttons[] = $this->sizeInput;
