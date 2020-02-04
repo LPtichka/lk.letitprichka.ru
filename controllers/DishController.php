@@ -3,6 +3,7 @@ namespace app\controllers;
 
 use app\models\Helper\Excel;
 use app\models\Helper\ExcelParser;
+use app\models\Helper\Unit;
 use app\models\Helper\Weight;
 use app\models\Repository\DishProduct;
 use app\models\Search\Dish;
@@ -266,5 +267,47 @@ class DishController extends BaseController
         return [
             'url' => $excel->getUrl(),
         ];
+    }
+
+    /**
+     * @param int|null $id
+     * @return array
+     * @throws \PHPExcel_Exception
+     * @throws \PHPExcel_Reader_Exception
+     */
+    public function actionSearch()
+    {
+        $term    = \Yii::$app->request->get('term');
+        $element = \Yii::$app->request->get('element');
+
+        $dishes = \app\models\Repository\Dish::find()
+            ->select(['*', $element . ' as value'])
+            ->andFilterWhere(['like', $element, $term])
+            ->asArray()
+            ->all();
+
+        $result = [];
+        foreach ($dishes as $product) {
+            $result[] = [
+                'name'       => $product['name'],
+                'product_id' => $product['id'],
+            ];
+        }
+
+        \Yii::$app->response->format = Response::FORMAT_JSON;
+        return $result;
+    }
+
+
+    /**
+     * @param int $counter
+     * @return string
+     */
+    public function actionGetRow(int $counter)
+    {
+        return $this->renderAjax('/order/_product', [
+            'dish' => new \app\models\Repository\OrderScheduleDish(),
+            'i'       => ++$counter,
+        ]);
     }
 }

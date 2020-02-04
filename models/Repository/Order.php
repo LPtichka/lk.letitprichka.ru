@@ -199,13 +199,17 @@ class Order extends \yii\db\ActiveRecord
     public function build(array $data): bool
     {
         $this->load($data);
-        $subscriptionDiscount = SubscriptionDiscount::find()
-            ->where(['subscription_id' => $this->subscription_id])
-            ->andWhere(['<=', 'count', $this->count])
-            ->orderBy(['count' => SORT_DESC])
-            ->limit(1)
-            ->one();
-        $this->total          = $subscriptionDiscount->price;
+        if (!empty($this->subscription_id)) {
+            $subscriptionDiscount = SubscriptionDiscount::find()
+                ->where(['subscription_id' => $this->subscription_id])
+                ->andWhere(['<=', 'count', $this->count])
+                ->orderBy(['count' => SORT_DESC])
+                ->limit(1)
+                ->one();
+            $this->total          = $subscriptionDiscount->price;
+        }
+
+
 
         if (empty($data['Order']['customer_id']) || !empty($data['Order']['isNewCustomer'])) {
             $customer = new Customer();
@@ -233,18 +237,42 @@ class Order extends \yii\db\ActiveRecord
         $schedules = [];
         if (empty($data['OrderSchedule'])) {
             $scheduleFirstDate = $data['Order']['scheduleFirstDate'] ?? null;
+
             if ($scheduleFirstDate !== null) {
                 $firstDateTime = strtotime($scheduleFirstDate);
-                for ($i = 0; $i < $data['Order']['count']; $i++) {
-                    $schedule = new OrderSchedule();
+                $schedule = new OrderSchedule();
+                $i = 0;
+                $schedule->date       = date('Y-m-d', $firstDateTime + $i * 86400);
+                $schedule->address_id = $address->id ?? null;
+                $schedule->order_id   = $this->id;
+                $schedule->interval   = $data['Order']['scheduleInterval'] ?? null;
+                if (empty($this->subscription_id)) {
 
-                    $schedule->date       = date('Y-m-d', $firstDateTime + $i * 86400);
-                    $schedule->cost       = $subscriptionDiscount->price / $data['Order']['count'];
-                    $schedule->address_id = $address->id ?? null;
-                    $schedule->order_id   = $this->id;
-                    $schedule->interval   = $data['Order']['scheduleInterval'] ?? null;
+                    $dishes = [];
+                    $scheduleTotal = 0;
+                    foreach ($data['OrderScheduleDish'] as $dishData) {
+                        if (empty($dishData['dish_id'])) {
+                            continue;
+                        }
+                        $dish = new OrderScheduleDish();
+                        $dish->count = (int) $dishData['count'];
+                        $dish->price = (int) $dishData['price'];
+                        $dish->dish_id = (int) $dishData['dish_id'];
 
+                        $scheduleTotal += $dish->price * $dish->count;
+                        $dishes[] = $dish;
+                    }
+
+                    $schedule->cost = $scheduleTotal;
+                    $this->count = 1;
+                    $this->total = $scheduleTotal;
+                    $schedule->setDishes($dishes);
                     $schedules[] = $schedule;
+                } else {
+                    for ($i = 1; $i < $data['Order']['count']; $i++) {
+                        $schedule->cost       = $subscriptionDiscount->price / $data['Order']['count'];
+                        $schedules[] = $schedule;
+                    }
                 }
             }
         } else {
@@ -408,38 +436,49 @@ class Order extends \yii\db\ActiveRecord
                 $transaction->rollBack();
                 return false;
             }
-            // TODO тут нужно сохранить сразу ORDER_SCHEDULE_DISH
-            foreach (OrderSchedule::INGESTION_CONTENT as $key => $ingestion) {
-                if (empty($ingestion)) {
-                    $orderScheduleDish = new OrderScheduleDish();
-
-                    $orderScheduleDish->order_schedule_id = $schedule->id;
-                    $orderScheduleDish->ingestion_type    = $key;
-                    $orderScheduleDish->dish_id           = null;
-
-                    if (!$orderScheduleDish->validate() || !$orderScheduleDish->save()) {
+            if (empty($this->subscription_id) && !empty($schedule->dishes)) {
+                foreach ($schedule->dishes as $dish) {
+                    $dish->order_schedule_id = $schedule->id;
+                    if (!$dish->validate() || !$dish->save()) {
                         $transaction->rollBack();
                         return false;
                     }
-                } else {
-                    foreach ($ingestion as $iType) {
-                        if ($this->without_soup && $iType == Dish::TYPE_FIRST) {
-                            continue;
-                        }
+                }
+            } else {
+                // TODO тут нужно сохранить сразу ORDER_SCHEDULE_DISH
+                foreach (OrderSchedule::INGESTION_CONTENT as $key => $ingestion) {
+                    if (empty($ingestion)) {
+                        $orderScheduleDish = new OrderScheduleDish();
 
-                        $orderScheduleDish                    = new OrderScheduleDish();
                         $orderScheduleDish->order_schedule_id = $schedule->id;
                         $orderScheduleDish->ingestion_type    = $key;
                         $orderScheduleDish->dish_id           = null;
-                        $orderScheduleDish->type              = $iType;
 
                         if (!$orderScheduleDish->validate() || !$orderScheduleDish->save()) {
                             $transaction->rollBack();
                             return false;
                         }
+                    } else {
+                        foreach ($ingestion as $iType) {
+                            if ($this->without_soup && $iType == Dish::TYPE_FIRST) {
+                                continue;
+                            }
+
+                            $orderScheduleDish                    = new OrderScheduleDish();
+                            $orderScheduleDish->order_schedule_id = $schedule->id;
+                            $orderScheduleDish->ingestion_type    = $key;
+                            $orderScheduleDish->dish_id           = null;
+                            $orderScheduleDish->type              = $iType;
+
+                            if (!$orderScheduleDish->validate() || !$orderScheduleDish->save()) {
+                                $transaction->rollBack();
+                                return false;
+                            }
+                        }
                     }
                 }
             }
+
         }
 
         $transaction->commit();

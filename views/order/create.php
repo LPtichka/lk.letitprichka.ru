@@ -13,7 +13,7 @@ use yii\widgets\MaskedInput;
 
 $this->title = $title;
 
-OrderAsset::register($this);
+//OrderAsset::register($this);
 ?>
 
 <?= $this->render('_buttons', [
@@ -106,7 +106,7 @@ OrderAsset::register($this);
                                 ]); ?>
                             </div>
                         </div>
-                        <hr />
+                        <hr/>
                         <div class="row">
                             <div class="col-sm-8">
                                 <?= $form->field($model, 'payment_type')->dropDownList($payments, [
@@ -117,7 +117,7 @@ OrderAsset::register($this);
                                 <?= $form->field($model, 'cash_machine')->checkbox() ?>
                             </div>
                         </div>
-                        <hr />
+                        <hr/>
                         <div class="row" id="order-address-block">
                             <div class="col-sm-8">
                                 <div class="form-group">
@@ -160,7 +160,7 @@ OrderAsset::register($this);
                                 'address' => $model->address,
                             ]); ?>
                         </div>
-                        <hr />
+                        <hr/>
                         <div class="row">
                             <div class="col-sm-12">
                                 <?= $form->field($model, 'comment')->textarea([
@@ -208,6 +208,42 @@ OrderAsset::register($this);
             <div class="box-body">
                 <div class="row">
                     <div class="col-sm-3">
+                        <?= $form->field($model, 'subscription_id')->dropDownList(
+                            [
+                                ''  => \Yii::t('app', 'Choose'),
+                                '0' => \Yii::t('order', 'Without subscription'),
+                            ] + $subscriptions,
+                            [
+                                'class' => 'form-control input-sm'
+                            ]
+                        ) ?>
+                    </div>
+                    <div class="col-sm-2">
+                        <?= $form->field($model, 'cutlery')->textInput([
+                            'class' => 'form-control input-sm'
+                        ]) ?>
+                    </div>
+                    <div class="col-sm-2">
+                        <?= $form->field($model, 'scheduleFirstDate')->widget(DatePicker::class, [
+                            'options'       => ['placeholder' => \Yii::t('order', 'Choose date')],
+                            'removeButton'  => false,
+                            'pluginOptions' => [
+                                'autoclose' => true
+                            ]
+                        ]); ?>
+                    </div>
+                    <div class="col-sm-2">
+                        <?= $form->field($model, 'scheduleInterval')->dropDownList(
+                            ['' => \Yii::t('app', 'Choose')] + $intervals,
+                            [
+                                'class' => 'form-control input-sm'
+                            ]
+                        ) ?>
+                    </div>
+                </div>
+                <hr/>
+                <div class="row subscription-block">
+                    <div class="col-sm-2">
                         <?= $form->field($model, 'franchise_id')->dropDownList(
                             (count($franchises) > 1) ? (['' => \Yii::t('app', 'Choose')] + $franchises) : $franchises,
                             [
@@ -215,20 +251,8 @@ OrderAsset::register($this);
                             ]
                         ) ?>
                     </div>
-                    <div class="col-sm-3">
-                        <?= $form->field($model, 'subscription_id')->dropDownList(
-                            ['' => \Yii::t('app', 'Choose')] + $subscriptions,
-                            [
-                                'class' => 'form-control input-sm'
-                            ]
-                        ) ?>
-                    </div>
-                    <div class="col-sm-3">
-                        <?= $form->field($model, 'cutlery')->textInput([
-                            'class' => 'form-control input-sm'
-                        ]) ?>
-                    </div>
-                    <div class="col-sm-3">
+
+                    <div class="col-sm-2">
                         <div class="switch detailed-address">
                             <?= $form->field($model, 'without_soup')->widget(SwitchInput::class, [
                                 'pluginOptions' => [
@@ -239,9 +263,9 @@ OrderAsset::register($this);
                             ]); ?>
                         </div>
                     </div>
-                </div>
-                <div class="row">
-                    <div class="col-sm-3">
+
+
+                    <div class="col-sm-2">
                         <?= $form->field($model, 'count')->dropDownList(
                             ['' => \Yii::t('app', 'Choose')] + $subscriptionCounts,
                             [
@@ -249,22 +273,32 @@ OrderAsset::register($this);
                             ]
                         ) ?>
                     </div>
-                    <div class="col-sm-3">
-                        <?= $form->field($model, 'scheduleFirstDate')->widget(DatePicker::class, [
-                            'options'       => ['placeholder' => \Yii::t('order', 'Choose date')],
-                            'removeButton'  => false,
-                            'pluginOptions' => [
-                                'autoclose' => true
-                            ]
-                        ]); ?>
+                </div>
+                <hr />
+                <div class="row dish-block">
+                    <div class="col-sm-12">
+                        <div class="row">
+                            <div class="col-sm-3">Название</div>
+                            <div class="col-sm-1">Колчество</div>
+                            <div class="col-sm-1">Цена</div>
+                        </div>
+                        <div class="dishes">
+                            <?php foreach ($model->schedules as $i => $schedule) : ?>
+                                <?php foreach ($schedule->dishes as $j => $dish) : ?>
+                                    <?= $this->render('_product', [
+                                        'dish' => $dish,
+                                        'i'       => $j,
+                                    ]) ?>
+                                <?php endforeach; ?>
+                            <?php endforeach; ?>
+                        </div>
                     </div>
-                    <div class="col-sm-3">
-                        <?= $form->field($model, 'scheduleInterval')->dropDownList(
-                            ['' => \Yii::t('app', 'Choose')] + $intervals,
-                            [
-                                'class' => 'form-control input-sm'
-                            ]
-                        ) ?>
+                    <div class="row">
+                        <div class="col-sm-12 product-buttons">
+                            <a href="javascript:void(0)" id="add-dish" class="btn btn-sm btn-primary pull-right">
+                                <i class="fa fa-plus"></i><?= \Yii::t('dish', 'Add product') ?>
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>

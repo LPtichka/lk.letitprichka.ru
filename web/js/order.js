@@ -84,3 +84,14 @@ $('body').delegate('[name="Order[address_id]"]', 'change', function () {
         $('[name="address_detailed"]').trigger('click');
     }
 });
+
+$('body').delegate('[name="Order[subscription_id]"]', 'change', function () {
+    let value = $(this).val();
+    if (value === '0') {
+        $('.subscription-block').hide();
+        $('.dish-block').show();
+    } else {
+        $('.subscription-block').show();
+        $('.dish-block').hide();
+    }
+});

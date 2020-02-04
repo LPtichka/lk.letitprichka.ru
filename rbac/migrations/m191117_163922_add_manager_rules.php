@@ -107,6 +107,13 @@ class m191117_163922_add_manager_rules extends Migration
         $this->addChild('manager', '/order/get-route-sheet');
         $this->createPermission('/order/save-route-sheet');
         $this->addChild('manager', '/order/save-route-sheet');
+        $this->createPermission('/order/get-date-inventory');
+        $this->addChild('manager', '/order/get-date-inventory');
+
+        $this->createPermission('/dish/search');
+        $this->addChild('manager', '/dish/search');
+        $this->createPermission('/dish/get-row');
+        $this->addChild('manager', '/dish/get-row');
 
         $this->createPermission('/api/order/create');
         $this->addChild('manager', '/api/order/create');
@@ -215,6 +222,13 @@ class m191117_163922_add_manager_rules extends Migration
         $this->removePermission('/order/get-route-sheet');
         $this->removeChild('manager', '/order/save-route-sheet');
         $this->removePermission('/order/save-route-sheet');
+        $this->removeChild('manager', '/order/get-date-inventory');
+        $this->removePermission('/order/get-date-inventory');
+
+        $this->removeChild('manager', '/dish/search');
+        $this->removePermission('/dish/search');
+        $this->removeChild('manager', '/dish/get-row');
+        $this->removePermission('/dish/get-row');
 
         $this->removeChild('manager', '/api/order/create');
         $this->removePermission('/api/order/create');

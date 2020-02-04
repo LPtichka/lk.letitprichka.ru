@@ -170,4 +170,12 @@ class OrderSchedule extends \yii\db\ActiveRecord
     {
         return $this->hasMany(OrderScheduleDish::class, ['order_schedule_id' => 'id']);
     }
+
+    /**
+     * @param OrderScheduleDish[] $orderScheduleDishes
+     */
+    public function setDishes(array $orderScheduleDishes)
+    {
+        $this->dishes = $orderScheduleDishes;
+    }
 }

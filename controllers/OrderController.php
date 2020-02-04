@@ -1,17 +1,20 @@
 <?php
 namespace app\controllers;
 
+use app\models\Common\Ingestion;
 use app\models\Helper\Excel;
 use app\models\Repository\Address;
 use app\models\Repository\Customer;
 use app\models\Repository\Exception;
 use app\models\Repository\Franchise;
 use app\models\Repository\OrderSchedule;
+use app\models\Repository\OrderScheduleDish;
 use app\models\Repository\Subscription;
 use app\models\Search\Order;
 use app\models\Search\PaymentType;
 use app\models\User;
 use yii\helpers\ArrayHelper;
+use yii\web\NotFoundHttpException;
 use yii\web\Response;
 
 class OrderController extends BaseController
@@ -32,6 +35,7 @@ class OrderController extends BaseController
 
     /**
      * @return string
+     * @throws \yii\db\Exception
      */
     public function actionCreate()
     {
@@ -64,6 +68,12 @@ class OrderController extends BaseController
 
         if (empty($order->exceptions)) {
             $order->setExceptions([new Exception()]);
+        }
+
+        if (empty($order->schedules)) {
+            $schedule = new OrderSchedule();
+            $schedule->setDishes([new OrderScheduleDish()]);
+            $order->setSchedules([$schedule]);
         }
 
 
@@ -410,5 +420,67 @@ class OrderController extends BaseController
                 'url' => $excel->getUrl()
             ];
         }
+    }
+
+    /**
+     * @return array
+     */
+    public function actionAddDish()
+    {
+        $orderRoutes = [];
+
+        if (\Yii::$app->request->post()) {
+            $date        = \Yii::$app->request->post('date');
+            $orderRoutes = (new \app\models\Repository\Order())->getRoutesForDate($date);
+
+            $excel = new Excel();
+            $excel->loadFromTemplate('files/templates/base.xlsx');
+            $excel->prepare($orderRoutes, Excel::MODEL_ROUTE_SHEET, \Yii::$app->request->post());
+            $excel->save('route_sheet.xlsx', 'temp');
+
+            \Yii::$app->response->format = Response::FORMAT_JSON;
+
+            return [
+                'url' => $excel->getUrl()
+            ];
+        }
+    }
+
+    /**
+     * @param int $orderId
+     * @param string $date
+     * @return string
+     * @throws NotFoundHttpException
+     */
+    public function actionGetDateInventory(int $id, string $date)
+    {
+        $order = Order::findOne($id);
+        if (!$order) {
+            throw new NotFoundHttpException('Заказ не найден');
+        }
+
+        $dishes = [];
+        foreach ($order->schedules as $schedule) {
+            if ($schedule->date == $date) {
+                $dishes = $schedule->dishes;
+            }
+        }
+
+        if (empty($dishes)) {
+            throw new NotFoundHttpException('Расписание не найденно');
+        }
+
+        $types = [];
+        $ingestion = new Ingestion();
+        foreach ($dishes as $dish) {
+            $types[$dish->ingestion_type] = $ingestion->getIngestionName($dish->ingestion_type);
+        }
+
+        return $this->renderAjax('/order/_inventory', [
+            'date' => $date,
+            'types' => $types,
+            'isSubscription' => !empty($order->subscription_id),
+            'dishes' => $dishes,
+        ]);
     }
 }

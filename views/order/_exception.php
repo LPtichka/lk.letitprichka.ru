@@ -8,7 +8,7 @@ use app\widgets\Html;
 /* @var $form yii\widgets\ActiveForm */
 ?>
 
-<div class="exception-row" id="group-<?= $i ?>">
+<div class="exception-row" id="group-exc-<?= $i ?>">
     <div class="row">
         <div class="col-sm-1 col-print-1 text-center">
             <span class="counter"><?= $i + 1 ?></span>

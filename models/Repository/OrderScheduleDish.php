@@ -11,12 +11,16 @@ use yii\behaviors\TimestampBehavior;
  * @property int $id
  * @property int $order_schedule_id
  * @property int $dish_id
+ * @property string $name
+ * @property int $count
  * @property int $ingestion_type
  * @property int $type
  * @property int $manufactured_at
  * @property string $storage_condition
  * @property int $created_at
  * @property int $updated_at
+ *
+ * @property Dish $dish
  */
 class OrderScheduleDish extends \yii\db\ActiveRecord
 {
@@ -54,8 +58,9 @@ class OrderScheduleDish extends \yii\db\ActiveRecord
             ['ingestion_type', 'in', 'range' => (new Dish())->getIngestionTypes()],
             ['dish_id', 'exist', 'targetClass' => Dish::class, 'targetAttribute' => 'id', 'message' => 'Указан не существующий ID блюда'],
             ['order_schedule_id', 'exist', 'targetClass' => OrderSchedule::class, 'targetAttribute' => 'id', 'message' => 'Указан не существующий ID расписания'],
-            ['storage_condition', 'string'],
-            ['manufactured_at', 'integer'],
+            [['storage_condition', 'name'], 'string'],
+            [['manufactured_at', 'count'], 'integer'],
+            [['count'], 'default', 'value' => 1],
         ];
     }
 
@@ -67,5 +72,14 @@ class OrderScheduleDish extends \yii\db\ActiveRecord
         return [
             TimestampBehavior::class,
         ];
+    }
+
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getDish()
+    {
+        return $this->hasOne(Dish::class, ['id' => 'dish_id']);
     }
 }

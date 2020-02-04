@@ -75,6 +75,7 @@ class LinkOrderDishes extends Event
                         if (empty($array)) {
                             $orderScheduleDish          = OrderScheduleDish::findOne($dish['id']);
                             $orderScheduleDish->dish_id = $menuDish['dish_id'];
+                            $orderScheduleDish->name    = $menuDish['name'];
                             if (!$orderScheduleDish->save()) {
                                 $transaction->rollBack();
                                 break;

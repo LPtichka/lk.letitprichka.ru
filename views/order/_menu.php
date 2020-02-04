@@ -1,6 +1,7 @@
 <?php
 
 use app\widgets\Html;
+use yii\helpers\Url;
 
 /* @var $order \app\models\Repository\Order */
 /* @var $addresses array */
@@ -37,13 +38,20 @@ use app\widgets\Html;
                         ['class' => 'form-control input-sm', 'disabled' => !$schedule->isEditable()]
                 ) ?>
             </div>
-            <div class="col-sm-5">
+            <div class="col-sm-4">
                 <?= Html::activeInput(
                         'text',
                         $schedule,
                         "[$schedule->id]comment",
                         ['class' => 'form-control input-sm', 'disabled' => !$schedule->isEditable()]
                 ) ?>
+            </div>
+            <div class="col-sm-1">
+                <?= Html::a(\Yii::t('order', 'Get order enventory'), '#', [
+                    'data-href'   => Url::to(['order/get-date-inventory', 'id' => $order->id, 'date' => $schedule->date]),
+                    'data-toggle' => 'modal',
+                    'data-target' => '#modal',
+                ]) ?>
             </div>
         </div>
     <?php endforeach; ?>

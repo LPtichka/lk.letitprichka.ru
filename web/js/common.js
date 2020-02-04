@@ -38,6 +38,9 @@ body.delegate('.export', 'click', function (e) {
 body.delegate('#add-product', 'click', function () {
     window.addProduct();
 });
+body.delegate('#add-dish', 'click', function () {
+    window.addDish();
+});
 
 body.delegate('.add-row-action', 'click', function () {
     let container = $('.' + $(this).data('block')),
@@ -362,6 +365,21 @@ window.addProduct = function () {
     }
 
     $.get('/product/get-row?counter=' + lastIndex, function (prodRow) {
+        prodContainer.append($(prodRow));
+    });
+};
+
+// Добавление строки продкута
+window.addDish = function () {
+    let prodContainer = $('.dishes'),
+        lastGroupId = prodContainer.find('[class*=dish-row]:last').prop('id'),
+        lastIndex = 0;
+
+    if (lastGroupId) {
+        lastIndex = lastGroupId.split('-')[1];
+    }
+
+    $.get('/dish/get-row?counter=' + lastIndex, function (prodRow) {
         prodContainer.append($(prodRow));
     });
 };
