@@ -158,7 +158,7 @@ class Menu extends \yii\db\ActiveRecord
             return false;
         }
 
-        $event       = new \app\events\LinkOrderDishes();
+        $event       = new \app\events\MenuCreated();
         $transaction = \Yii::$app->db->beginTransaction();
 
         if (!$this->save()) {
@@ -184,7 +184,7 @@ class Menu extends \yii\db\ActiveRecord
         }
 
         $event->prepareEvent();
-        \Yii::$app->trigger(\app\events\LinkOrderDishes::EVENT_MENU_CREATED, $event);
+        \Yii::$app->trigger(\app\events\MenuCreated::EVENT_MENU_CREATED, $event);
         return true;
     }
 
@@ -240,6 +240,7 @@ class Menu extends \yii\db\ActiveRecord
             $indexName                              = sprintf('%s-%d-%d', $item['date'], $item['ingestion_type'], $item['dish_type']);
             $dish                                   = Dish::findOne($item['dish_id']);
             $item['exception_list']                 = $dish->getExceptionList();
+            $item['name']                           = $dish->name;
             $result[$indexName][$item['ingestion']] = $item;
         }
 

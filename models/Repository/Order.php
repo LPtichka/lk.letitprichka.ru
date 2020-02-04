@@ -206,7 +206,14 @@ class Order extends \yii\db\ActiveRecord
                 ->orderBy(['count' => SORT_DESC])
                 ->limit(1)
                 ->one();
-            $this->total          = $subscriptionDiscount->price;
+
+            $subscription = Subscription::findOne($this->subscription_id);
+            if ($this->count == 1) {
+                $this->total          = $subscription->price;
+            } else {
+                $this->total          = $subscriptionDiscount->price;
+            }
+
         }
 
 
@@ -269,8 +276,10 @@ class Order extends \yii\db\ActiveRecord
                     $schedule->setDishes($dishes);
                     $schedules[] = $schedule;
                 } else {
-                    for ($i = 1; $i < $data['Order']['count']; $i++) {
-                        $schedule->cost       = $subscriptionDiscount->price / $data['Order']['count'];
+                    for ($i = 0; $i < $data['Order']['count']; $i++) {
+                        $price = $subscriptionDiscount->price ?? $subscription->price;
+
+                        $schedule->cost       = $price / $data['Order']['count'];
                         $schedules[] = $schedule;
                     }
                 }
@@ -400,6 +409,7 @@ class Order extends \yii\db\ActiveRecord
      */
     public function saveAll(): bool
     {
+        $event       = new \app\events\OrderCreated();
         $transaction = \Yii::$app->db->beginTransaction();
         if (!$this->customer->validate() || !$this->customer->save()) {
             $transaction->rollBack();
@@ -418,6 +428,7 @@ class Order extends \yii\db\ActiveRecord
             $transaction->rollBack();
             return false;
         }
+        $event->setOrderId($this->id);
 
         foreach ($this->exceptions as $exception) {
             $oException               = new OrderException();
@@ -478,10 +489,11 @@ class Order extends \yii\db\ActiveRecord
                     }
                 }
             }
-
         }
 
         $transaction->commit();
+        $event->prepareEvent();
+        \Yii::$app->trigger(\app\events\OrderCreated::EVENT_ORDER_CREATED, $event);
         return true;
     }
 

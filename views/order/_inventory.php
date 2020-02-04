@@ -3,6 +3,8 @@
 use app\widgets\Html;
 
 /* @var $dishes \app\models\Repository\OrderScheduleDish[] */
+/* @var $isSubscription bool */
+/* @var $types array */
 
 $this->title = \Yii::t('order', 'Order inventory');
 
@@ -26,7 +28,10 @@ $this->title = \Yii::t('order', 'Order inventory');
                 <div class="col-sm-3">
                     <?php foreach ($dishes as $dish): ?>
                         <?php if ($dish->ingestion_type == $key): ?>
-                            <div><?= $dish->dish_id ? $dish->dish->name : 'Не назначено'; ?></div>
+                            <div><?= $dish->dish_id
+                                    ? Html::a($dish->dish->name, ['dish/view', 'id' => $dish->dish_id])
+                                    : \Yii::t('menu', 'Not equipped'); ?>
+                            </div>
                         <?php endif; ?>
                     <?php endforeach; ?>
                 </div>
@@ -34,10 +39,10 @@ $this->title = \Yii::t('order', 'Order inventory');
         </div>
     <?php else: ?>
         <div class="row">
-            <div class="col-sm-4">Название</div>
-            <div class="col-sm-2">Количество</div>
-            <div class="col-sm-2">Цена</div>
-            <div class="col-sm-2">Итого</div>
+            <div class="col-sm-4"><?= \Yii::t('order', 'Name');?></div>
+            <div class="col-sm-2"><?= \Yii::t('order', 'Quantity');?></div>
+            <div class="col-sm-2"><?= \Yii::t('order', 'Price');?></div>
+            <div class="col-sm-2"><?= \Yii::t('order', 'Total');?></div>
         </div>
         <hr/>
         <?php foreach ($dishes as $dish): ?>

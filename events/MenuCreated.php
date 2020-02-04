@@ -7,7 +7,7 @@ use app\models\Repository\OrderSchedule;
 use app\models\Repository\OrderScheduleDish;
 use yii\base\Event;
 
-class LinkOrderDishes extends Event
+class MenuCreated extends Event
 {
     const EVENT_MENU_CREATED = 'menu_created';
 
@@ -27,7 +27,7 @@ class LinkOrderDishes extends Event
      */
     public function prepareEvent()
     {
-        \Yii::$app->on(LinkOrderDishes::EVENT_MENU_CREATED, function (LinkOrderDishes $event){
+        \Yii::$app->on(MenuCreated::EVENT_MENU_CREATED, function (MenuCreated $event){
             $event->linkOrderDishes();
         });
 
