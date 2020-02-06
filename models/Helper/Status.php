@@ -37,7 +37,7 @@ class Status
      */
     public function getStatusName(): string
     {
-        return \Yii::t('order', $this->getStatusKey());
+        return \Yii::t('status', $this->getStatusKey());
     }
 
     /**

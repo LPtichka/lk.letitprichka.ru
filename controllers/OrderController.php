@@ -190,7 +190,7 @@ class OrderController extends BaseController
             'customers'          => ArrayHelper::map(Customer::find()->asArray()->all(), 'id', 'fio'),
             'intervals'          => (new OrderSchedule())->getIntervals(),
             'subscriptionCounts' => $subscriptionCounts,
-            'title'              => \Yii::t('order', 'Order create'),
+            'title'              => \Yii::t('order', 'Order №') . $order->id,
         ]);
     }
 

@@ -30,7 +30,7 @@ $this->title = \Yii::t('order', 'Order inventory');
                         <?php if ($dish->ingestion_type == $key): ?>
                             <div><?= $dish->dish_id
                                     ? Html::a($dish->dish->name, ['dish/view', 'id' => $dish->dish_id])
-                                    : \Yii::t('menu', 'Not equipped'); ?>
+                                    : \Yii::t('order', 'Not equipped'); ?>
                             </div>
                         <?php endif; ?>
                     <?php endforeach; ?>

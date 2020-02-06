@@ -38,6 +38,7 @@ class OrderCreated extends Event
      */
     public function linkOrderDishes()
     {
+        // TODO добавить логирование
         $order              = Order::findOne($this->orderId);
         $orderExceptionList = $order->getExceptionList();
         if (!$order) {

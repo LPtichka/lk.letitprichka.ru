@@ -14,7 +14,12 @@ use app\widgets\Html;
             <span class="counter"><?= $i + 1 ?></span>
         </div>
         <div class="col-sm-9 col-print-9">
-            <?= Html::activeDropDownList($exception, "[$i]id", ['' => \Yii::t('app', 'Choose')] + $exceptions, ['class' => 'form-control input-sm']) ?>
+            <?= Html::activeDropDownList(
+                $exception,
+                "[$i]id",
+                ['' => \Yii::t('app', 'Choose')] + $exceptions,
+                ['class' => 'form-control input-sm']
+            ) ?>
         </div>
         <div class="col-sm-2 col-print-2">
             <button

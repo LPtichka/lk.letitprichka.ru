@@ -14,15 +14,15 @@ use yii\helpers\Url;
 <div class="box-body order-menu-block-body">
     <div class="row">
         <div class="col-sm-2"><?php echo \Yii::t('order', 'Delivery date');?></div>
-        <div class="col-sm-3"><?php echo \Yii::t('order', 'Delivery address');?></div>
+        <div class="col-sm-2"><?php echo \Yii::t('order', 'Delivery address');?></div>
         <div class="col-sm-2"><?php echo \Yii::t('order', 'Delivery interval');?></div>
-        <div class="col-sm-5"><?php echo \Yii::t('order', 'Comment');?></div>
+        <div class="col-sm-6"><?php echo \Yii::t('order', 'Comment');?></div>
     </div>
     <hr />
     <?php foreach ($order->schedules as $schedule): ?>
         <div class="row <?php echo $schedule->getStatusKey();?> ">
             <div class="col-sm-2"><span><?php echo date('d.m.Y', strtotime($schedule->date));?></span></div>
-            <div class="col-sm-3">
+            <div class="col-sm-2">
                 <?= Html::activeDropDownList(
                         $schedule,
                         "[$schedule->id]address_id",
@@ -46,7 +46,7 @@ use yii\helpers\Url;
                         ['class' => 'form-control input-sm', 'disabled' => !$schedule->isEditable()]
                 ) ?>
             </div>
-            <div class="col-sm-1">
+            <div class="col-sm-2">
                 <?= Html::a(\Yii::t('order', 'Get order enventory'), '#', [
                     'data-href'   => Url::to(['order/get-date-inventory', 'id' => $order->id, 'date' => $schedule->date]),
                     'data-toggle' => 'modal',

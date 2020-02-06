@@ -48,7 +48,7 @@ body.delegate('.add-row-action', 'click', function () {
         lastIndex = 0;
 
     if (lastGroupId) {
-        lastIndex = lastGroupId.split('-')[1];
+        lastIndex = lastGroupId.split('-')[2];
     }
 
     $.get($(this).data('href') + '?counter=' + lastIndex, function (row) {

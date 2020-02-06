@@ -40,6 +40,7 @@ class MenuCreated extends Event
      */
     public function linkOrderDishes()
     {
+        // TODO добавить логирование
         $menu = Menu::find()
             ->with(['dishes'])
             ->where(['menu.id' => $this->menuID])

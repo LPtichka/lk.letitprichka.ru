@@ -5,9 +5,10 @@
 
 $dateObject = (new \app\models\Helper\Date($date));
 ?>
-<div><strong><i>Меню на <?php echo $dateObject->getWeekdayName(); ?> <?php echo $dateObject->getFormattedDate(); ?></i></strong></div>
-<hr />
-<div class="row">
+<div><strong>Меню
+        на <?php echo $dateObject->getWeekdayName(); ?> <?php echo $dateObject->getFormattedDate(); ?></strong></div>
+
+<div class="row menu-row">
     <div class="col-sm-3">
         <div class="ingestion-header">
             <div class="pull-right">
@@ -15,7 +16,7 @@ $dateObject = (new \app\models\Helper\Date($date));
                     'class' => 'btn btn-default btm-sm pull-right add-menu-ingestion'
                 ]); ?>
             </div>
-            <h5><?= \Yii::t('menu', 'Breakfast');?></h5>
+            <h5><?= \Yii::t('menu', 'Breakfast'); ?></h5>
             <div class="clearfix"></div>
         </div>
         <div class="ingestion-wrapper">
@@ -38,7 +39,7 @@ $dateObject = (new \app\models\Helper\Date($date));
                     'class' => 'btn btn-default btm-sm pull-right add-menu-ingestion'
                 ]); ?>
             </div>
-            <h5><?= \Yii::t('menu', 'Supper');?></h5>
+            <h5><?= \Yii::t('menu', 'Supper'); ?></h5>
             <div class="clearfix"></div>
         </div>
         <div class="ingestion-wrapper">
@@ -69,7 +70,7 @@ $dateObject = (new \app\models\Helper\Date($date));
                     'class' => 'btn btn-default btm-sm pull-right add-menu-ingestion'
                 ]); ?>
             </div>
-            <h5><?= \Yii::t('menu', 'Lunch');?></h5>
+            <h5><?= \Yii::t('menu', 'Lunch'); ?></h5>
             <div class="clearfix"></div>
         </div>
         <div class="ingestion-wrapper">
@@ -92,7 +93,7 @@ $dateObject = (new \app\models\Helper\Date($date));
                     'class' => 'btn btn-default btm-sm pull-right add-menu-ingestion'
                 ]); ?>
             </div>
-            <h5><?= \Yii::t('menu', 'Supper');?></h5>
+            <h5><?= \Yii::t('menu', 'Supper'); ?></h5>
             <div class="clearfix"></div>
         </div>
         <div class="ingestion-wrapper">
@@ -109,4 +110,3 @@ $dateObject = (new \app\models\Helper\Date($date));
         </div>
     </div>
 </div>
-<hr/>

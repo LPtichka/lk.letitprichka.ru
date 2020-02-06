@@ -3,6 +3,7 @@
 namespace app\models\Repository;
 
 use app\models\Common\Route;
+use app\models\Helper\Status;
 use app\models\Queries\OrderQuery;
 use yii\behaviors\TimestampBehavior;
 use yii\helpers\ArrayHelper;
@@ -28,6 +29,7 @@ use yii\helpers\ArrayHelper;
  * @property int $updated_at
  *
  * @property Customer $customer
+ * @property Subscription $subscription
  * @property Address $address
  * @property PaymentType $payment
  * @property Exception[] $exceptions
@@ -102,6 +104,8 @@ class Order extends \yii\db\ActiveRecord
             'scheduleInterval'  => \Yii::t('order', 'Schedule interval'),
             'payment_type'      => \Yii::t('order', 'Payment type'),
             'cash_machine'      => \Yii::t('order', 'Cash machine'),
+            'comment'           => \Yii::t('order', 'Comment'),
+            'customer_id'       => \Yii::t('order', 'Customer Id'),
         ];
     }
 
@@ -176,6 +180,14 @@ class Order extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
+    public function getSubscription()
+    {
+        return $this->hasOne(Subscription::class, ['id' => 'subscription_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
     public function getSchedules()
     {
         return $this->hasMany(OrderSchedule::class, ['order_id' => 'id']);
@@ -209,13 +221,12 @@ class Order extends \yii\db\ActiveRecord
 
             $subscription = Subscription::findOne($this->subscription_id);
             if ($this->count == 1) {
-                $this->total          = $subscription->price;
+                $this->total = $subscription->price;
             } else {
-                $this->total          = $subscriptionDiscount->price;
+                $this->total = $subscriptionDiscount->price;
             }
 
         }
-
 
 
         if (empty($data['Order']['customer_id']) || !empty($data['Order']['isNewCustomer'])) {
@@ -246,41 +257,41 @@ class Order extends \yii\db\ActiveRecord
             $scheduleFirstDate = $data['Order']['scheduleFirstDate'] ?? null;
 
             if ($scheduleFirstDate !== null) {
-                $firstDateTime = strtotime($scheduleFirstDate);
-                $schedule = new OrderSchedule();
-                $i = 0;
+                $firstDateTime        = strtotime($scheduleFirstDate);
+                $schedule             = new OrderSchedule();
+                $i                    = 0;
                 $schedule->date       = date('Y-m-d', $firstDateTime + $i * 86400);
                 $schedule->address_id = $address->id ?? null;
                 $schedule->order_id   = $this->id;
                 $schedule->interval   = $data['Order']['scheduleInterval'] ?? null;
                 if (empty($this->subscription_id)) {
 
-                    $dishes = [];
+                    $dishes        = [];
                     $scheduleTotal = 0;
                     foreach ($data['OrderScheduleDish'] as $dishData) {
                         if (empty($dishData['dish_id'])) {
                             continue;
                         }
-                        $dish = new OrderScheduleDish();
-                        $dish->count = (int) $dishData['count'];
-                        $dish->price = (int) $dishData['price'];
+                        $dish          = new OrderScheduleDish();
+                        $dish->count   = (int) $dishData['count'];
+                        $dish->price   = (int) $dishData['price'];
                         $dish->dish_id = (int) $dishData['dish_id'];
 
                         $scheduleTotal += $dish->price * $dish->count;
-                        $dishes[] = $dish;
+                        $dishes[]      = $dish;
                     }
 
                     $schedule->cost = $scheduleTotal;
-                    $this->count = 1;
-                    $this->total = $scheduleTotal;
+                    $this->count    = 1;
+                    $this->total    = $scheduleTotal;
                     $schedule->setDishes($dishes);
                     $schedules[] = $schedule;
                 } else {
                     for ($i = 0; $i < $data['Order']['count']; $i++) {
                         $price = $subscriptionDiscount->price ?? $subscription->price;
 
-                        $schedule->cost       = $price / $data['Order']['count'];
-                        $schedules[] = $schedule;
+                        $schedule->cost = $price / $data['Order']['count'];
+                        $schedules[]    = $schedule;
                     }
                 }
             }
@@ -570,5 +581,43 @@ class Order extends \yii\db\ActiveRecord
         }
 
         return false;
+    }
+
+    /**
+     * @return string
+     */
+    public function getStatusName(): ?string
+    {
+        if (empty($this->status_id)) {
+            return null;
+        }
+        return (new Status($this->status_id))->getStatusName();
+    }
+
+    /**
+     * @return string
+     */
+    public function getOrderSubscription(): ?string
+    {
+        return $this->subscription ? $this->subscription->name : '---';
+    }
+
+    /**
+     * @return string
+     */
+    public function getSubscriptionDates(): ?string
+    {
+        if (empty($this->schedules) || empty($this->id)) {
+            return null;
+        }
+
+        $dates   = [];
+        $dates[] = date('d.m.Y', strtotime($this->schedules[0]->date));
+
+        foreach ($this->schedules as $schedule) {
+            $dates[1] = date('d.m.Y', strtotime($schedule->date));
+        }
+
+        return implode(' - ', $dates);
     }
 }
