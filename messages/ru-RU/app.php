@@ -17,6 +17,7 @@ return [
     'ID'                            => '#',
     'Menu'                          => 'Меню',
     'Orders'                        => 'Заказы',
+    'Products'                      => 'Продукты',
     'Payment types'                 => 'Типы оплат',
     'Profile'                       => 'Профиль',
     'Registered from'               => 'Зарегистрирован с',

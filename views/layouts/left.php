@@ -21,7 +21,7 @@
                     ['label' => \Yii::t('app', 'Menu'), 'options' => ['class' => 'header']],
                     ['label' => \Yii::t('app', 'Orders'), 'icon' => 'list-ol', 'url' => ['/order/index']],
                     ['label' => \Yii::t('app', 'Subscribes'), 'icon' => 'tasks', 'url' => ['/subscription/index']],
-                    ['label' => \Yii::t('app', 'Goods'), 'icon' => 'shopping-bag', 'url' => ['/product/index']],
+                    ['label' => \Yii::t('app', 'Products'), 'icon' => 'shopping-bag', 'url' => ['/product/index']],
                     ['label' => \Yii::t('app', 'Customers'), 'icon' => 'user-o', 'url' => ['/customer/index']],
                     ['label' => \Yii::t('app', 'Exceptions'), 'icon' => 'list-ul', 'url' => ['/exception/index']],
                     ['label' => \Yii::t('app', 'Addresses'), 'icon' => 'address-book-o', 'url' => ['/address/index']],

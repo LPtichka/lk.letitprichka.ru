@@ -66,7 +66,7 @@ $this->title = $title;
                     <div class="col-sm-6">
                         <div class="row">
                             <div class="col-sm-3">
-                                <?= $form->field($model, 'fat')->textInput([
+                                <?= $form->field($model, 'kkal')->textInput([
                                     'class' => 'form-control input-sm'
                                 ]) ?>
                             </div>
@@ -76,10 +76,11 @@ $this->title = $title;
                                 ]) ?>
                             </div>
                             <div class="col-sm-3">
-                                <?= $form->field($model, 'kkal')->textInput([
+                                <?= $form->field($model, 'fat')->textInput([
                                     'class' => 'form-control input-sm'
                                 ]) ?>
                             </div>
+
                             <div class="col-sm-3">
                                 <?= $form->field($model, 'carbohydrates')->textInput([
                                     'class' => 'form-control input-sm'
