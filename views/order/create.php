@@ -43,6 +43,7 @@ $this->title = $title;
                                             'pluginEvents'  => [
                                                 "change" => "function() {
                                                     window.getAddressBlock();
+                                                    window.getExceptionBlock();
                                                 }",
                                             ]
                                         ]);
@@ -249,7 +250,6 @@ $this->title = $title;
                 </div>
             </div>
         </div>
-
 
         <div class="box box-primary" id="order-menu-block">
             <div class="box-header with-border">

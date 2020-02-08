@@ -441,11 +441,20 @@ class Order extends \yii\db\ActiveRecord
         }
         $event->setOrderId($this->id);
 
+        CustomerException::deleteAll(['customer_id' => $this->customer_id]);
+
         foreach ($this->exceptions as $exception) {
             $oException               = new OrderException();
             $oException->order_id     = $this->id;
             $oException->exception_id = $exception->id;
             if (!$oException->validate() || !$oException->save()) {
+                $transaction->rollBack();
+                return false;
+            }
+            $cException               = new CustomerException();
+            $cException->customer_id  = $this->customer_id;
+            $cException->exception_id = $exception->id;
+            if (!$cException->validate() || !$cException->save()) {
                 $transaction->rollBack();
                 return false;
             }

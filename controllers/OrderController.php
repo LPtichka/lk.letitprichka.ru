@@ -255,6 +255,40 @@ class OrderController extends BaseController
     }
 
     /**
+     * @param int $customerId
+     * @return string
+     */
+    public function actionGetException(int $customerId = 0)
+    {
+        $exceptionList = '';
+        $exceptions = ArrayHelper::map(
+            Exception::find()->select(['id', 'name'])->where(['status' => PaymentType::STATUS_ACTIVE])->asArray()->all(),
+            'id',
+            'name'
+        );
+        $customer = Customer::findOne($customerId);
+        if ($customer) {
+            foreach ($customer->exceptions as $key => $exception) {
+                $exceptionList .= $this->renderPartial('/order/_exception', [
+                    'exception'  => $exception,
+                    'exceptions' => $exceptions,
+                    'i'          => $key,
+                ]);
+            }
+        }
+
+        if (empty($exceptionList)) {
+            $exceptionList = $this->renderPartial('/order/_exception', [
+                'exception'  => new Exception(),
+                'exceptions' => $exceptions,
+                'i'          => 1,
+            ]);
+        }
+
+        return $exceptionList;
+    }
+
+    /**
      * @param int $orderId
      * @return string
      */

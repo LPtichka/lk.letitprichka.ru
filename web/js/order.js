@@ -46,6 +46,20 @@ window.getAddressBlock = function () {
         }
     });
 };
+window.getExceptionBlock = function () {
+    let customerInput = $('[name="Order[customer_id]"]');
+    let customerId = customerInput.val() ? customerInput.val() : 0;
+    if (customerInput.is(':disabled')) {
+        customerId = 0;
+    }
+    $.ajax({
+        url: '/order/get-exception?customerId=' + customerId,
+        method: 'get',
+        success: function (exceptions) {
+            $('.exceptions').html(exceptions)
+        }
+    });
+};
 
 window.getMenuBlock = function ($orderId) {
     $.ajax({
@@ -64,6 +78,7 @@ window.getMenuBlock = function ($orderId) {
 let orderId = document.getElementById('order-container').getAttribute('data-order-id');
 if (orderId) {
     window.getAddressBlock();
+    window.getExceptionBlock();
     window.getMenuBlock(orderId);
 }
 
