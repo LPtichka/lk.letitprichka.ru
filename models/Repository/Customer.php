@@ -5,6 +5,7 @@ namespace app\models\Repository;
 use app\components\Dadata;
 use app\models\Builder\Suggestions;
 use app\models\Helper\Phone;
+use app\models\Product;
 use app\models\Queries\CustomerQuery;
 use yii\behaviors\TimestampBehavior;
 
@@ -23,7 +24,7 @@ use yii\behaviors\TimestampBehavior;
  *
  * @property Address[] $addresses
  *
- * @property Exception $exception
+ * @property Exception[] $exceptions
  */
 class Customer extends \yii\db\ActiveRecord
 {
@@ -93,6 +94,15 @@ class Customer extends \yii\db\ActiveRecord
     public function getAddresses()
     {
         return $this->hasMany(Address::class, ['customer_id' => 'id'])->andWhere(['address.status' => 10]);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getExceptions()
+    {
+        return $this->hasMany(Exception::class, ['id' => 'exception_id'])
+            ->viaTable('{{%customer_exception}}', ['customer_id' => 'id']);
     }
 
     /**
@@ -179,5 +189,13 @@ class Customer extends \yii\db\ActiveRecord
             $customer = new Customer();
         }
         return $customer;
+    }
+
+    /**
+     * @param array $exceptions
+     */
+    public function setExceptions(array $exceptions)
+    {
+        $this->exceptions = $exceptions;
     }
 }

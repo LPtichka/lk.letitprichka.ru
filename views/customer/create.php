@@ -31,28 +31,61 @@ if ($model->id) {
     <div class="col-md-12">
         <?php $form = ActiveForm::begin(); ?>
         <div class="row">
-            <div class="col-sm-12">
-                <?= $form->field($model, 'fio')->textInput([
-                    'class' => 'form-control input-sm'
-                ]) ?>
+            <div class="col-md-8">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <?= $form->field($model, 'fio')->textInput([
+                            'class' => 'form-control input-sm'
+                        ]) ?>
+                    </div>
+                    <div class="col-sm-6">
+                        <?= $form->field($model, 'email')->textInput([
+                            'class' => 'form-control input-sm'
+                        ]) ?>
+                    </div>
+                    <div class="col-sm-6">
+                        <?= $form->field($model, 'phone')->widget(
+                            MaskedInput::class,
+                            [
+                                'mask'          => '+7 (999) 999-99-99',
+                                'clientOptions' => ['onincomplete' => 'function(){$("#user-phone").removeAttr("value").attr("value","");}'],
+                                'options'       => [
+                                    'class'       => 'form-control input-sm',
+                                    'placeholder' => '+7 (___) ___-__-__',
+                                ]
+                            ]) ?>
+                    </div>
+                </div>
             </div>
-            <div class="col-sm-6">
-                <?= $form->field($model, 'email')->textInput([
-                    'class' => 'form-control input-sm'
-                ]) ?>
+            <div class="col-md-4">
+                <label>Исключения</label>
+
+                <div class="exceptions">
+                    <?php foreach ($model->exceptions as $i => $exception): ?>
+                        <?= $this->render('_exception', [
+                            'exceptions' => $exceptions,
+                            'exception'  => $exception,
+                            'i'          => $i,
+                        ]); ?>
+                    <?php endforeach; ?>
+                </div>
+                <hr/>
+                <div class="row">
+                    <div class="col-sm-12 exception-buttons">
+                        <a href="javascript:void(0)"
+                           id="add-exception"
+                           data-href="<?php echo Url::to(['customer/add-exception']); ?>"
+                           data-block="exceptions"
+                           data-row="exception-row"
+                           class="btn btn-sm btn-primary pull-right add-row-action"
+                        >
+                            <i class="fa fa-plus"></i>
+                            <?= Yii::t('order', 'Add exception') ?>
+                        </a>
+                    </div>
+                </div>
             </div>
-            <div class="col-sm-6">
-                <?= $form->field($model, 'phone')->widget(
-                    MaskedInput::class,
-                    [
-                        'mask'          => '+7 (999) 999-99-99',
-                        'clientOptions' => ['onincomplete' => 'function(){$("#user-phone").removeAttr("value").attr("value","");}'],
-                        'options'       => [
-                            'class'       => 'form-control input-sm',
-                            'placeholder' => '+7 (___) ___-__-__',
-                        ]
-                    ]) ?>
-            </div>
+
         </div>
 
         <div class="addresses">

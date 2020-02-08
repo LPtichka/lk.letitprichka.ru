@@ -4,7 +4,10 @@ namespace app\controllers;
 use app\models\Helper\Excel;
 use app\models\Helper\ExcelParser;
 use app\models\Repository\Address;
+use app\models\Repository\CustomerException;
+use app\models\Repository\Exception;
 use app\models\Search\Customer;
+use app\models\Search\PaymentType;
 use yii\helpers\ArrayHelper;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
@@ -35,7 +38,7 @@ class CustomerController extends BaseController
 
         if ($post = \Yii::$app->request->post()) {
             if ($this->saveCustomer($customer, $post)) {
-                return $this->redirect(['customer/view', 'id' => $customer->id]);
+                return $this->redirect(['customer/index']);
             }
         }
 
@@ -44,8 +47,19 @@ class CustomerController extends BaseController
             $customer->setAddresses([new Address()]);
         }
 
+        $exceptions = ArrayHelper::map(
+            Exception::find()->select(['id', 'name'])->where(['status' => Exception::STATUS_ACTIVE])->asArray()->all(),
+            'id',
+            'name'
+        );
+
+        if (empty($customer->exceptions)) {
+            $customer->setExceptions([new Exception()]);
+        }
+
         return $this->renderAjax('/customer/create', [
             'title' => \Yii::t('customer', 'Customer create'),
+            'exceptions' => $exceptions,
             'model' => $customer,
         ]);
     }
@@ -66,8 +80,10 @@ class CustomerController extends BaseController
 
         // Обновим все адреса покупателя, проставив им статус Удален
         Address::updateAll(['status' => Address::STATUS_DELETED], ['customer_id' => $customer->id]);
+        CustomerException::deleteAll(['customer_id' => $customer->id]);
         if ($isValidate && $customer->save()) {
             $addresses         = [];
+            $exceptions        = [];
             $isAddressesValid  = true;
             $defaultAddressKey = $post['Address']['is_default_address'] ?? null;
             if (!empty($post['Address'])) {
@@ -94,17 +110,40 @@ class CustomerController extends BaseController
                 }
             }
 
-            if (!$isAddressesValid) {
+            $isExceptionsValid  = true;
+            if (!empty($post['Exception'])) {
+                foreach ($post['Exception'] as $key => $exception) {
+                    if (!is_int($key)) continue;
+                    if (empty($exception['id'])) continue;
+
+                    $exception = Exception::findOne($exception['id']);
+                    $exceptions[$key] = $exception;
+                }
+            }
+
+            if (!$isAddressesValid || !$isExceptionsValid) {
                 $transaction->rollBack();
                 \Yii::$app->session->addFlash('warning', \Yii::t('customer', 'Addresses has errors'));
                 return false;
             } else {
                 $customer->setAddresses($addresses);
+                $customer->setExceptions($exceptions);
 
                 foreach ($customer->addresses as $key => $address) {
                     if (!$customer->addresses[$key]->save()) {
                         $transaction->rollBack();
                         \Yii::$app->session->addFlash('warning', \Yii::t('customer', 'Addresses can not be saved'));
+                        return false;
+                    }
+                }
+
+                foreach ($customer->exceptions as $key => $exception) {
+                    $customerException = new CustomerException();
+                    $customerException->customer_id = $customer->id;
+                    $customerException->exception_id = $exception->id;
+                    if (!$customerException->save()) {
+                        $transaction->rollBack();
+                        \Yii::$app->session->addFlash('warning', \Yii::t('customer', 'Exception can not be saved'));
                         return false;
                     }
                 }
@@ -120,7 +159,7 @@ class CustomerController extends BaseController
 
                 $transaction->commit();
 
-                \Yii::$app->session->addFlash('success', \Yii::t('customer', 'Customer type was saved successfully'));
+                \Yii::$app->session->addFlash('success', \Yii::t('customer', 'Customer was saved successfully'));
                 $this->log('customer-create-success', ['name' => $customer->fio]);
                 return true;
             }
@@ -146,7 +185,7 @@ class CustomerController extends BaseController
 
         if ($post = \Yii::$app->request->post()) {
             if ($this->saveCustomer($customer, $post)) {
-                return $this->redirect(['customer/view', 'id' => $customer->id]);
+                return $this->redirect(['customer/index']);
             }
         }
 
@@ -154,9 +193,20 @@ class CustomerController extends BaseController
             $customer->setAddresses([new Address()]);
         }
 
+        $exceptions = ArrayHelper::map(
+            Exception::find()->select(['id', 'name'])->where(['status' => Exception::STATUS_ACTIVE])->asArray()->all(),
+            'id',
+            'name'
+        );
+
+        if (empty($customer->exceptions)) {
+            $customer->setExceptions([new Exception()]);
+        }
+
         return $this->renderAjax('/customer/create', [
-            'model' => $customer,
-            'title' => \Yii::t('customer', 'Customer update: #') . $customer->id . '<small> ' . $customer->fio . ' </small>',
+            'model'      => $customer,
+            'exceptions' => $exceptions,
+            'title'      => \Yii::t('customer', 'Customer update: #') . $customer->id . '<small> ' . $customer->fio . ' </small>',
         ]);
     }
 
@@ -274,5 +324,24 @@ class CustomerController extends BaseController
         return [
             ArrayHelper::map($customers, 'id', 'fio')
         ];
+    }
+
+    /**
+     * @param int $counter
+     * @return string
+     */
+    public function actionAddException(int $counter)
+    {
+        $exceptions = ArrayHelper::map(
+            Exception::find()->select(['id', 'name'])->where(['status' => PaymentType::STATUS_ACTIVE])->asArray()->all(),
+            'id',
+            'name'
+        );
+
+        return $this->renderAjax('/customer/_exception', [
+            'exception'  => new Exception(),
+            'exceptions' => $exceptions,
+            'i'          => ++$counter,
+        ]);
     }
 }

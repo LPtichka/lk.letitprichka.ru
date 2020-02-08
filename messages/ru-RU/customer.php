@@ -16,4 +16,5 @@ return [
     'Base information'                                 => 'Основная информация',
     'Customer was successful deleted'                  => 'Покупатели были успешно удалены',
     'Chosen customers was successful deleted'          => 'Выбранные покупатели были удалены.',
+    'Customer was saved successfully'                  => 'Покупатель был успешно сохранен.',
 ];
