@@ -35,6 +35,7 @@ $this->title = $title;
                                             'data'          => $customers,
                                             'showToggleAll' => false,
                                             'hideSearch'    => false,
+                                            'disabled'      => !$model->isEditable(),
                                             'options'       => ['placeholder' => 'Выберите покупателя...'],
                                             'pluginOptions' => [
                                                 'closeOnSelect' => true,
@@ -60,6 +61,7 @@ $this->title = $title;
                                                         'offText' => 'Нет',
                                                     ],
                                                     'inlineLabel'   => true,
+                                                    'disabled'      => !$model->isEditable(),
                                                     'labelOptions'  => ['style' => 'font-size: 12px'],
                                                     'options'       => [
                                                         'data-toggle'   => "collapse",
@@ -69,14 +71,14 @@ $this->title = $title;
                                                     ],
                                                     'pluginEvents'  => [
                                                         "switchChange.bootstrapSwitch" => "function() {
-                                                    if ($('[name=\"Order[isNewCustomer]\"]').is(':checked')) {
-                                                        $('#order-customer_id').prop('disabled', true); 
-                                                    } else {
-                                                        $('#order-customer_id').prop('disabled', false); 
-                                                    }
-                                                    setTimeout(window.getAddressBlock(), 300);
-                                                    $('#collapse-customer').collapse('toggle');
-                                                }"
+                                                            if ($('[name=\"Order[isNewCustomer]\"]').is(':checked')) {
+                                                                $('#order-customer_id').prop('disabled', true); 
+                                                            } else {
+                                                                $('#order-customer_id').prop('disabled', false); 
+                                                            }
+                                                            setTimeout(window.getAddressBlock(), 300);
+                                                            $('#collapse-customer').collapse('toggle');
+                                                        }"
                                                     ]
                                                 ])->label(false); ?>
                                             <label>Новый пользователь</label>
@@ -86,7 +88,8 @@ $this->title = $title;
                                 <div class="row collapse" id="collapse-customer">
                                     <div class="col-sm-4">
                                         <?= $form->field($model->customer, 'fio')->textInput([
-                                            'class' => 'form-control input-sm',
+                                            'class'    => 'form-control input-sm',
+                                            'disabled' => !$model->isEditable(),
                                         ]); ?>
                                     </div>
                                     <div class="col-sm-4">
@@ -97,13 +100,15 @@ $this->title = $title;
                                                 'clientOptions' => ['onincomplete' => 'function(){$("#user-phone").removeAttr("value").attr("value","");}'],
                                                 'options'       => [
                                                     'class'       => 'form-control input-sm',
+                                                    'disabled'    => !$model->isEditable(),
                                                     'placeholder' => '+7 (___) ___-__-__',
                                                 ]
                                             ]) ?>
                                     </div>
                                     <div class="col-sm-4">
                                         <?= $form->field($model->customer, 'email')->textInput([
-                                            'class' => 'form-control input-sm',
+                                            'class'    => 'form-control input-sm',
+                                            'disabled' => !$model->isEditable(),
                                         ]); ?>
                                     </div>
                                 </div>
@@ -111,7 +116,8 @@ $this->title = $title;
                                 <div class="row">
                                     <div class="col-sm-8">
                                         <?= $form->field($model, 'payment_type')->dropDownList($payments, [
-                                            'class' => 'form-control input-sm'
+                                            'class'    => 'form-control input-sm',
+                                            'disabled' => !$model->isEditable(),
                                         ]) ?>
                                     </div>
                                     <div class="col-sm-4">
@@ -125,6 +131,7 @@ $this->title = $title;
                                                         'offText' => 'Нет',
                                                     ],
                                                     'inlineLabel'   => true,
+                                                    'disabled'      => !$model->isEditable(),
                                                     'labelOptions'  => ['style' => 'font-size: 12px'],
                                                     'options'       => [
                                                         'data-toggle'   => "collapse",
@@ -143,10 +150,9 @@ $this->title = $title;
                                     <div class="col-sm-8">
                                         <div class="form-group">
                                             <label><?= \Yii::t('order', 'Choose address ID'); ?></label>
-                                            <?= Html::activeDropDownList($model, 'address_id', [
-                                                '' => \Yii::t('order', 'New address'),
-                                            ], [
-                                                'class' => 'form-control input-sm'
+                                            <?= Html::activeDropDownList($model, 'address_id', $addresses, [
+                                                'class'    => 'form-control input-sm',
+                                                'disabled' => !$model->isEditable(),
                                             ]); ?>
                                         </div>
                                     </div>
@@ -161,6 +167,7 @@ $this->title = $title;
                                                     'onText'  => 'Да',
                                                     'offText' => 'Нет',
                                                 ],
+                                                'disabled'      => !$model->isEditable(),
                                                 'inlineLabel'   => true,
                                                 'labelOptions'  => ['style' => 'font-size: 12px'],
                                                 'options'       => [
@@ -185,8 +192,9 @@ $this->title = $title;
                                 <div class="row">
                                     <div class="col-sm-12">
                                         <?= $form->field($model, 'comment')->textarea([
-                                            'rows' => 3,
-                                            'class' => 'form-control input-sm'
+                                            'rows'     => 3,
+                                            'class'    => 'form-control input-sm',
+                                            'disabled' => !$model->isEditable(),
                                         ]) ?>
                                     </div>
                                 </div>
@@ -227,25 +235,28 @@ $this->title = $title;
                                 <?= $this->render('_exception', [
                                     'exceptions' => $exceptions,
                                     'exception'  => $exception,
+                                    'disabled'   => !$model->isEditable(),
                                     'i'          => $i,
                                 ]); ?>
                             <?php endforeach; ?>
                         </div>
                         <hr/>
-                        <div class="row">
-                            <div class="col-sm-12 exception-buttons">
-                                <a href="javascript:void(0)"
-                                   id="add-exception"
-                                   data-href="<?php echo Url::to(['order/add-exception']); ?>"
-                                   data-block="exceptions"
-                                   data-row="exception-row"
-                                   class="btn btn-sm btn-primary pull-right add-row-action"
-                                >
-                                    <i class="fa fa-plus"></i>
-                                    <?= Yii::t('order', 'Add exception') ?>
-                                </a>
+                        <?php if ($model->isEditable()): ?>
+                            <div class="row">
+                                <div class="col-sm-12 exception-buttons">
+                                    <a href="javascript:void(0)"
+                                       id="add-exception"
+                                       data-href="<?php echo Url::to(['order/add-exception']); ?>"
+                                       data-block="exceptions"
+                                       data-row="exception-row"
+                                       class="btn btn-sm btn-primary pull-right add-row-action"
+                                    >
+                                        <i class="fa fa-plus"></i>
+                                        <?= Yii::t('order', 'Add exception') ?>
+                                    </a>
+                                </div>
                             </div>
-                        </div>
+                        <?php endif; ?>
                     </div>
                 </div>
             </div>

@@ -9,7 +9,7 @@ class Unit
 
     const UNITS = [
         self::UNIT_COUNT => self::UNIT_COUNT,
-        self::UNIT_KG => self::UNIT_KG,
+        self::UNIT_KG    => self::UNIT_KG,
         self::UNIT_LITER => self::UNIT_LITER,
     ];
 
@@ -36,7 +36,22 @@ class Unit
             case self::UNIT_KG:
                 return ($count / 1000) . ' ' . self::UNIT_KG . '.';
             case self::UNIT_COUNT:
-                return $count  . ' ' . self::UNIT_COUNT . '.';
+                return $count . ' ' . self::UNIT_COUNT . '.';
+        }
+    }
+
+    /**
+     * @param float $count
+     * @return int
+     */
+    public function convert(float $count): int
+    {
+        switch ($this->unit) {
+            case self::UNIT_LITER:
+            case self::UNIT_KG:
+                return $count * 1000;
+            case self::UNIT_COUNT:
+                return (int) $count;
         }
     }
 }

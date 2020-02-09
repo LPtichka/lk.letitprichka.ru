@@ -24,7 +24,7 @@ $this->title = \Yii::t('order', 'Orders');
             ) ?>
         </div>
         <div class="pull-right">
-            <?= Html::a('<i class="fa fa-truck"></i> ',
+            <?= Html::a('Маршрутный лист',
                 ['order/get-route-sheet'],
                 [
                     'class'       => 'btn btn-sm btn-default',

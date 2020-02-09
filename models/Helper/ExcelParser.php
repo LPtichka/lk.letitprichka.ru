@@ -54,10 +54,10 @@ class ExcelParser
     private function parseProduct(): array
     {
         return [
-            'id'     => $this->data[0] ?? null,
-            'name'   => $this->data[1] ?? null,
-            'count'  => $this->data[2] ?? null,
-            'weight' => $this->data[3] ?? null,
+            'id'    => $this->data[0] ?? null,
+            'name'  => $this->data[1] ?? null,
+            'count' => $this->data[2] ?? null,
+            'unit'  => $this->data[3] ?? null,
         ];
     }
 

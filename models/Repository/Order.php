@@ -51,6 +51,13 @@ class Order extends \yii\db\ActiveRecord
         self::STATUS_NEW,
     ];
 
+    const STATUSES_NO_EDITABLE = [
+        self::STATUS_CANCELED,
+        self::STATUS_PROCESSED,
+        self::STATUS_DEFERRED,
+        self::STATUS_COMPLETED,
+    ];
+
     const STATUS_MAP = [
         self::STATUS_NEW       => [
             self::STATUS_CANCELED,
@@ -628,5 +635,13 @@ class Order extends \yii\db\ActiveRecord
         }
 
         return implode(' - ', $dates);
+    }
+
+    /**
+     * @return bool
+     */
+    public function isEditable(): bool
+    {
+        return !in_array($this->status_id, self::STATUSES_NO_EDITABLE);
     }
 }

@@ -77,8 +77,8 @@ window.getMenuBlock = function ($orderId) {
 
 let orderId = document.getElementById('order-container').getAttribute('data-order-id');
 if (orderId) {
-    window.getAddressBlock();
-    window.getExceptionBlock();
+    // window.getAddressBlock();
+    // window.getExceptionBlock();
     window.getMenuBlock(orderId);
 }
 

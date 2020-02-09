@@ -37,6 +37,7 @@ class ProductController extends BaseController
         if (\Yii::$app->request->post()) {
             $this->log('product-create', []);
             $product->load(\Yii::$app->request->post());
+            $product->count = (new Unit($product->unit))->convert($product->count);
             $isValidate = $product->validate();
 
             if ($isValidate && $product->save()) {
@@ -75,6 +76,7 @@ class ProductController extends BaseController
 
             $post = \Yii::$app->request->post();
             $product->load($post);
+            $product->count = (new Unit($product->unit))->convert($product->count);
             $isValidate = $product->validate();
             if ($isValidate && $product->save()) {
                 $this->log('product-edit-success', $product->getAttributes());

@@ -8,6 +8,7 @@ use app\models\Repository\Order as Repository;
 use app\widgets\Grid\CheckboxColumn;
 use yii\data\ActiveDataProvider;
 use yii\helpers\Html;
+use yii\helpers\Url;
 
 class Order extends Repository
 {
@@ -81,10 +82,10 @@ class Order extends Repository
         ];
 
         $result['id'] = [
-            'attribute' => 'id',
+            'attribute'      => 'id',
             'contentOptions' => ['style' => 'width:120px;'],
-            'label'     => \Yii::t('order', 'ID'),
-            'content'   => function ($model) {
+            'label'          => \Yii::t('order', 'ID'),
+            'content'        => function ($model){
                 return Html::a($model->id, ['order/view', 'id' => $model->id]);
             }
         ];
@@ -92,15 +93,19 @@ class Order extends Repository
         $result['fio'] = [
             'attribute' => 'fio',
             'label'     => \Yii::t('order', 'FIO'),
-            'content'   => function ($model) {
-                return Html::a($model->customer->fio, ['customer/view', 'id' => $model->customer_id]);
+            'content'   => function ($model){
+                return Html::a($model->customer->fio, ['customer/view', 'id' => $model->customer_id], [
+                    'data-href'   => Url::to(['customer/view', 'id' => $model->customer_id]),
+                    'data-toggle' => 'modal',
+                    'data-target' => '#modal',
+                ]);
             }
         ];
 
         $result['status_id'] = [
             'attribute' => 'status_id',
             'label'     => \Yii::t('order', 'Status'),
-            'content'   => function ($model) {
+            'content'   => function ($model){
                 return (new Status($model->status_id))->getStatusName();
             }
         ];
@@ -108,7 +113,7 @@ class Order extends Repository
         $result['phone'] = [
             'attribute' => 'phone',
             'label'     => \Yii::t('order', 'Phone'),
-            'content'   => function ($model) {
+            'content'   => function ($model){
                 return !empty($model->customer->phone) ? (new Phone($model->customer->phone))->getHumanView() : '---';
             }
         ];
@@ -116,7 +121,7 @@ class Order extends Repository
         $result['email'] = [
             'attribute' => 'email',
             'label'     => \Yii::t('order', 'Email'),
-            'content'   => function ($model) {
+            'content'   => function ($model){
                 return $model->customer->email ?? '---';
             }
         ];
@@ -124,7 +129,7 @@ class Order extends Repository
         $result['total'] = [
             'attribute' => 'total',
             'label'     => \Yii::t('order', 'Total'),
-            'content'   => function ($model) {
+            'content'   => function ($model){
                 return \Yii::$app->formatter->asCurrency($model->total, 'RUB');
             }
         ];
@@ -132,16 +137,16 @@ class Order extends Repository
         $result['address'] = [
             'attribute' => 'address',
             'label'     => \Yii::t('order', 'Address'),
-            'content'   => function ($model) {
+            'content'   => function ($model){
                 return $model->address->full_address ?? '---';
             }
         ];
 
         $result['created_at'] = [
-            'attribute' => 'created_at',
+            'attribute'      => 'created_at',
             'contentOptions' => ['style' => 'width:240px;'],
-            'label'     => \Yii::t('order', 'Created at'),
-            'content'   => function ($model) {
+            'label'          => \Yii::t('order', 'Created at'),
+            'content'        => function ($model){
                 return date('d.m.Y \в H:i', $model->created_at);
             }
         ];

@@ -106,6 +106,9 @@ class OrderController extends BaseController
         return $this->render('/order/create', [
             'model'              => $order,
             'payments'           => $paymentTypes,
+            'addresses'          => [
+                '' => \Yii::t('order', 'New address'),
+            ],
             'exceptions'         => $exceptions,
             'franchises'         => ArrayHelper::map($franchiseQuery->asArray()->all(), 'id', 'name'),
             'subscriptions'      => $subscriptions,
@@ -183,6 +186,11 @@ class OrderController extends BaseController
 
         return $this->render('/order/create', [
             'model'              => $order,
+            'addresses'          => ArrayHelper::map(
+                Address::find()->where(['customer_id' => $order->customer_id])->asArray()->all(),
+                'id',
+                'full_address'
+            ),
             'payments'           => $paymentTypes,
             'exceptions'         => $exceptions,
             'subscriptions'      => $subscriptions,
@@ -261,12 +269,12 @@ class OrderController extends BaseController
     public function actionGetException(int $customerId = 0)
     {
         $exceptionList = '';
-        $exceptions = ArrayHelper::map(
+        $exceptions    = ArrayHelper::map(
             Exception::find()->select(['id', 'name'])->where(['status' => PaymentType::STATUS_ACTIVE])->asArray()->all(),
             'id',
             'name'
         );
-        $customer = Customer::findOne($customerId);
+        $customer      = Customer::findOne($customerId);
         if ($customer) {
             foreach ($customer->exceptions as $key => $exception) {
                 $exceptionList .= $this->renderPartial('/order/_exception', [
@@ -504,17 +512,17 @@ class OrderController extends BaseController
             throw new NotFoundHttpException('Расписание не найденно');
         }
 
-        $types = [];
+        $types     = [];
         $ingestion = new Ingestion();
         foreach ($dishes as $dish) {
             $types[$dish->ingestion_type] = $ingestion->getIngestionName($dish->ingestion_type);
         }
 
         return $this->renderAjax('/order/_inventory', [
-            'date' => $date,
-            'types' => $types,
+            'date'           => $date,
+            'types'          => $types,
             'isSubscription' => !empty($order->subscription_id),
-            'dishes' => $dishes,
+            'dishes'         => $dishes,
         ]);
     }
 }
