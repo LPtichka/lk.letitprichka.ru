@@ -4,7 +4,9 @@ namespace app\models\Helper;
 class Unit
 {
     const UNIT_KG = 'кг';
+    const UNIT_GR = 'гр';
     const UNIT_LITER = 'л';
+    const UNIT_MILLI_LITER = 'мл';
     const UNIT_COUNT = 'шт';
 
     const UNITS = [
@@ -51,7 +53,24 @@ class Unit
             case self::UNIT_KG:
                 return $count * 1000;
             case self::UNIT_COUNT:
+            case self::UNIT_GR:
+            case self::UNIT_MILLI_LITER:
                 return (int) $count;
+        }
+    }
+
+    /**
+     * @return string
+     */
+    public function getMainUnit(): string
+    {
+        switch ($this->unit) {
+            case self::UNIT_GR:
+                return self::UNIT_KG;
+            case self::UNIT_MILLI_LITER:
+                return self::UNIT_LITER;
+            default:
+                return $this->unit;
         }
     }
 }

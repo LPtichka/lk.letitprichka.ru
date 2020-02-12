@@ -99,9 +99,10 @@ class Product extends \yii\db\ActiveRecord
             $product = new Product();
         }
 
+        $unit = new Unit($data['unit']);
         $product->name  = trim($data['name']);
-        $product->count = (int) $product->count + (new Unit($data['unit']))->convert($data['count']);
-        $product->unit  = $data['unit'];
+        $product->count = (int) $product->count + $unit->convert((float) $data['count']);
+        $product->unit  = $unit->getMainUnit();
 
         return $product;
     }

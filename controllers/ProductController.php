@@ -125,7 +125,7 @@ class ProductController extends BaseController
             $product    = (new \app\models\Repository\Product())->build($parsedData);
             if (!($product->validate() && $product->save())) {
                 $transaction->rollBack();
-                \Yii::$app->session->addFlash('danger', \Yii::t('product', 'Payment type import was failed'));
+                \Yii::$app->session->addFlash('danger', \Yii::t('product', 'Product import was failed'));
                 return ['success' => false,];
             }
         }
