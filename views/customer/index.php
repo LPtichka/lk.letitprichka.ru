@@ -8,6 +8,7 @@ use yii\widgets\Pjax;
 /** @var \app\models\Search\PaymentType $searchModel */
 
 $this->title = \Yii::t('customer', 'Customers');
+$this->params['breadcrumbs'][] = $this->title;
 ?>
 <?php Pjax::begin([
     'enablePushState' => false,

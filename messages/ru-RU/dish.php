@@ -30,4 +30,6 @@ return [
     'Dessert'                                       => 'Десерт',
     'Salad'                                         => 'Салат',
     'Updated at'                                    => 'Обновлено',
+    'Dishes'                                    => 'Блюда',
+    'New dish'                                    => 'Новое блюдо',
 ];

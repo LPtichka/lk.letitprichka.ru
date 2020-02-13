@@ -26,7 +26,7 @@
                     ['label' => \Yii::t('app', 'Exceptions'), 'icon' => 'list-ul', 'url' => ['/exception/index']],
                     ['label' => \Yii::t('app', 'Addresses'), 'icon' => 'address-book-o', 'url' => ['/address/index']],
                     ['label' => \Yii::t('app', 'Menu'), 'icon' => 'bars', 'url' => ['/menu/index']],
-                    ['label' => \Yii::t('app', 'Dishes'), 'icon' => 'file-code-o', 'url' => ['/dish/index']],
+                    ['label' => \Yii::t('dish', 'Dishes'), 'icon' => 'file-code-o', 'url' => ['/dish/index']],
                     ['label' => \Yii::t('app', 'Payment types'), 'icon' => 'money', 'url' => ['/payment-type/index']],
                     ['label' => \Yii::t('app', 'Users'), 'icon' => 'user-o', 'url' => ['/user/index']],
                     ['label' => \Yii::t('app', 'Franchise'), 'icon' => 'briefcase', 'url' => ['/franchise/index']],

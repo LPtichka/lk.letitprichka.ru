@@ -9,6 +9,12 @@ use yii\widgets\Pjax;
 /** @var \app\models\Repository\Address $model */
 
 $this->title = $title;
+$this->params['breadcrumbs'][] = ['label' => $title, 'url' => Url::to(['order/index'])];
+if ($model->id) {
+    $this->params['breadcrumbs'][] = \Yii::t('subscription', 'Subscription <span class="num">№ {id}</span>', ['id' => $model->id]);
+} else {
+    $this->params['breadcrumbs'][] = \Yii::t('subscription', 'New subscription');
+}
 ?>
 <?php Pjax::begin([
     'id'              => 'subscription-form',

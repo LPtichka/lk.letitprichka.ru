@@ -9,6 +9,7 @@ use yii\widgets\Pjax;
 /** @var string $title */
 
 $this->title = $title;
+$this->params['breadcrumbs'][] = $this->title;
 ?>
 <?php Pjax::begin(); ?>
 <div class="box">

@@ -11,6 +11,13 @@ use yii\widgets\MaskedInput;
 /** @var \app\models\Repository\Order $model */
 
 $this->title = $title;
+
+$this->params['breadcrumbs'][] = ['label' => \Yii::t('order', 'Orders'), 'url' => Url::to(['order/index'])];
+if ($model->id) {
+    $this->params['breadcrumbs'][] = \Yii::t('order', 'Order <span class="num">№ {id}</span>', ['id' => $model->id]);
+} else {
+    $this->params['breadcrumbs'][] = \Yii::t('order', 'New Order');
+}
 ?>
 
 <?= $this->render('_buttons', [

@@ -8,6 +8,7 @@ use yii\widgets\Pjax;
 /** @var \app\models\Repository\Order $searchModel */
 
 $this->title = \Yii::t('order', 'Orders');
+$this->params['breadcrumbs'][] = $this->title;
 ?>
 <?php Pjax::begin([
     'id'              => 'order-form',

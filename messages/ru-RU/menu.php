@@ -17,4 +17,5 @@ return [
     'Add'              => 'Добавить',
     'Base information' => 'Основная информация',
     'Dinner'           => 'Обед',
+    'New menu'         => 'Новое меню',
 ];

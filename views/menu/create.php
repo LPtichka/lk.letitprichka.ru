@@ -2,11 +2,18 @@
 
 use kartik\date\DatePicker;
 use yii\helpers\Html;
+use yii\helpers\Url;
 use yii\widgets\ActiveForm;
 
 /** @var \app\models\Repository\Menu $model */
 
-$this->title = \Yii::t('menu', 'Menu create');
+$this->title                   = \Yii::t('menu', 'Menu create');
+$this->params['breadcrumbs'][] = ['label' => \Yii::t('menu', 'Menu'), 'url' => Url::to(['menu/index'])];
+if ($model->id) {
+    $this->params['breadcrumbs'][] = date('d.m.Y', strtotime($model->menu_start_date)) . ' - ' . date('d.m.Y', strtotime($model->menu_end_date));
+} else {
+    $this->params['breadcrumbs'][] = \Yii::t('menu', 'New menu');
+}
 ?>
 
     <div class="row">

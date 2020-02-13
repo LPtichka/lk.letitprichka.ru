@@ -7,7 +7,8 @@ use yii\widgets\Pjax;
 
 /** @var \app\models\Search\PaymentType $searchModel */
 
-$this->title = \Yii::t('app', 'Dishes');
+$this->title = \Yii::t('dish', 'Dishes');
+$this->params['breadcrumbs'][] = $this->title;
 ?>
 <?php Pjax::begin([
     'id'              => 'dish-form',

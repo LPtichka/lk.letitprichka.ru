@@ -8,6 +8,7 @@ use yii\widgets\Pjax;
 /** @var \app\models\Search\PaymentType $searchModel */
 
 $this->title = \Yii::t('payment', 'Payment types');
+$this->params['breadcrumbs'][] = $this->title;
 ?>
 <?php Pjax::begin(); ?>
 <div class="box">

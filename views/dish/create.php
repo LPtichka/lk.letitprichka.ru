@@ -7,7 +7,12 @@ use yii\widgets\ActiveForm;
 /** @var \app\models\Repository\Dish $model */
 
 $this->title = $title;
-
+$this->params['breadcrumbs'][] = ['label' => \Yii::t('dish', 'Dishes'), 'url' => Url::to(['dish/index'])];
+if ($model->id) {
+    $this->params['breadcrumbs'][] = \Yii::t('dish', '{name}', ['name' => $model->name]);
+} else {
+    $this->params['breadcrumbs'][] = \Yii::t('dish', 'New dish');
+}
 ?>
 <div style="position: absolute; right: 15px; top: 60px; z-index: 999999;">
     <?= Html::button('<i class="fa fa-download"></i> ', [

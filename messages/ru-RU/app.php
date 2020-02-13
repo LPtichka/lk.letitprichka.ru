@@ -9,7 +9,6 @@ return [
     'Count'                         => 'Количество (шт.)',
     'Customers'                     => 'Покупатели',
     'Disabled'                      => 'Заблокированный',
-    'Dishes'                        => 'Блюда',
     'Error'                         => 'Ошибка',
     'Exceptions'                    => 'Исключения',
     'Franchise'                     => 'Франшизы',
@@ -32,4 +31,5 @@ return [
     'Weight'                        => 'Вес (кг.)',
     'I forgot my password'          => 'Забыли пароль',
     'Remember me'                   => 'Запомнить меня',
+    'Main'                          => 'Главная',
 ];

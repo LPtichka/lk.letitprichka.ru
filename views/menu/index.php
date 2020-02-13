@@ -8,6 +8,7 @@ use yii\widgets\Pjax;
 /** @var \app\models\Search\Menu $searchModel */
 
 $this->title = \Yii::t('menu', 'Menu');
+$this->params['breadcrumbs'][] = $this->title;
 ?>
 <?php Pjax::begin([
     'id'              => 'menu-form',

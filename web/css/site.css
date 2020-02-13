@@ -139,7 +139,7 @@ a.desc:after {
 
 .pagination > li > i {
     font-size: 12px;
-    color:#999;
+    color: #999;
     margin: 0 5px;
 }
 
@@ -431,7 +431,7 @@ label input[type="checkbox"] {
 .order-buttons-block {
     position: absolute;
     right: 15px;
-    top: 60px;
+    top: 98px;
 }
 
 #pre-request-modal-buttons {
@@ -484,15 +484,44 @@ label input[type="checkbox"] {
 }
 
 .menu-row {
-    background: rgba(0,0,0,0.02);
+    background: rgba(0, 0, 0, 0.02);
     padding-top: 15px;
     padding-bottom: 15px;
     margin-top: 15px;
     margin-bottom: 15px;
-    border-top: 1px solid #f2f2f2;
-    border-bottom: 1px solid #f2f2f2;
+    border-top: 1px solid #F2F2F2;
+    border-bottom: 1px solid #F2F2F2;
 }
 
 .order-menu-block-body .row {
     margin-bottom: 10px;
+}
+
+.breadcrumb {
+    padding: 3px 15px;
+    margin-bottom: 0;
+}
+
+.breadcrumb ul {
+    margin: 0;
+    list-style: none;
+    padding: 0;
+    overflow: hidden;
+}
+
+.breadcrumb ul li {
+    float: left;
+    border-right: 1px solid #DCE3E5;
+    padding: 6px 6px 5px 0;
+    margin-right: 20px;
+}
+
+.breadcrumb a {
+    font-size: 12px;
+    color: #666;
+    padding-right: 10px;
+}
+
+.breadcrumb li a i {
+    margin-left: 10px;
 }

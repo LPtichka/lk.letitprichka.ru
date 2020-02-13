@@ -8,6 +8,7 @@ use yii\widgets\Pjax;
 /** @var \app\models\Repository\User $searchModel */
 
 $this->title = \Yii::t('user', 'Users');
+$this->params['breadcrumbs'][] = $this->title;
 ?>
 <?php Pjax::begin(); ?>
 <div class="box">

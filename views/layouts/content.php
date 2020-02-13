@@ -2,17 +2,31 @@
 
 use dmstr\widgets\Alert;
 use yii\bootstrap\Modal;
+use yii\helpers\ArrayHelper;
 use yii\widgets\Breadcrumbs;
 use yii\widgets\Pjax;
 
 ?>
 <div class="content-wrapper">
-    <section class="content-header">
-        <?= Breadcrumbs::widget([
-            'links' => isset($this->params['breadcrumbs']) ? $this->params['breadcrumbs'] : [],
-        ]) ?>
-        <h1><?= $this->title; ?></h1>
-    </section>
+    <div class="breadcrumb hidden-print">
+        <ul>
+            <li>
+                <a href="/"><?= \Yii::t('app', 'Main'); ?> <i class="fa fa-angle-right "></i></a>
+            </li>
+            <?php if (isset($this->params['breadcrumbs']) && is_array($this->params['breadcrumbs'])): ?>
+                <?php
+                /** @var array|string $breadcrumb */
+                foreach ($this->params['breadcrumbs'] as $breadcrumb): ?>
+                    <li>
+                        <a href="<?= (!is_array($breadcrumb) ? 'javascript:void(0)' : ArrayHelper::getValue($breadcrumb, 'url')) ?>">
+                            <?= (!is_array($breadcrumb)) ? $breadcrumb : ArrayHelper::getValue($breadcrumb, 'label') ?>
+                            <i class="fa fa-angle-right "></i>
+                        </a>
+                    </li>
+                <?php endforeach; ?>
+            <?php endif; ?>
+        </ul>
+    </div>
 
     <section class="content">
         <?= Alert::widget() ?>

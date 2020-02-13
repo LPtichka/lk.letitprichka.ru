@@ -8,6 +8,7 @@ use yii\widgets\Pjax;
 /** @var \app\models\Search\Subscription $searchModel */
 
 $this->title = \Yii::t('subscription', 'Subscriptions');
+$this->params['breadcrumbs'][] = $this->title;
 ?>
 <?php Pjax::begin(); ?>
     <div class="box">

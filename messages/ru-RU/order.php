@@ -49,6 +49,8 @@ return [
     'Order exceptions'         => 'Исключения',
     'Schedule First Date'      => 'Первая дата доставки',
     'Create order'             => 'Новый заказ',
+    'New Order'             => 'Новый заказ',
+    'Order <span class="num">№ {id}</span>'             => 'Заказ <span class="num">№ {id}</span>',
 
     'canceled'                                                                                                                                  => 'Отменить',
     'processed'                                                                                                                                 => 'В работу',
