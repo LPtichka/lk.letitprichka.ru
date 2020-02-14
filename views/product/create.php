@@ -53,12 +53,16 @@ $this->title = $title
         <div class="row modal-buttons">
             <div class="col-md-6">
                 <div class="form-group">
-                    <?= Html::submitButton('<i class="fa fa-check"></i> ' . Yii::t('app', 'Save'), ['class' => 'btn btn-sm btn-warning']) ?>
+                    <?= Html::submitButton('<i class="material-icons">done</i> <span>' . \Yii::t('app', 'Save') . '</span>', ['class' => 'btn btn-sm btn-warning']) ?>
                 </div>
             </div>
             <div class="col-md-6">
                 <div class="form-group text-right">
-                    <?= Html::a(\Yii::t('app', 'Cancel'), ['product/index'], ['class' => 'btn btn-sm btn-default']) ?>
+                    <?= Html::a(
+                        '<span>' . \Yii::t('app', 'Cancel') . '</span>',
+                        '#',
+                        ['class' => 'btn btn-sm btn-default', 'data-dismiss' => 'modal']
+                    ) ?>
                 </div>
             </div>
         </div>

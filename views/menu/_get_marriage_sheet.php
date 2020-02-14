@@ -31,7 +31,7 @@ Pjax::begin([
             <div class="col-md-6">
                 <div class="form-group">
                     <?= Html::submitButton(
-                        '<i class="fa fa-check"></i> ' . \Yii::t('app', 'Unload'),
+                        '<i class="material-icons">done</i> ' . \Yii::t('app', 'Unload'),
                         ['class' => 'btn btn-sm btn-warning']
                     ) ?>
                 </div>

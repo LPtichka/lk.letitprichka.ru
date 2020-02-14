@@ -22,6 +22,8 @@ class AppAsset extends AssetBundle
     public $css = [
         'css/site.css',
         'css/auto-complete.css',
+        '//fonts.googleapis.com/icon?family=Material+Icons',
+        '//fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,500,500i,700,700i,900,900i&display=swap&subset=cyrillic,cyrillic-ext,latin-ext',
     ];
     public $js = [
         'js/auto-complete.js',

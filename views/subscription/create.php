@@ -76,7 +76,7 @@ if ($model->id) {
         <div class="row">
             <div class="col-md-6">
                 <div class="form-group">
-                    <?= Html::submitButton('<i class="fa fa-check"></i> ' . \Yii::t('app', 'Save'), ['class' => 'btn btn-sm btn-warning']) ?>
+                    <?= Html::submitButton('<i class="material-icons">done</i> ' . \Yii::t('app', 'Save'), ['class' => 'btn btn-sm btn-warning']) ?>
                 </div>
             </div>
             <div class="col-md-6">

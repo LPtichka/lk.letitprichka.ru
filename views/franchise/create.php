@@ -34,7 +34,7 @@ $this->title = $title;
             <div class="col-md-6">
                 <div class="form-group">
                     <?= Html::submitButton(
-                        '<i class="fa fa-check"></i> ' . \Yii::t('app', 'Save'),
+                        '<i class="material-icons">done</i> ' . \Yii::t('app', 'Save'),
                         ['class' => 'btn btn-sm btn-warning']
                     ) ?>
                 </div>

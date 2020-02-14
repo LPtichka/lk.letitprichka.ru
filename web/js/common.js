@@ -38,6 +38,7 @@ body.delegate('.export', 'click', function (e) {
 body.delegate('#add-product', 'click', function () {
     window.addProduct();
 });
+
 body.delegate('#add-dish', 'click', function () {
     window.addDish();
 });
