@@ -41,6 +41,14 @@ class Status
     }
 
     /**
+     * @return string
+     */
+    public function getStatusActionName(): string
+    {
+        return \Yii::t('status', 'to ' . $this->getStatusKey());
+    }
+
+    /**
      * @return bool
      */
     public function isGreenFlowStatus(): bool

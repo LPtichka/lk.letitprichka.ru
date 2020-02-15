@@ -6,6 +6,8 @@ use app\models\Helper\ExcelParser;
 use app\models\Helper\Unit;
 use app\models\Helper\Weight;
 use app\models\Repository\Exception;
+use app\models\Repository\Menu;
+use app\models\Repository\OrderSchedule;
 use app\models\Search\Product;
 use yii\helpers\ArrayHelper;
 use yii\web\NotFoundHttpException;
@@ -38,7 +40,7 @@ class ProductController extends BaseController
             $this->log('product-create', []);
             $product->load(\Yii::$app->request->post());
             $product->count = (new Unit($product->unit))->convert($product->count);
-            $isValidate = $product->validate();
+            $isValidate     = $product->validate();
 
             if ($isValidate && $product->save()) {
                 \Yii::$app->session->addFlash('success', \Yii::t('product', 'Product was saved successfully'));
@@ -77,7 +79,7 @@ class ProductController extends BaseController
             $post = \Yii::$app->request->post();
             $product->load($post);
             $product->count = (new Unit($product->unit))->convert($product->count);
-            $isValidate = $product->validate();
+            $isValidate     = $product->validate();
             if ($isValidate && $product->save()) {
                 $this->log('product-edit-success', $product->getAttributes());
                 \Yii::$app->session->addFlash('success', \Yii::t('product', 'Product was saved successfully'));
@@ -228,5 +230,73 @@ class ProductController extends BaseController
 
         \Yii::$app->response->format = Response::FORMAT_JSON;
         return $result;
+    }
+
+    /**
+     * Получение страницы Листа закупок
+     *
+     * @return string
+     */
+    public function actionGetProcurementSheet()
+    {
+        $products = [];
+        $menuList = [];
+
+        $menus = Menu::find()->all();
+        foreach ($menus as $menu) {
+            $menuList[$menu->id] = sprintf('%s - %s',
+                date('d.m.Y', strtotime($menu->menu_start_date)),
+                date('d.m.Y', strtotime($menu->menu_end_date))
+            );
+        }
+
+        if ($post = \Yii::$app->request->post()) {
+            $menuId     = $post['menu_id'];
+            $chosenMenu = Menu::findOne($menuId);
+            $products = $chosenMenu->getProcurementProducts();
+        }
+        return $this->renderAjax('/product/_procurement_sheet', [
+            'menus'    => $menuList,
+            'menuId'   => \Yii::$app->request->post('menu_id', 0),
+            'title'    => \Yii::t('product', 'Procurement sheet'),
+            'products' => $products,
+        ]);
+    }
+
+    /**
+     * @return array
+     * @throws \PHPExcel_Exception
+     * @throws \PHPExcel_Reader_Exception
+     */
+    public function actionSaveProcurementSheet()
+    {
+        if ($menuId = \Yii::$app->request->post('menu_id')) {
+            \Yii::$app->response->format = Response::FORMAT_JSON;
+
+            $products = Menu::findOne($menuId)->getProcurementProducts();
+            $productList = [];
+            foreach ($products as $product) {
+                $productList[] = [
+                    'id' => $product->id,
+                    'name' => $product->name,
+                    'available' => $product->count,
+                    'need' => $product->getNeedCount(),
+                    'not_enough' => $product->getNotEnoughCount(),
+                ];
+            }
+
+            $excel = new Excel();
+            $excel->loadFromTemplate('files/templates/base.xlsx');
+            $excel->prepare($productList, Excel::MODEL_PRODUCT, \Yii::$app->request->post());
+            $excel->save('procurement_sheet.xlsx', 'temp');
+
+            \Yii::$app->response->format = Response::FORMAT_JSON;
+
+            return [
+                'url' => $excel->getUrl()
+            ];
+        }
+
+        return [];
     }
 }

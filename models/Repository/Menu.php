@@ -261,4 +261,33 @@ class Menu extends \yii\db\ActiveRecord
         $result = \Yii::$app->db->createCommand($sql)->queryOne();
         return (bool) $result['count'];
     }
+
+    /**
+     * @return Product[]
+     */
+    public function getProcurementProducts(): array
+    {
+        $products = [];
+
+        $schedules = OrderSchedule::find()
+            ->where(['>=', 'date', $this->menu_start_date])
+            ->andWhere(['<=', 'date', $this->menu_end_date])
+            ->all();
+
+        foreach ($schedules as $schedule) {
+            foreach ($schedule->dishes as $scheduleDish) {
+                foreach ($scheduleDish->dish->dishProducts as $dishProduct) {
+                    if (empty($products[$dishProduct->product_id])) {
+                        $product = $dishProduct->product;
+                        $product->setNeedCount($dishProduct->weight);
+                        $products[$dishProduct->product_id] = $product;
+                    } else {
+                        $products[$dishProduct->product_id]->setNeedCount($dishProduct->weight);
+                    }
+                }
+            }
+        }
+
+        return $products;
+    }
 }

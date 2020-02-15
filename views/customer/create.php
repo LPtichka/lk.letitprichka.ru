@@ -79,7 +79,7 @@ if ($model->id) {
                            data-row="exception-row"
                            class="btn btn-sm btn-primary pull-right add-row-action"
                         >
-                            <i class="fa fa-plus"></i>
+                            <i class="material-icons">add</i>
                             <?= Yii::t('order', 'Add exception') ?>
                         </a>
                     </div>
@@ -115,10 +115,10 @@ if ($model->id) {
                 <div class="form-group text-right">
                     <a href="javascript:void(0)" id="add-address"
                        class="btn btn-sm btn-primary mr-15">
-                        <i class="fa fa-plus"></i>
-                        <?= Yii::t('customer', 'Add address') ?>
+                        <i class="material-icons">add</i>
+                        <span><?= Yii::t('customer', 'Add address') ?></span>
                     </a>
-                    <?= Html::a(\Yii::t('app', 'Cancel'), '#', [
+                    <?= Html::a('<span>' . \Yii::t('app', 'Cancel') . '</span>', '#', [
                         'class'        => 'btn btn-sm btn-default',
                         'data-dismiss' => 'modal'
                     ]) ?>

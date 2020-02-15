@@ -88,7 +88,7 @@ if ($model->id) {
                        data-row="discount-row"
                        class="btn btn-sm btn-primary add-row-action mr-15"
                     >
-                        <i class="fa fa-plus"></i>
+                        <i class="material-icons">add</i>
                         <?= Yii::t('subscription', 'Add discount') ?>
                     </a>
                     <?= Html::a(\Yii::t('app', 'Cancel'), ['subscription/index'], ['class' => 'btn btn-sm btn-default']) ?>

@@ -333,7 +333,7 @@ tr.error {
 }
 
 .modal-buttons {
-    margin-top: 15px;
+    margin-top: 30px;
 }
 
 .modal-body {
@@ -432,7 +432,8 @@ label input[type="checkbox"] {
 .order-buttons-block {
     position: absolute;
     right: 15px;
-    top: 60px;
+    top: 102px;
+    z-index: 999;
 }
 
 #pre-request-modal-buttons {
@@ -630,5 +631,5 @@ label input[type="checkbox"] {
 }
 
 .btn span {
-    line-height: 21px;
+    line-height: 20px;
 }

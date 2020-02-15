@@ -17,6 +17,7 @@ class Excel
     const MODEL_CUSTOMER = 'customer';
     const MODEL_ROUTE_SHEET = 'route_sheet';
     const MODEL_MARRIAGE_SHEET = 'marriage_sheet';
+    const MODEL_PROCUREMENT_SHEET = 'procurement_sheet';
 
     const COLUMN_NAMES = [
         1  => 'А',

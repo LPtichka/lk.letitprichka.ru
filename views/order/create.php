@@ -28,6 +28,13 @@ if ($model->id) {
     <div class="col-sm-12">
 
         <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <?= Html::submitButton('<i class="material-icons">done</i> ' . Yii::t('app', 'Save'), ['class' => 'btn btn-sm btn-warning']) ?>
+                </div>
+            </div>
+        </div>
+        <div class="row">
             <div class="col-sm-8">
                 <div class="box box-primary">
                     <div class="box-header with-border">
@@ -258,7 +265,7 @@ if ($model->id) {
                                        data-row="exception-row"
                                        class="btn btn-sm btn-primary pull-right add-row-action"
                                     >
-                                        <i class="fa fa-plus"></i>
+                                        <i class="material-icons">add</i>
                                         <?= Yii::t('order', 'Add exception') ?>
                                     </a>
                                 </div>
@@ -367,22 +374,10 @@ if ($model->id) {
                     <div class="row">
                         <div class="col-sm-12 product-buttons">
                             <a href="javascript:void(0)" id="add-dish" class="btn btn-sm btn-primary pull-right">
-                                <i class="fa fa-plus"></i><?= \Yii::t('dish', 'Add product') ?>
+                                <i class="material-icons">add</i><?= \Yii::t('dish', 'Add product') ?>
                             </a>
                         </div>
                     </div>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-6">
-                <div class="form-group">
-                    <?= Html::submitButton('<i class="material-icons">done</i> ' . Yii::t('app', 'Save'), ['class' => 'btn btn-sm btn-warning']) ?>
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="form-group text-right">
-                    <?= Html::a(\Yii::t('app', 'Cancel'), ['order/index'], ['class' => 'btn btn-sm btn-default']) ?>
                 </div>
             </div>
         </div>

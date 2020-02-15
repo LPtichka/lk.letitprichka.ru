@@ -18,7 +18,7 @@ $this->params['breadcrumbs'][] = $this->title;
     <div class="box">
         <div class="box-header with-border">
             <div class="pull-left">
-                <?= Html::a('<i class="fa fa-plus"></i> ' . \Yii::t('menu', 'Create menu'),
+                <?= Html::a('<i class="material-icons">add</i> ' . \Yii::t('menu', 'Create menu'),
                     ['menu/create'],
                     ['class' => 'btn btn-sm btn-warning']
                 ) ?>

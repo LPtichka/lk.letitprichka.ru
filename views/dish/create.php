@@ -149,7 +149,7 @@ if ($model->id) {
                     <div class="row">
                         <div class="col-sm-12 product-buttons">
                             <a href="javascript:void(0)" id="add-product" class="btn btn-sm btn-primary pull-right">
-                                <i class="fa fa-plus"></i><?= \Yii::t('dish', 'Add product') ?>
+                                <i class="material-icons">add</i><?= \Yii::t('dish', 'Add product') ?>
                             </a>
                         </div>
                     </div>

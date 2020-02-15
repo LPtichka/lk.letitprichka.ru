@@ -7,7 +7,8 @@ use yii\widgets\Pjax;
 
 /** @var \app\models\Search\PaymentType $searchModel */
 
-$this->title                   = \Yii::t('product', 'Products');
+$this->title = \Yii::t('product', 'Products');
+
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <?php Pjax::begin(); ?>
@@ -25,7 +26,14 @@ $this->params['breadcrumbs'][] = $this->title;
                 ]) ?>
         </div>
         <div class="pull-right">
-            <?= Html::button('<span>Лист закупок</span>', ['class' => 'btn btn-sm btn-default import']) ?>
+            <?= Html::a('<span>' . \Yii::t('product', 'Procurement sheet') . '</span>',
+                ['product/get-procurement-sheet'],
+                [
+                    'class'       => 'btn btn-sm btn-default',
+                    'data-href'   => Url::to(['product/get-procurement-sheet']),
+                    'data-toggle' => 'modal',
+                    'data-target' => '#modal',
+                ]) ?>
             <?= Html::button('<i class="material-icons">cloud_upload</i>', ['class' => 'btn btn-sm btn-default import']) ?>
             <?= Html::button('<i class="material-icons">cloud_download</i>', [
                 'class'     => 'btn btn-sm btn-default export',

@@ -12,7 +12,7 @@ use yii\widgets\Pjax;
             <?php foreach ($order::STATUS_MAP[$order->status_id] as $status): ?>
                 <?php $statusHelper = new \app\models\Helper\Status($status); ?>
                 <?php echo \yii\helpers\Html::a(
-                    $statusHelper->getStatusName(),
+                    '<span>' . $statusHelper->getStatusActionName() . '</span>',
                     '#',
                     [
                         'class'            => 'action-with-approve btn ' . ($statusHelper->isGreenFlowStatus() ? 'btn-success' : 'btn-danger'),
@@ -28,7 +28,7 @@ use yii\widgets\Pjax;
                 ['id' => 'pre-request-modal-buttons']
             ); ?>
             <?php echo \yii\helpers\Html::a(
-                \Yii::t('order', 'Deffer order'),
+                '<span>' . \Yii::t('order', 'Deffer order') . '</span>',
                 '#',
                 [
                     'class'                => 'action-with-request btn btn-default',

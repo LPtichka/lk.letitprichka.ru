@@ -15,7 +15,7 @@ $this->params['breadcrumbs'][] = $this->title;
     <div class="box-header with-border">
         <div class="pull-left">
             <?= Html::a(
-                '<i class="fa fa-plus"></i> ' . \Yii::t('address', 'Create address'),
+                '<i class="material-icons">add</i> ' . \Yii::t('address', 'Create address'),
                 ['address/create'],
                 [
                     'class' => 'btn btn-sm btn-warning',
