@@ -116,6 +116,13 @@ class DishController extends BaseController
                     $dishProducts[] = $product;
                 }
             }
+            if (empty($dishProducts)) {
+                $dish->addError('products', \Yii::t('dish', 'Dish products is empty'));
+                return $this->render('/dish/create', [
+                    'model' => $dish,
+                    'title' => \Yii::t('dish', 'Dish update'),
+                ]);
+            }
             $dish->setDishProducts($dishProducts);
 
             $isValidate  = $dish->validate();
