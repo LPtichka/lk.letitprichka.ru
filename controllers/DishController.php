@@ -106,13 +106,15 @@ class DishController extends BaseController
             $dish->load($post);
 
             $dishProducts = [];
-            foreach ($post['DishProduct'] as $dishProduct) {
-                if (empty($dishProduct['product_id'])) {
-                    continue;
+            if (!empty($post['DishProduct'])) {
+                foreach ($post['DishProduct'] as $dishProduct) {
+                    if (empty($dishProduct['product_id'])) {
+                        continue;
+                    }
+                    $product = new DishProduct();
+                    $product->load($dishProduct, '');
+                    $dishProducts[] = $product;
                 }
-                $product = new DishProduct();
-                $product->load($dishProduct, '');
-                $dishProducts[] = $product;
             }
             $dish->setDishProducts($dishProducts);
 
