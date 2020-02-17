@@ -3,6 +3,7 @@ namespace app\controllers;
 
 use app\models\Helper\Excel;
 use app\models\Helper\ExcelParser;
+use app\models\Helper\Unit;
 use app\models\Helper\Weight;
 use app\models\Repository\DishProduct;
 use app\models\Search\Dish;
@@ -117,6 +118,10 @@ class DishController extends BaseController
             }
             if (empty($dishProducts)) {
                 \Yii::$app->session->addFlash('danger', \Yii::t('dish', 'Dish products is empty'));
+                $dish->weight = (new Unit(Unit::UNIT_KG))->convert($dish->weight);
+                if (empty($dish->dishProducts)) {
+                    $dish->setDishProducts([new DishProduct()]);
+                }
                 return $this->render('/dish/create', [
                     'model' => $dish,
                     'title' => \Yii::t('dish', 'Dish update'),
