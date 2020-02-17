@@ -44,13 +44,14 @@ class OrderController extends BaseController
         if (\Yii::$app->request->post()) {
             $this->log('order-create', []);
             if ($order->build(\Yii::$app->request->post()) && $order->saveAll()) {
-                \Yii::$app->session->addFlash('success', \Yii::t('product', 'Order was saved successfully'));
+                \Yii::$app->session->addFlash('success', \Yii::t('order', 'Order was saved successfully'));
                 $this->log('order-create-success', [
                     'name' => $order->id,
                     'id'   => $order->id,
                 ]);
                 return $this->redirect(['order/index']);
             } else {
+                \Yii::$app->session->addFlash('danger', \Yii::t('order', 'Order was not saved successfully'));
                 $this->log('order-create-fail', [
                     'name'   => $order->id,
                     'errors' => json_encode($order->getFirstErrors()),

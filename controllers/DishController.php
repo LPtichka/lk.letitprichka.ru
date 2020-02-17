@@ -3,7 +3,6 @@ namespace app\controllers;
 
 use app\models\Helper\Excel;
 use app\models\Helper\ExcelParser;
-use app\models\Helper\Unit;
 use app\models\Helper\Weight;
 use app\models\Repository\DishProduct;
 use app\models\Search\Dish;
@@ -117,7 +116,7 @@ class DishController extends BaseController
                 }
             }
             if (empty($dishProducts)) {
-                $dish->addError('products', \Yii::t('dish', 'Dish products is empty'));
+                \Yii::$app->session->addFlash('danger', \Yii::t('dish', 'Dish products is empty'));
                 return $this->render('/dish/create', [
                     'model' => $dish,
                     'title' => \Yii::t('dish', 'Dish update'),
@@ -136,6 +135,10 @@ class DishController extends BaseController
                         if ($product->validate() && $product->save()) {
                             $this->log('dish-product-update-success', ['name' => $dish->name]);
                         } else {
+                            \Yii::$app->session->addFlash('danger', sprintf(
+                                '%s <br /> %s',
+                                \Yii::t('dish', \Yii::t('dish', 'Product was not saved')),
+                                implode('<br />', $product->getFirstErrors())));
                             $isProductSaved = false;
                             $transaction->rollBack();
                             break;
@@ -143,15 +146,23 @@ class DishController extends BaseController
                     }
                 }
                 if ($isProductSaved) {
-                    \Yii::$app->session->addFlash('success', \Yii::t('dish', 'Dish type was saved successfully'));
+                    \Yii::$app->session->addFlash('success', \Yii::t('dish', 'Dish was saved successfully'));
                     $transaction->commit();
                     $this->log('dish-update-success', ['name' => $dish->name]);
                     return $this->redirect(['dish/index']);
                 }
             } else {
+                \Yii::$app->session->addFlash('danger', sprintf(
+                    '%s <br /> %s',
+                    \Yii::t('dish', 'Dish was not saved successfully'),
+                    implode('<br />', $dish->getFirstErrors())));
                 $transaction->rollBack();
                 $this->log('dish-update-fail', ['name' => $dish->name, 'errors' => json_encode($dish->getFirstErrors())]);
             }
+        }
+
+        if (empty($dish->dishProducts)) {
+            $dish->setDishProducts([new DishProduct()]);
         }
         return $this->render('/dish/create', [
             'model' => $dish,
@@ -214,8 +225,8 @@ class DishController extends BaseController
         }
 
         $parserData = $excel->parse();
-        $data = (new ExcelParser(array_merge([$excel->getHeaderRow()], $parserData), ExcelParser::MODEL_DISH))->getParsedArray();
-        $dish = (new \app\models\Repository\Dish())->build($data, Weight::UNIT_GR);
+        $data       = (new ExcelParser(array_merge([$excel->getHeaderRow()], $parserData), ExcelParser::MODEL_DISH))->getParsedArray();
+        $dish       = (new \app\models\Repository\Dish())->build($data, Weight::UNIT_GR);
 
         \Yii::$app->response->format = Response::FORMAT_JSON;
         $transaction                 = \Yii::$app->db->beginTransaction();
@@ -318,7 +329,7 @@ class DishController extends BaseController
     {
         return $this->renderAjax('/order/_product', [
             'dish' => new \app\models\Repository\OrderScheduleDish(),
-            'i'       => ++$counter,
+            'i'    => ++$counter,
         ]);
     }
 }
