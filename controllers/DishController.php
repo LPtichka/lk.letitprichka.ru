@@ -121,14 +121,16 @@ class DishController extends BaseController
             if ($isValidate && $dish->save()) {
                 $isProductSaved = true;
                 DishProduct::deleteAll(['dish_id' => $dish->id]);
-                foreach ($dish->dishProducts as $product) {
-                    $product->dish_id = $dish->id;
-                    if ($product->validate() && $product->save()) {
-                        $this->log('dish-product-update-success', ['name' => $dish->name]);
-                    } else {
-                        $isProductSaved = false;
-                        $transaction->rollBack();
-                        break;
+                if (!empty($dish->dishProducts)) {
+                    foreach ($dish->dishProducts as $product) {
+                        $product->dish_id = $dish->id;
+                        if ($product->validate() && $product->save()) {
+                            $this->log('dish-product-update-success', ['name' => $dish->name]);
+                        } else {
+                            $isProductSaved = false;
+                            $transaction->rollBack();
+                            break;
+                        }
                     }
                 }
                 if ($isProductSaved) {
