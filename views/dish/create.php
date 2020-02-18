@@ -125,7 +125,7 @@ if ($model->id) {
                     <div class="">
                         <div class="row">
                             <div class="col-sm-2"><label><?= \Yii::t('product', 'Name');?></label></div>
-                            <div class="col-sm-1"><label><?= \Yii::t('product', 'Count');?></label></div>
+                            <div class="col-sm-1"><label><?= \Yii::t('product', 'Count / Weight / Liters');?></label></div>
                             <div class="col-sm-1"><label><?= \Yii::t('product', 'Brutto');?></label></div>
                             <div class="col-sm-1"><label><?= \Yii::t('product', 'Netto');?></label></div>
                             <div class="col-sm-1"><label><?= \Yii::t('product', 'Brutto on 1 kg');?></label></div>
@@ -133,7 +133,7 @@ if ($model->id) {
                             <div class="col-sm-1"><label><?= \Yii::t('product', 'Proteins');?></label></div>
                             <div class="col-sm-1"><label><?= \Yii::t('product', 'Fat');?></label></div>
                             <div class="col-sm-1"><label><?= \Yii::t('product', 'Carbohydrates');?></label></div>
-                            <div class="col-sm-1"><label><?= \Yii::t('product', 'Count');?></label></div>
+                            <div class="col-sm-1"><label></label></div>
                             <div class="col-sm-1"></div>
                         </div>
                     </div>
