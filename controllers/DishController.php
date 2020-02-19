@@ -118,7 +118,6 @@ class DishController extends BaseController
             }
             if (empty($dishProducts)) {
                 \Yii::$app->session->addFlash('danger', \Yii::t('dish', 'Dish products is empty'));
-                $dish->weight = (new Unit(Unit::UNIT_KG))->convert($dish->weight);
                 if (empty($dish->dishProducts)) {
                     $dish->setDishProducts([new DishProduct()]);
                 }
@@ -154,7 +153,7 @@ class DishController extends BaseController
                     \Yii::$app->session->addFlash('success', \Yii::t('dish', 'Dish was saved successfully'));
                     $transaction->commit();
                     $this->log('dish-update-success', ['name' => $dish->name]);
-                    return $this->redirect(['dish/index']);
+                    return $this->redirect(['dish/view', 'id' => $dish->id]);
                 }
             } else {
                 \Yii::$app->session->addFlash('danger', sprintf(

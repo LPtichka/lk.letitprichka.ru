@@ -7,7 +7,6 @@ use app\models\Helper\Unit;
 use app\models\Helper\Weight;
 use app\models\Repository\Exception;
 use app\models\Repository\Menu;
-use app\models\Repository\OrderSchedule;
 use app\models\Search\Product;
 use yii\helpers\ArrayHelper;
 use yii\web\NotFoundHttpException;
@@ -225,6 +224,7 @@ class ProductController extends BaseController
                 'name'       => $product['name'],
                 'weight'     => (new Unit($product['unit']))->format($product['count']),
                 'product_id' => $product['id'],
+                'unit'       => (new Unit($product['unit']))->getLowerUnit(),
             ];
         }
 
@@ -253,7 +253,7 @@ class ProductController extends BaseController
         if ($post = \Yii::$app->request->post()) {
             $menuId     = $post['menu_id'];
             $chosenMenu = Menu::findOne($menuId);
-            $products = $chosenMenu->getProcurementProducts();
+            $products   = $chosenMenu->getProcurementProducts();
         }
         return $this->renderAjax('/product/_procurement_sheet', [
             'menus'    => $menuList,
@@ -273,14 +273,14 @@ class ProductController extends BaseController
         if ($menuId = \Yii::$app->request->post('menu_id')) {
             \Yii::$app->response->format = Response::FORMAT_JSON;
 
-            $products = Menu::findOne($menuId)->getProcurementProducts();
+            $products    = Menu::findOne($menuId)->getProcurementProducts();
             $productList = [];
             foreach ($products as $product) {
                 $productList[] = [
-                    'id' => $product->id,
-                    'name' => $product->name,
-                    'available' => $product->count,
-                    'need' => $product->getNeedCount(),
+                    'id'         => $product->id,
+                    'name'       => $product->name,
+                    'available'  => $product->count,
+                    'need'       => $product->getNeedCount(),
                     'not_enough' => $product->getNotEnoughCount(),
                 ];
             }

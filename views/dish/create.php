@@ -42,12 +42,7 @@ if ($model->id) {
                     </div>
                     <div class="col-sm-3">
                         <?= $form->field($model, 'weight')->textInput([
-                            'class' => 'form-control input-sm',
-                            'value' => $model->weight
-                                ? (new \app\models\Helper\Weight())
-                                    ->setUnit(\app\models\Helper\Weight::UNIT_KG)
-                                    ->convert($model->weight, \app\models\Helper\Weight::UNIT_GR)
-                                : ''
+                            'class' => 'form-control input-sm'
                         ]) ?>
                     </div>
                 </div>
@@ -124,20 +119,15 @@ if ($model->id) {
                 <div class="product-form form-group">
                     <div class="">
                         <div class="row">
-                            <div class="col-sm-2"><label><?= \Yii::t('product', 'Name');?></label></div>
-                            <div class="col-sm-1"><label><?= \Yii::t('product', 'Count / Weight / Liters');?></label></div>
+                            <div class="col-sm-4"><label><?= \Yii::t('product', 'Name');?></label></div>
                             <div class="col-sm-1"><label><?= \Yii::t('product', 'Brutto');?></label></div>
                             <div class="col-sm-1"><label><?= \Yii::t('product', 'Netto');?></label></div>
-                            <div class="col-sm-1"><label><?= \Yii::t('product', 'Brutto on 1 kg');?></label></div>
-                            <div class="col-sm-1"><label><?= \Yii::t('product', 'Kkal');?></label></div>
-                            <div class="col-sm-1"><label><?= \Yii::t('product', 'Proteins');?></label></div>
-                            <div class="col-sm-1"><label><?= \Yii::t('product', 'Fat');?></label></div>
-                            <div class="col-sm-1"><label><?= \Yii::t('product', 'Carbohydrates');?></label></div>
-                            <div class="col-sm-1"><label></label></div>
-                            <div class="col-sm-1"></div>
+                            <div class="col-sm-1"><label><?= \Yii::t('product', 'Count');?></label></div>
+                            <div class="col-sm-5"><label></label></div>
                         </div>
                     </div>
                     <hr />
+
                     <div class="products">
                         <?php foreach ($model->dishProducts as $i => $dishProduct) : ?>
                             <?= $this->render('_product', [

@@ -3,7 +3,6 @@
 namespace app\models\Repository;
 
 use app\models\Helper\Unit;
-use app\models\Helper\Weight;
 use app\models\Queries\ProductQuery;
 use yii\behaviors\TimestampBehavior;
 use yii\helpers\ArrayHelper;
@@ -102,7 +101,7 @@ class Product extends \yii\db\ActiveRecord
             $product = new Product();
         }
 
-        $unit = new Unit($data['unit']);
+        $unit           = new Unit($data['unit']);
         $product->name  = trim($data['name']);
         $product->count = (int) $product->count + $unit->convert((float) $data['count']);
         $product->unit  = $unit->getMainUnit();
@@ -143,19 +142,19 @@ class Product extends \yii\db\ActiveRecord
     }
 
     /**
-     * @param int $count
-     */
-    public function setNeedCount(int $count)
-    {
-        $this->needCount = $this->needCount + $count;
-    }
-
-    /**
      * @return int
      */
     public function getNeedCount(): int
     {
         return $this->needCount;
+    }
+
+    /**
+     * @param int $count
+     */
+    public function setNeedCount(int $count)
+    {
+        $this->needCount = $this->needCount + $count;
     }
 
     /**
@@ -168,6 +167,6 @@ class Product extends \yii\db\ActiveRecord
             return $count * -1;
         }
 
-        return  0;
+        return 0;
     }
 }

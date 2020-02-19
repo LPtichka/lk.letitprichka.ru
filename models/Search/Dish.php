@@ -114,7 +114,7 @@ class Dish extends Repository
                 ['class' => 'select_wrapper']
             ),
             'content' => function($model) {
-                return $model->getTypes()[$model->type];
+                return $model->getTypes()[$model->type] ?? '---';
             }
         ];
 

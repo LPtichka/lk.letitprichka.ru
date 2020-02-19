@@ -633,3 +633,10 @@ label input[type="checkbox"] {
 .btn span {
     line-height: 20px;
 }
+
+.label-after-input {
+    line-height: 30px;
+    position: relative;
+    left: -20px;
+    display: inline-block;
+}

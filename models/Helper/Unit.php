@@ -73,4 +73,19 @@ class Unit
                 return $this->unit;
         }
     }
+
+    /**
+     * @return string
+     */
+    public function getLowerUnit(): string
+    {
+        switch ($this->unit) {
+            case self::UNIT_KG:
+                return self::UNIT_GR;
+            case self::UNIT_LITER:
+                return self::UNIT_MILLI_LITER;
+            default:
+                return $this->unit;
+        }
+    }
 }

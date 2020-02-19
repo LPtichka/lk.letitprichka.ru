@@ -2,6 +2,7 @@
 
 namespace app\models\Repository;
 
+use app\models\Helper\Unit;
 use app\models\Helper\Weight;
 use app\models\Queries\DishProductQuery;
 use yii\behaviors\TimestampBehavior;
@@ -14,13 +15,8 @@ use yii\behaviors\TimestampBehavior;
  * @property int $product_id
  * @property int $dish_id
  * @property int $brutto
- * @property int $brutto_on_1_kg
  * @property int $netto
  * @property int $weight
- * @property int $kkal
- * @property int $fat
- * @property int $proteins
- * @property int $carbohydrates
  * @property int $created_at
  * @property int $updated_at
  *
@@ -67,8 +63,8 @@ class DishProduct extends \yii\db\ActiveRecord
         return [
             [['name'], 'string'],
             [['weight', 'netto', 'brutto'], 'number'],
-            [['fat', 'proteins', 'kkal', 'carbohydrates', 'dish_id', 'product_id'], 'integer'],
-            [['fat', 'weight', 'netto', 'brutto', 'brutto_on_1_kg', 'proteins', 'kkal', 'carbohydrates'], 'required'],
+            [['dish_id', 'product_id'], 'integer'],
+            [['weight', 'netto', 'brutto'], 'required'],
         ];
     }
 
@@ -99,17 +95,22 @@ class DishProduct extends \yii\db\ActiveRecord
     }
 
     /**
-     * @param bool $insert
-     * @return bool
+     * @return string|null
      */
-    public function beforeSave($insert)
+    public function getUnit(): ?string
     {
-        $this->weight = (new Weight())->convert($this->weight, $this->weightUnitDefault);
-        $this->netto = (new Weight())->convert($this->netto, $this->weightUnitDefault);
-        $this->brutto = (new Weight())->convert($this->brutto, $this->weightUnitDefault);
-        $this->brutto_on_1_kg = (new Weight())->convert($this->brutto_on_1_kg, $this->weightUnitDefault);
+        if (empty($this->product)) {
+            return null;
+        }
 
-        return parent::beforeSave($insert);
+        switch ($this->product->unit) {
+            case Unit::UNIT_KG:
+                return Unit::UNIT_GR;
+            case Unit::UNIT_LITER:
+                return Unit::UNIT_MILLI_LITER;
+            default:
+                return $this->product->unit;
+        }
     }
 
     /**
@@ -118,10 +119,6 @@ class DishProduct extends \yii\db\ActiveRecord
     public function afterFind()
     {
         $this->product && $this->name = $this->product->name;
-        $this->weight = (new Weight())->setUnit(Weight::UNIT_KG)->convert($this->weight, Weight::UNIT_GR);
-        $this->netto = (new Weight())->setUnit(Weight::UNIT_KG)->convert($this->netto, Weight::UNIT_GR);
-        $this->brutto = (new Weight())->setUnit(Weight::UNIT_KG)->convert($this->brutto, Weight::UNIT_GR);
-        $this->brutto_on_1_kg = (new Weight())->setUnit(Weight::UNIT_KG)->convert($this->brutto_on_1_kg, Weight::UNIT_GR);
         parent::afterFind();
     }
 

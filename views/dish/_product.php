@@ -41,11 +41,13 @@ $sourceExp = new JsExpression('function(request, response) {
 
 $nameId    = Html::getInputId($product, "[$i]name");
 $productId = Html::getInputId($product, "[$i]product_id");
+$labelUnitId = 'label-unit-' . $i;
 
 $selectExp = new JsExpression('function(event, ui) {
             $("#' . $productId . '").val(ui.item.product_id);
             setTimeout(function() {
                 $("#' . $nameId . '").val(ui.item.name);
+                $("#' . $labelUnitId . '").text(ui.item.unit);
             }, 50);
             window.addProduct();
     }');
@@ -53,7 +55,7 @@ $selectExp = new JsExpression('function(event, ui) {
 
 <div class="product-row" id="group-<?= $i ?>">
     <div class="row">
-        <div class="col-sm-2">
+        <div class="col-sm-4">
             <?= AutoComplete::widget([
                 'model'         => $product,
                 'attribute'     => "[$i]name",
@@ -69,30 +71,18 @@ $selectExp = new JsExpression('function(event, ui) {
             ]) ?>
         </div>
         <div class="col-sm-1">
-            <?= Html::activeInput('text', $product, "[$i]weight", ['class' => 'form-control input-sm', 'autocomplete' => false]) ?>
-        </div>
-        <div class="col-sm-1">
             <?= Html::activeInput('text', $product, "[$i]brutto", ['class' => 'form-control input-sm', 'autocomplete' => false]) ?>
         </div>
         <div class="col-sm-1">
             <?= Html::activeInput('text', $product, "[$i]netto", ['class' => 'form-control input-sm', 'autocomplete' => false]) ?>
         </div>
-        <div class="col-sm-1">
-            <?= Html::activeInput('text', $product, "[$i]brutto_on_1_kg", ['class' => 'form-control input-sm', 'autocomplete' => false]) ?>
+        <div class="col-sm-2">
+            <div class="row">
+                <div class="col-sm-6"><?= Html::activeInput('text', $product, "[$i]weight", ['class' => 'form-control input-sm text-right', 'autocomplete' => false]) ?></div>
+                <div class="col-sm-6"><span id="label-unit-<?=$i;?>" class="label-after-input"><?= $product->getUnit() ?? ''; ?></span></div>
+            </div>
         </div>
-        <div class="col-sm-1">
-            <?= Html::activeInput('text', $product, "[$i]kkal", ['class' => 'form-control input-sm', 'autocomplete' => false]) ?>
-        </div>
-        <div class="col-sm-1">
-            <?= Html::activeInput('text', $product, "[$i]proteins", ['class' => 'form-control input-sm', 'autocomplete' => false]) ?>
-        </div>
-        <div class="col-sm-1">
-            <?= Html::activeInput('text', $product, "[$i]fat", ['class' => 'form-control input-sm', 'autocomplete' => false]) ?>
-        </div>
-        <div class="col-sm-1">
-            <?= Html::activeInput('text', $product, "[$i]carbohydrates", ['class' => 'form-control input-sm', 'autocomplete' => false]) ?>
-        </div>
-        <div class="col-sm-1">
+        <div class="col-sm-4">
             <?= Html::activeInput('hidden', $product, "[$i]product_id") ?>
             <button class="btn btn-sm btn-default delete-product pull-right" type="button"><i class="fa fa-trash"></i></button>
         </div>
