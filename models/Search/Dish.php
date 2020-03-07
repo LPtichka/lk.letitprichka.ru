@@ -125,7 +125,7 @@ class Dish extends Repository
                 'width' => '80px',
             ],
             'content' => function ($model) {
-                return (new Weight())->setUnit(Weight::UNIT_KG)->convert($model->weight, Weight::UNIT_GR);
+                return (new Weight())->setUnit(Weight::UNIT_GR)->convert($model->weight, Weight::UNIT_GR);
             }
         ];
 

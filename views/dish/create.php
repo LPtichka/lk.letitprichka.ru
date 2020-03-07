@@ -14,8 +14,8 @@ if ($model->id) {
     $this->params['breadcrumbs'][] = \Yii::t('dish', 'New dish');
 }
 ?>
-<div style="position: absolute; right: 15px; top: 60px; z-index: 999999;">
-    <?= Html::button('<i class="fa fa-download"></i> ', [
+<div style="position: absolute; right: 15px; top: 102px; z-index: 999999;">
+    <?= Html::button('<i class="material-icons">cloud_download</i>', [
         'class'     => 'btn btn-sm btn-default export',
         'data-href' => Url::to(['dish/export', 'id' => $model->id]),
     ]) ?>
@@ -23,6 +23,13 @@ if ($model->id) {
 <?php $form = ActiveForm::begin(); ?>
 <div class="row">
     <div class="col-md-12">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <?= Html::submitButton('<i class="material-icons">done</i> ' . Yii::t('app', 'Save'), ['class' => 'btn btn-sm btn-warning']) ?>
+                </div>
+            </div>
+        </div>
         <div class="box box-primary">
             <div class="box-header with-border">
                 <h3 class="box-title"><?= \Yii::t('dish', 'Primary parameters'); ?></h3>
@@ -143,18 +150,6 @@ if ($model->id) {
                             </a>
                         </div>
                     </div>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-6">
-                <div class="form-group">
-                    <?= Html::submitButton('<i class="material-icons">done</i> ' . \Yii::t('app', 'Save'), ['class' => 'btn btn-sm btn-warning']) ?>
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="form-group text-right">
-                    <?= Html::a(\Yii::t('app', 'Cancel'), ['dish/index'], ['class' => 'btn btn-sm btn-default']) ?>
                 </div>
             </div>
         </div>
