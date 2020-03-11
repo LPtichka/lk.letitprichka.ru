@@ -2,11 +2,9 @@
 
 namespace app\models\Repository;
 
-use app\models\Helper\Weight;
+use app\models\Helper\Phone;
 use app\models\Queries\FranchiseQuery;
-use app\models\Queries\ProductQuery;
 use yii\behaviors\TimestampBehavior;
-use yii\helpers\ArrayHelper;
 
 /**
  * This is the model class for table "{{%franchise}}".
@@ -14,6 +12,7 @@ use yii\helpers\ArrayHelper;
  * @property int $id
  * @property string $name
  * @property int $status
+ * @property string $phone
  * @property int $created_at
  * @property int $updated_at
  *
@@ -23,6 +22,7 @@ class Franchise extends \yii\db\ActiveRecord
 {
     const STATUS_ACTIVE = 10;
     const STATUS_DELETED = 0;
+
     /**
      * @inheritdoc
      */
@@ -46,10 +46,11 @@ class Franchise extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id' => \Yii::t('franchise', 'ID'),
-            'name' => \Yii::t('franchise', 'Name'),
-            'updated_at' => \Yii::t('franchise', 'Updated at'),
             'exception_id' => \Yii::t('franchise', 'Exception ID'),
+            'id'           => \Yii::t('franchise', 'ID'),
+            'name'         => \Yii::t('franchise', 'Name'),
+            'phone'        => \Yii::t('franchise', 'Phone'),
+            'updated_at'   => \Yii::t('franchise', 'Updated at'),
         ];
     }
 
@@ -59,8 +60,12 @@ class Franchise extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
+            [['phone'], 'filter', 'filter' => function (){
+                return '+7' . (new Phone((string) $this->phone))->getClearPhone();
+            }],
             [['name'], 'required'],
             [['name'], 'string', 'min' => 10],
+            [['phone'], 'string'],
             [['name'], 'unique', 'message' => \Yii::t('product', 'This product has already exists')],
 
         ];

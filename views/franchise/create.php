@@ -2,6 +2,7 @@
 
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
+use yii\widgets\MaskedInput;
 use yii\widgets\Pjax;
 use app\widgets\Alert;
 
@@ -24,10 +25,24 @@ $this->title = $title;
     <div class="col-sm-12">
         <?php $form = ActiveForm::begin(); ?>
         <div class="row">
-            <div class="col-sm-12">
+            <div class="col-sm-6">
                 <?= $form->field($model, 'name')->textInput([
                     'class' => 'form-control input-sm'
                 ]); ?>
+            </div>
+            <div class="col-sm-6">
+                <?= $form->field($model, 'phone')->widget(
+                    MaskedInput::class,
+                    [
+                        'mask'          => '+7 (999) 999-99-99',
+                        'clientOptions' => ['onincomplete' => 'function(){
+                            $("#user-phone").removeAttr("value").attr("value","");
+                        }'],
+                        'options'       => [
+                            'class'       => 'form-control input-sm',
+                            'placeholder' => '+7 (___) ___-__-__',
+                        ]
+                    ]) ?>
             </div>
         </div>
         <div class="row modal-buttons">
@@ -42,7 +57,7 @@ $this->title = $title;
             <div class="col-md-6">
                 <div class="form-group text-right">
                     <?= Html::a(
-                        \Yii::t('app', 'Cancel'),
+                        '<span>' . \Yii::t('app', 'Cancel') . '</span>',
                         ['franchise/index'],
                         ['class' => 'btn btn-sm btn-default']
                     ); ?>

@@ -582,6 +582,15 @@ class Order extends \yii\db\ActiveRecord
 
     /**
      * @param string $date
+     * @return array
+     */
+    public function getCustomerSheetByDate(string $date): array
+    {
+        return [];
+    }
+
+    /**
+     * @param string $date
      * @return bool
      */
     public function isNeedPaymentForDate(string $date): bool

@@ -129,7 +129,6 @@ class Dish extends Repository
             }
         ];
 
-
         $result['kkal'] = [
             'attribute' => 'kkal',
             'headerOptions' => [

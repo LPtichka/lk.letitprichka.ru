@@ -36,6 +36,15 @@ use yii\widgets\Pjax;
                     'data-request-url'     => \yii\helpers\Url::to(['order/deffer', 'orderID' => $order->id]),
                 ]
             ); ?>
+            <?php echo \yii\helpers\Html::a(
+                '<span>' . \Yii::t('menu', 'Customer sheet') . '</span>',
+                ['/order/get-customer-sheet', 'id' => $order->id],
+                [
+                    'class'       => 'btn btn-default',
+                    'data-href'   => \yii\helpers\Url::to(['/order/get-customer-sheet', 'id' => $order->id]),
+                    'data-toggle' => 'modal',
+                    'data-target' => '#modal',
+                ]) ?>
             <?php Pjax::end(); ?>
         </div>
     </div>

@@ -16,6 +16,7 @@ class Excel
     const MODEL_USER = 'user';
     const MODEL_CUSTOMER = 'customer';
     const MODEL_ROUTE_SHEET = 'route_sheet';
+    const MODEL_CUSTOMER_SHEET = 'customer_sheet';
     const MODEL_MARRIAGE_SHEET = 'marriage_sheet';
     const MODEL_PROCUREMENT_SHEET = 'procurement_sheet';
 
@@ -61,7 +62,7 @@ class Excel
     /** @var array */
     private $fillGreen = [
         'fill' => [
-            'type' => \PHPExcel_Style_Fill::FILL_SOLID,
+            'type'  => \PHPExcel_Style_Fill::FILL_SOLID,
             'color' => ['rgb' => '39B739'],
         ]
     ];
@@ -180,6 +181,8 @@ class Excel
             return $this->prepareRouteSheet($data, $params);
         } elseif ($model === self::MODEL_MARRIAGE_SHEET) {
             return $this->prepareMarriageSheet($data, $params);
+        } elseif ($model === self::MODEL_CUSTOMER_SHEET) {
+            return $this->prepareCustomerSheet($data, $params);
         }
 
         $objWorksheet = $this->fileName->getActiveSheet();
@@ -248,30 +251,30 @@ class Excel
             $weight = 0;
             foreach ($dish->dishProducts as $key => $dishProduct) {
                 $objWorksheet->getCellByColumnAndRow(0, $key + 4)->setValue($dishProduct->name);
-                $objWorksheet->getCellByColumnAndRow(1, $key + 4)->setValue((new Weight())->convert($dishProduct->brutto, Weight::UNIT_KG));
-                $objWorksheet->getCellByColumnAndRow(2, $key + 4)->setValue((new Weight())->convert($dishProduct->netto, Weight::UNIT_KG));
-                $objWorksheet->getCellByColumnAndRow(3, $key + 4)->setValue((new Weight())->convert($dishProduct->weight, Weight::UNIT_KG));
-                $objWorksheet->getCellByColumnAndRow(4, $key + 4)->setValue((new Weight())->convert($dishProduct->brutto_on_1_kg, Weight::UNIT_KG));
-                $objWorksheet->getCellByColumnAndRow(5, $key + 4)->setValue($dishProduct->kkal);
-                $objWorksheet->getCellByColumnAndRow(6, $key + 4)->setValue($dishProduct->proteins);
-                $objWorksheet->getCellByColumnAndRow(7, $key + 4)->setValue($dishProduct->fat);
-                $objWorksheet->getCellByColumnAndRow(8, $key + 4)->setValue($dishProduct->carbohydrates);
+                $objWorksheet->getCellByColumnAndRow(1, $key + 4)->setValue((new Weight())->convert($dishProduct->brutto, Weight::UNIT_GR));
+                $objWorksheet->getCellByColumnAndRow(2, $key + 4)->setValue((new Weight())->convert($dishProduct->netto, Weight::UNIT_GR));
+                $objWorksheet->getCellByColumnAndRow(3, $key + 4)->setValue((new Weight())->convert($dishProduct->weight, Weight::UNIT_GR));
+//                $objWorksheet->getCellByColumnAndRow(4, $key + 4)->setValue((new Weight())->convert($dishProduct->brutto_on_1_kg, Weight::UNIT_KG));
+//                $objWorksheet->getCellByColumnAndRow(5, $key + 4)->setValue($dishProduct->kkal);
+//                $objWorksheet->getCellByColumnAndRow(6, $key + 4)->setValue($dishProduct->proteins);
+//                $objWorksheet->getCellByColumnAndRow(7, $key + 4)->setValue($dishProduct->fat);
+//                $objWorksheet->getCellByColumnAndRow(8, $key + 4)->setValue($dishProduct->carbohydrates);
 
                 $weight += $dishProduct->weight;
             }
 
             $objWorksheet->getCellByColumnAndRow(0, $key + 5)->setValue('ВЫХОД на 1 порцию');
-            $objWorksheet->getCellByColumnAndRow(3, $key + 5)->setValue((new Weight())->convert($weight, Weight::UNIT_KG));
+            $objWorksheet->getCellByColumnAndRow(3, $key + 5)->setValue((new Weight())->convert($weight, Weight::UNIT_GR));
             $objWorksheet->getCellByColumnAndRow(0, $key + 6)->setValue('ВЫХОД');
             $objWorksheet->getCellByColumnAndRow(1, $key + 6)->setValue('Ккал');
             $objWorksheet->getCellByColumnAndRow(2, $key + 6)->setValue('Белки, г');
             $objWorksheet->getCellByColumnAndRow(3, $key + 6)->setValue('Жиры, г');
             $objWorksheet->getCellByColumnAndRow(4, $key + 6)->setValue('Углеводы, г');
             $objWorksheet->getCellByColumnAndRow(0, $key + 7)->setValue('Информация о пищевой ценности на 1 порцию');
-            $objWorksheet->getCellByColumnAndRow(1, $key + 7)->setValue($dish->getKkalFoodValue());
-            $objWorksheet->getCellByColumnAndRow(2, $key + 7)->setValue($dish->getProteinsFoodValue());
-            $objWorksheet->getCellByColumnAndRow(3, $key + 7)->setValue($dish->getFatFoodValue());
-            $objWorksheet->getCellByColumnAndRow(4, $key + 7)->setValue($dish->getCarbohydratesFoodValue());
+            $objWorksheet->getCellByColumnAndRow(1, $key + 7)->setValue($dish->kkal);
+            $objWorksheet->getCellByColumnAndRow(2, $key + 7)->setValue($dish->proteins);
+            $objWorksheet->getCellByColumnAndRow(3, $key + 7)->setValue($dish->fat);
+            $objWorksheet->getCellByColumnAndRow(4, $key + 7)->setValue($dish->carbohydrates);
             $objWorksheet->getCellByColumnAndRow(0, $key + 8)->setValue('% содержания ');
 
             $objWorksheet->getStyle('A' . 4 . ':J' . ($key + 8))->applyFromArray($this->borderAll);
@@ -460,6 +463,20 @@ class Excel
         $objWorksheet->getCellByColumnAndRow(0, 2)->setValue($params['date'] ?? '');
 
         $objWorksheet->getStyle('A1:G1')->applyFromArray($this->fillGreen);
+
+        return true;
+    }
+
+    /**
+     * @param iterable $customerSheet
+     * @param array $params
+     * @return bool
+     * @throws \PHPExcel_Exception
+     */
+    public function prepareCustomerSheet(iterable $customerSheet, array $params): bool
+    {
+        $objWorksheet = $this->fileName->getActiveSheet();
+        $objWorksheet->setTitle('Лист покупателя');
 
         return true;
     }

@@ -2,6 +2,7 @@
 
 namespace app\models\Search;
 
+use app\models\Helper\Phone;
 use app\models\Repository\Franchise as Repository;
 use app\widgets\Grid\CheckboxColumn;
 use kartik\daterange\DateRangePicker;
@@ -23,7 +24,7 @@ class Franchise extends Repository
     {
         return [
             [['id'], 'integer'],
-            [['name'], 'string'],
+            [['name', 'phone'], 'string'],
         ];
     }
 
@@ -133,6 +134,14 @@ class Franchise extends Repository
         $result['name'] = [
             'attribute' => 'name',
             'label'     => \Yii::t('franchise', 'Name'),
+        ];
+
+        $result['phone'] = [
+            'attribute' => 'phone',
+            'label'     => \Yii::t('franchise', 'Phone'),
+            'content'   => function (\app\models\Repository\Franchise $model){
+                return !empty($model->phone) ? (new Phone($model->phone))->getHumanView() : '---';
+            }
         ];
 
         return $result;
