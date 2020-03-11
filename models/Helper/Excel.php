@@ -1,6 +1,7 @@
 <?php declare(strict_types = 1);
 namespace app\models\Helper;
 
+use app\models\Common\CustomerSheet;
 use app\models\Common\MarriageDish;
 use app\models\Common\Route;
 use app\models\Repository\Dish;
@@ -468,16 +469,24 @@ class Excel
     }
 
     /**
-     * @param iterable $customerSheet
+     * @param CustomerSheet[] $customerSheets
      * @param array $params
      * @return bool
      * @throws \PHPExcel_Exception
      */
-    public function prepareCustomerSheet(iterable $customerSheet, array $params): bool
+    public function prepareCustomerSheet(iterable $customerSheets, array $params): bool
     {
-        $objWorksheet = $this->fileName->getActiveSheet();
-        $objWorksheet->setTitle('Лист покупателя');
+        foreach ($customerSheets as $key => $sheet) {
+            if (!$key) {
+                $objWorksheet = $this->fileName->getActiveSheet();
+            } else {
+                $objWorksheet = $this->fileName->createSheet();
+            }
 
+            $objWorksheet->setTitle('Лист покупателя: ' . $sheet->getFio());
+
+            // TODO сделать заполнение файла
+        }
         return true;
     }
 

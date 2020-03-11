@@ -2,6 +2,7 @@
 
 namespace app\models\Repository;
 
+use app\models\Common\CustomerSheet;
 use app\models\Common\Route;
 use app\models\Helper\Status;
 use app\models\Queries\OrderQuery;
@@ -29,6 +30,7 @@ use yii\helpers\ArrayHelper;
  * @property int $updated_at
  *
  * @property Customer $customer
+ * @property Franchise $franchise
  * @property Subscription $subscription
  * @property Address $address
  * @property PaymentType $payment
@@ -166,6 +168,14 @@ class Order extends \yii\db\ActiveRecord
     public function getCustomer()
     {
         return $this->hasOne(Customer::class, ['id' => 'customer_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getFranchise()
+    {
+        return $this->hasOne(Franchise::class, ['id' => 'franchise_id']);
     }
 
     /**
@@ -582,15 +592,6 @@ class Order extends \yii\db\ActiveRecord
 
     /**
      * @param string $date
-     * @return array
-     */
-    public function getCustomerSheetByDate(string $date): array
-    {
-        return [];
-    }
-
-    /**
-     * @param string $date
      * @return bool
      */
     public function isNeedPaymentForDate(string $date): bool
@@ -606,6 +607,62 @@ class Order extends \yii\db\ActiveRecord
         }
 
         return false;
+    }
+
+    /**
+     * @param array $dates
+     * @return array
+     */
+    public function getCustomerSheetsByDate(array $dates): array
+    {
+        $result = [];
+
+        foreach ($dates as $date) {
+            $daySchedule = null;
+            foreach ($this->schedules as $schedule) {
+                if ($schedule->date === $date) {
+                    $daySchedule = $schedule;
+                    break;
+                }
+            }
+
+            if ($daySchedule === null) {
+                return [];
+            }
+
+            $dishes = [];
+            $manufacturedAt = 0;
+            foreach ($daySchedule->dishes as $scheduleDish) {
+                $dishes[] = $scheduleDish->dish;
+                if ($scheduleDish->manufactured_at > $manufacturedAt) {
+                    $manufacturedAt = $scheduleDish->manufactured_at;
+                }
+            }
+
+            $dayBalance = OrderSchedule::find()
+                ->where(['status' => OrderSchedule::EDITABLE_STATUSES])
+                ->andWhere(['order_id' => $this->id])
+                ->count();
+
+            $customerSheet = (new CustomerSheet())
+                ->setFio($this->customer->fio)
+                ->setPhone($this->customer->phone)
+                ->setAddress($this->address->full_address)
+                ->setFranchise($this->franchise)
+                ->setManufacturedAt($manufacturedAt)
+                ->setCutlery($this->cutlery)
+                ->setSubscriptionId($this->subscription_id)
+                ->setSubscriptionName($this->subscription->name)
+                ->setSubscriptionDayCount($this->count)
+                ->setSubscriptionDayBalance($dayBalance - 1)
+                ->setExceptions($this->getExceptionList())
+                ->setDeliveryTime($daySchedule->interval)
+                ->setDishes($dishes);
+
+            $result[] = $customerSheet;
+        }
+
+        return $result;
     }
 
     /**

@@ -482,7 +482,8 @@ class OrderController extends BaseController
                     'success' => false
                 ];
             }
-            $customerSheet = (new \app\models\Repository\Order())->getCustomerSheetByDate($date->date);
+            $customerSheet = $date->order->getCustomerSheetsByDate([$date->date]);
+
             $excel = new Excel();
             $excel->loadFromTemplate('files/templates/base.xlsx');
             $excel->prepare($customerSheet, Excel::MODEL_CUSTOMER_SHEET, \Yii::$app->request->post());

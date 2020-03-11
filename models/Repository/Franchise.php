@@ -13,6 +13,7 @@ use yii\behaviors\TimestampBehavior;
  * @property string $name
  * @property int $status
  * @property string $phone
+ * @property string $sertificat_info
  * @property int $created_at
  * @property int $updated_at
  *
@@ -46,11 +47,12 @@ class Franchise extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'exception_id' => \Yii::t('franchise', 'Exception ID'),
-            'id'           => \Yii::t('franchise', 'ID'),
-            'name'         => \Yii::t('franchise', 'Name'),
-            'phone'        => \Yii::t('franchise', 'Phone'),
-            'updated_at'   => \Yii::t('franchise', 'Updated at'),
+            'exception_id'    => \Yii::t('franchise', 'Exception ID'),
+            'id'              => \Yii::t('franchise', 'ID'),
+            'name'            => \Yii::t('franchise', 'Name'),
+            'phone'           => \Yii::t('franchise', 'Phone'),
+            'sertificat_info' => \Yii::t('franchise', 'Sertificat info'),
+            'updated_at'      => \Yii::t('franchise', 'Updated at'),
         ];
     }
 
@@ -65,7 +67,7 @@ class Franchise extends \yii\db\ActiveRecord
             }],
             [['name'], 'required'],
             [['name'], 'string', 'min' => 10],
-            [['phone'], 'string'],
+            [['phone', 'sertificat_info'], 'string'],
             [['name'], 'unique', 'message' => \Yii::t('product', 'This product has already exists')],
 
         ];

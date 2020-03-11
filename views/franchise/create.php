@@ -44,6 +44,11 @@ $this->title = $title;
                         ]
                     ]) ?>
             </div>
+            <div class="col-sm-12">
+                <?= $form->field($model, 'sertificat_info')->textInput([
+                    'class' => 'form-control input-sm'
+                ]); ?>
+            </div>
         </div>
         <div class="row modal-buttons">
             <div class="col-md-6">
