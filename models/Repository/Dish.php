@@ -45,6 +45,11 @@ class Dish extends \yii\db\ActiveRecord
     const INGESTION_TYPE_LUNCH = 3;
     const INGESTION_TYPE_SUPPER = 4;
 
+    const INGESTION_TYPE_BREAKFAST_NAME = 'breakfast';
+    const INGESTION_TYPE_DINNER_NAME = 'dinner';
+    const INGESTION_TYPE_LUNCH_NAME = 'lunch';
+    const INGESTION_TYPE_SUPPER_NAME = 'supper';
+
     private $weightUnitDefault = Weight::UNIT_KG;
 
     /**
@@ -127,8 +132,8 @@ class Dish extends \yii\db\ActiveRecord
     public function getTypes(): array
     {
         return [
-            self::TYPE_FIRST   => \Yii::t('dish', 'First course'),
-            self::TYPE_SECOND  => \Yii::t('dish', 'Second course'),
+            self::TYPE_FIRST  => \Yii::t('dish', 'First course'),
+            self::TYPE_SECOND => \Yii::t('dish', 'Second course'),
 //            self::TYPE_SALAD   => \Yii::t('dish', 'Salad'),
 //            self::TYPE_DESERT  => \Yii::t('dish', 'Dessert'),
 //            self::TYPE_GARNISH => \Yii::t('dish', 'Garnish'),
@@ -249,19 +254,19 @@ class Dish extends \yii\db\ActiveRecord
     }
 
     /**
-     * @param DishProduct[] $dishProducts
-     */
-    public function setDishProducts(array $dishProducts): void
-    {
-        $this->dishProducts = $dishProducts;
-    }
-
-    /**
      * @param string $weightUnitDefault
      */
     public function setWeightUnitDefault(string $weightUnitDefault): void
     {
         $this->weightUnitDefault = $weightUnitDefault;
+    }
+
+    /**
+     * @param DishProduct[] $dishProducts
+     */
+    public function setDishProducts(array $dishProducts): void
+    {
+        $this->dishProducts = $dishProducts;
     }
 
     /**
@@ -271,13 +276,13 @@ class Dish extends \yii\db\ActiveRecord
     public function getIngestionTypeByName(string $name): ?int
     {
         switch ($name) {
-            case 'breakfast':
+            case self::INGESTION_TYPE_BREAKFAST_NAME:
                 return self::INGESTION_TYPE_BREAKFAST;
-            case 'dinner':
+            case self::INGESTION_TYPE_DINNER_NAME:
                 return self::INGESTION_TYPE_DINNER;
-            case 'lunch':
+            case self::INGESTION_TYPE_LUNCH_NAME:
                 return self::INGESTION_TYPE_LUNCH;
-            case 'supper':
+            case self::INGESTION_TYPE_SUPPER_NAME:
                 return self::INGESTION_TYPE_SUPPER;
             default:
                 return null;
@@ -311,6 +316,42 @@ class Dish extends \yii\db\ActiveRecord
             self::INGESTION_TYPE_LUNCH,
             self::INGESTION_TYPE_SUPPER,
         ];
+    }
+
+    /**
+     * @return array
+     */
+    public function getIngestions(): array
+    {
+        return [
+            self::INGESTION_TYPE_BREAKFAST => \Yii::t('dish', self::INGESTION_TYPE_BREAKFAST_NAME),
+            self::INGESTION_TYPE_DINNER    => \Yii::t('dish', self::INGESTION_TYPE_DINNER_NAME),
+            self::INGESTION_TYPE_LUNCH     => \Yii::t('dish', self::INGESTION_TYPE_LUNCH_NAME),
+            self::INGESTION_TYPE_SUPPER    => \Yii::t('dish', self::INGESTION_TYPE_SUPPER_NAME),
+        ];
+    }
+
+    /**
+     * @return array
+     */
+    public function getIngestionList(): array
+    {
+        $ingestions = [];
+
+        if ($this->is_lunch) {
+            $ingestions[] = \Yii::t('dish', self::INGESTION_TYPE_LUNCH_NAME);
+        }
+        if ($this->is_breakfast) {
+            $ingestions[] = \Yii::t('dish', self::INGESTION_TYPE_BREAKFAST_NAME);
+        }
+        if ($this->is_dinner) {
+            $ingestions[] = \Yii::t('dish', self::INGESTION_TYPE_DINNER_NAME);
+        }
+        if ($this->is_supper) {
+            $ingestions[] = \Yii::t('dish', self::INGESTION_TYPE_SUPPER_NAME);
+        }
+
+        return $ingestions;
     }
 
     /**

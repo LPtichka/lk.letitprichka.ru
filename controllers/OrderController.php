@@ -504,7 +504,7 @@ class OrderController extends BaseController
             'routes' => $userSheet,
             'dates'  => $dates,
             'id'  => $orderId,
-            'title'  => \Yii::t('order', 'User sheet'),
+            'title'  => \Yii::t('order', 'Customer sheet'),
         ]);
     }
 

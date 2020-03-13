@@ -365,6 +365,7 @@ class Excel
      * @param Route[]|iterable $routes
      * @param array $params
      * @return bool
+     * @throws \PHPExcel_Exception
      */
     public function prepareRouteSheet(iterable $routes, array $params): bool
     {
@@ -419,6 +420,7 @@ class Excel
      * @param MarriageDish[]|iterable $marriageDish
      * @param array $params
      * @return bool
+     * @throws \PHPExcel_Exception
      */
     public function prepareMarriageSheet(iterable $marriageDish, array $params): bool
     {
@@ -516,8 +518,18 @@ class Excel
             $objWriter->save(dirname(dirname(dirname(__FILE__))) . '/web/' . $this->url);
 
             return true;
-        } catch (\Throwable $e) {
-            return false;
+        } catch (\PHPExcel_Reader_Exception $exception) {
+            \Yii::error([
+                'Не удалось создать файл выгрузки',
+                $exception
+            ]);
+        }  catch (\PHPExcel_Writer_Exception $exception) {
+            \Yii::error([
+                'Не удалось сохранить файл выгрузки',
+                $exception
+            ]);
         }
+
+        return false;
     }
 }

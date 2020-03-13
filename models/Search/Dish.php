@@ -11,6 +11,9 @@ use yii\helpers\Html;
 
 class Dish extends Repository
 {
+    /** @var string */
+    public $ingestion;
+
     public function formName()
     {
         return '';
@@ -23,7 +26,7 @@ class Dish extends Repository
     {
         return [
             [['id', 'fat', 'weight', 'proteins', 'kkal', 'type', 'carbohydrates'], 'integer'],
-            [['name', 'updated_at'], 'string'],
+            [['name', 'updated_at', 'ingestion'], 'string'],
         ];
     }
 
@@ -40,6 +43,21 @@ class Dish extends Repository
         ]);
 
         $this->load($params);
+
+        switch ($this->ingestion) {
+            case self::INGESTION_TYPE_BREAKFAST:
+                $query->andFilterWhere(['is_breakfast' => true]);
+                break;
+            case self::INGESTION_TYPE_DINNER:
+                $query->andFilterWhere(['is_dinner' => true]);
+                break;
+            case self::INGESTION_TYPE_LUNCH:
+                $query->andFilterWhere(['is_lunch' => true]);
+                break;
+            case self::INGESTION_TYPE_SUPPER:
+                $query->andFilterWhere(['is_supper' => true]);
+                break;
+        }
 
         $query->andFilterWhere(['id' => $this->id]);
         $query->andFilterWhere(['type' => $this->type]);
@@ -60,14 +78,6 @@ class Dish extends Repository
         !empty($params['name']) && $dishQuery->filterWhere(['like', 'name', urldecode($params['name'])]);
 
         return $dishQuery->all();
-//        foreach ($dishes as $dish) {
-//            yield [
-//                'id' => $dish['id'],
-//                'name' => $dish['name'],
-//                'created_at' => date('d.m.Y \в H:i', $dish['created_at']),
-//                'updated_at' => date('d.m.Y \в H:i', $dish['updated_at']),
-//            ];
-//        }
     }
 
     /**
@@ -100,6 +110,23 @@ class Dish extends Repository
         $result['name'] = [
             'attribute' => 'name',
             'label' => \Yii::t('dish', 'Name'),
+        ];
+
+        $result['ingestion'] = [
+            'attribute' => 'ingestion',
+            'label' => \Yii::t('dish', 'Ingestion'),
+            'filter'    => Html::tag('div', Html::dropDownList(
+                'ingestion',
+                $searchModel->ingestion,
+                (new Arrays($searchModel->getIngestions()))->getSelectOptions(),
+                ['class' => 'form-control']
+            ),
+                ['class' => 'select_wrapper']
+            ),
+            'content' => function($model) {
+                $ingestionList = $model->getIngestionList();
+                return !empty($ingestionList) ? implode(', ', $ingestionList) : '---';
+            }
         ];
 
         $result['type'] = [

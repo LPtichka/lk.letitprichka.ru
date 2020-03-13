@@ -33,7 +33,7 @@ Pjax::begin([
             <div class="col-md-6">
                 <div class="form-group text-right">
                     <?= Html::a(
-                        \Yii::t('app', 'Cancel'),
+                        '<span>' . \Yii::t('app', 'Cancel') . '</span>',
                         '#',
                         [
                             'class'        => 'btn btn-sm btn-default',
