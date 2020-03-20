@@ -557,6 +557,19 @@ class Order extends \yii\db\ActiveRecord
             OrderException::find()->where(['order_id' => $this->id])->asArray()->all(), 'exception_id'
         );
     }
+    /**
+     * @return array
+     */
+    public function getExceptionNames(): array
+    {
+        $result = [];
+        if (!empty($this->exceptions)) {
+            foreach ($this->exceptions as $exception) {
+                $result[] = $exception->name;
+            }
+        }
+        return $result;
+    }
 
     /**
      * @param string $date
@@ -655,9 +668,13 @@ class Order extends \yii\db\ActiveRecord
                 ->setSubscriptionName($this->subscription->name)
                 ->setSubscriptionDayCount($this->count)
                 ->setSubscriptionDayBalance($dayBalance - 1)
-                ->setExceptions($this->getExceptionList())
+                ->setExceptions($this->getExceptionNames())
                 ->setDeliveryTime($daySchedule->interval)
-                ->setDishes($dishes);
+                ->setDishes($dishes)
+                ->setHasBreakfast($this->subscription->has_breakfast)
+                ->setHasDinner($this->subscription->has_dinner)
+                ->setHasLunch($this->subscription->has_lunch)
+                ->setHasSupper($this->subscription->has_supper);
 
             $result[] = $customerSheet;
         }

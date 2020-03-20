@@ -5,6 +5,8 @@ use app\models\Common\CustomerSheet;
 use app\models\Common\MarriageDish;
 use app\models\Common\Route;
 use app\models\Repository\Dish;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
 class Excel
 {
@@ -47,15 +49,15 @@ class Excel
     /** @var string */
     private $url;
 
-    /** @var \PHPExcel */
+    /** @var Spreadsheet */
     private $fileName;
 
     /** @var array */
     private $borderAll = [
         'borders' => [
             'allborders' => [
-                'style' => \PHPExcel_Style_Border::BORDER_THIN,
-                'color' => ['rgb' => '000000'],
+                'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+                'color' => ['argb' => 'FF000000'],
             ]
         ]
     ];
@@ -63,8 +65,8 @@ class Excel
     /** @var array */
     private $fillGreen = [
         'fill' => [
-            'type'  => \PHPExcel_Style_Fill::FILL_SOLID,
-            'color' => ['rgb' => '39B739'],
+            'fillType'  => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
+            'color' => ['argb' => 'FF39B739'],
         ]
     ];
 
@@ -87,18 +89,17 @@ class Excel
      * Загрузить шаблон файла для дальнейшего наполенения
      *
      * @param string $template
-     * @throws \PHPExcel_Reader_Exception
+     * @throws \PhpOffice\PhpSpreadsheet\Reader\Exception
      */
-    public function loadFromTemplate(string $template)
+    public function loadFromTemplate(string $template): void
     {
-        $this->fileName = \PHPExcel_IOFactory::load(dirname(dirname(dirname(__FILE__))) . '/web/' . $template);
+        $this->fileName = \PhpOffice\PhpSpreadsheet\IOFactory::load((dirname(dirname(dirname(__FILE__))) . '/web/' . $template));
     }
 
     /**
      * Парсинг excel файла
      *
      * @return array
-     * @throws \PHPExcel_Exception
      */
     public function parse(): array
     {
@@ -172,7 +173,7 @@ class Excel
      * @param string $model
      * @param array $params
      * @return bool
-     * @throws \PHPExcel_Exception
+     * @throws \PhpOffice\PhpSpreadsheet\Exception
      */
     public function prepare(iterable $data, string $model, array $params = []): bool
     {
@@ -221,7 +222,7 @@ class Excel
     /**
      * @param Dish[]|iterable $dishes
      * @return bool
-     * @throws \PHPExcel_Exception
+     * @throws \PhpOffice\PhpSpreadsheet\Exception
      */
     public function prepareDish(iterable $dishes): bool
     {
@@ -234,56 +235,59 @@ class Excel
 
             $objWorksheet->setTitle($dish->name);
             $this->makeDishTemplatePage($objWorksheet, 1);
-            $objWorksheet->getCellByColumnAndRow(0, 1)->setValue($dish->name);
+            $objWorksheet->getCellByColumnAndRow(1, 1)->setValue($dish->name);
             $productCount = count($dish->dishProducts);
 
-            $objWorksheet->getCellByColumnAndRow(9, 4)->setValue('Технология приготовления:');
+            $objWorksheet->getCellByColumnAndRow(10, 4)->setValue('Технология приготовления:');
 
             $lastCell = 4 + $productCount;
             $objWorksheet->mergeCells("J5:J" . $lastCell);
             $objWorksheet->mergeCells("J" . ($lastCell + 2) . ":J" . ($lastCell + 3));
-            $objWorksheet->getCellByColumnAndRow(0, 1)->setValue($dish->name);
+            $objWorksheet->getCellByColumnAndRow(1, 1)->setValue($dish->name);
 
             $objWorksheet->getColumnDimension('J')->setWidth(50);
-            $objWorksheet->getCellByColumnAndRow(9, 5)->setValue($dish->process);
-            $objWorksheet->getCellByColumnAndRow(9, $lastCell + 1)->setValue('Условия и сроки хранения:');
-            $objWorksheet->getCellByColumnAndRow(9, $lastCell + 2)->setValue($dish->storage_condition);
+            $objWorksheet->getCellByColumnAndRow(10, 5)->setValue($dish->process);
+            $objWorksheet->getCellByColumnAndRow(10, $lastCell + 1)->setValue('Условия и сроки хранения:');
+            $objWorksheet->getCellByColumnAndRow(10, $lastCell + 2)->setValue($dish->storage_condition);
 
             $weight = 0;
             foreach ($dish->dishProducts as $key => $dishProduct) {
-                $objWorksheet->getCellByColumnAndRow(0, $key + 4)->setValue($dishProduct->name);
-                $objWorksheet->getCellByColumnAndRow(1, $key + 4)->setValue((new Weight())->convert($dishProduct->brutto, Weight::UNIT_GR));
-                $objWorksheet->getCellByColumnAndRow(2, $key + 4)->setValue((new Weight())->convert($dishProduct->netto, Weight::UNIT_GR));
-                $objWorksheet->getCellByColumnAndRow(3, $key + 4)->setValue((new Weight())->convert($dishProduct->weight, Weight::UNIT_GR));
-//                $objWorksheet->getCellByColumnAndRow(4, $key + 4)->setValue((new Weight())->convert($dishProduct->brutto_on_1_kg, Weight::UNIT_KG));
-//                $objWorksheet->getCellByColumnAndRow(5, $key + 4)->setValue($dishProduct->kkal);
-//                $objWorksheet->getCellByColumnAndRow(6, $key + 4)->setValue($dishProduct->proteins);
-//                $objWorksheet->getCellByColumnAndRow(7, $key + 4)->setValue($dishProduct->fat);
-//                $objWorksheet->getCellByColumnAndRow(8, $key + 4)->setValue($dishProduct->carbohydrates);
-
+                $objWorksheet->getCellByColumnAndRow(1, $key + 4)->setValue($dishProduct->name);
+                $objWorksheet->getCellByColumnAndRow(2, $key + 4)->setValue((new Weight())->convert($dishProduct->brutto, Weight::UNIT_GR));
+                $objWorksheet->getCellByColumnAndRow(3, $key + 4)->setValue((new Weight())->convert($dishProduct->netto, Weight::UNIT_GR));
+                $objWorksheet->getCellByColumnAndRow(4, $key + 4)->setValue((new Weight())->convert($dishProduct->weight, Weight::UNIT_GR));
                 $weight += $dishProduct->weight;
             }
 
-            $objWorksheet->getCellByColumnAndRow(0, $key + 5)->setValue('ВЫХОД на 1 порцию');
-            $objWorksheet->getCellByColumnAndRow(3, $key + 5)->setValue((new Weight())->convert($weight, Weight::UNIT_GR));
-            $objWorksheet->getCellByColumnAndRow(0, $key + 6)->setValue('ВЫХОД');
-            $objWorksheet->getCellByColumnAndRow(1, $key + 6)->setValue('Ккал');
-            $objWorksheet->getCellByColumnAndRow(2, $key + 6)->setValue('Белки, г');
-            $objWorksheet->getCellByColumnAndRow(3, $key + 6)->setValue('Жиры, г');
-            $objWorksheet->getCellByColumnAndRow(4, $key + 6)->setValue('Углеводы, г');
-            $objWorksheet->getCellByColumnAndRow(0, $key + 7)->setValue('Информация о пищевой ценности на 1 порцию');
-            $objWorksheet->getCellByColumnAndRow(1, $key + 7)->setValue($dish->kkal);
-            $objWorksheet->getCellByColumnAndRow(2, $key + 7)->setValue($dish->proteins);
-            $objWorksheet->getCellByColumnAndRow(3, $key + 7)->setValue($dish->fat);
-            $objWorksheet->getCellByColumnAndRow(4, $key + 7)->setValue($dish->carbohydrates);
-            $objWorksheet->getCellByColumnAndRow(0, $key + 8)->setValue('% содержания ');
+            $objWorksheet->getCellByColumnAndRow(1, $key + 5)->setValue('ВЫХОД на 1 порцию');
+            $objWorksheet->getCellByColumnAndRow(4, $key + 5)->setValue((new Weight())->convert($weight, Weight::UNIT_GR));
+            $objWorksheet->getCellByColumnAndRow(1, $key + 6)->setValue('ВЫХОД');
+            $objWorksheet->getCellByColumnAndRow(2, $key + 6)->setValue('Ккал');
+            $objWorksheet->getCellByColumnAndRow(3, $key + 6)->setValue('Белки, г');
+            $objWorksheet->getCellByColumnAndRow(4, $key + 6)->setValue('Жиры, г');
+            $objWorksheet->getCellByColumnAndRow(5, $key + 6)->setValue('Углеводы, г');
+            $objWorksheet->getCellByColumnAndRow(1, $key + 7)->setValue('Информация о пищевой ценности на 1 порцию');
+            $objWorksheet->getCellByColumnAndRow(2, $key + 7)->setValue($dish->kkal);
+            $objWorksheet->getCellByColumnAndRow(3, $key + 7)->setValue($dish->proteins);
+            $objWorksheet->getCellByColumnAndRow(4, $key + 7)->setValue($dish->fat);
+            $objWorksheet->getCellByColumnAndRow(5, $key + 7)->setValue($dish->carbohydrates);
+            $objWorksheet->getCellByColumnAndRow(1, $key + 8)->setValue('% содержания ');
 
             $objWorksheet->getStyle('A' . 4 . ':J' . ($key + 8))->applyFromArray($this->borderAll);
             $objWorksheet->getStyle('A' . 4 . ':J' . ($key + 8))
                 ->getAlignment()
-                ->setVertical(\PHPExcel_Style_Alignment::VERTICAL_CENTER)
-                ->setHorizontal(\PHPExcel_Style_Alignment::HORIZONTAL_CENTER)
+                ->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER)
+                ->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER)
                 ->setWrapText(true);
+            $objWorksheet->getStyle('A1')
+                ->getFill()
+                ->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
+                ->getStartColor()
+                ->setARGB('FFFFFF00');
+            $objWorksheet->getStyle('A' . 1 . ':J' . ($key + 8))
+                ->getBorders()
+                ->getAllBorders()
+                ->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
 
             $highestRow = $objWorksheet->getHighestRow();
             for ($i = 1; $i <= $highestRow; $i++) {
@@ -294,28 +298,28 @@ class Excel
     }
 
     /**
-     * @param \PHPExcel_Worksheet $objWorksheet
+     * @param Worksheet $objWorksheet
      * @param int $row
-     * @throws \PHPExcel_Exception
+     * @throws \PhpOffice\PhpSpreadsheet\Exception
      */
-    private function makeDishTemplatePage(\PHPExcel_Worksheet $objWorksheet, int $row): void
+    private function makeDishTemplatePage(Worksheet $objWorksheet, int $row): void
     {
         $objWorksheet->mergeCells('A' . $row . ':J' . $row);
 
         $columnWidths = [
-            0 => 25,
             1 => 25,
             2 => 25,
             3 => 25,
             4 => 25,
-            5 => 10,
+            5 => 25,
             6 => 10,
             7 => 10,
             8 => 10,
-            9 => 50,
+            9 => 10,
+            10 => 50,
         ];
 
-        for ($i = 0; $i < 10; $i++) {
+        for ($i = 1; $i <= 10; $i++) {
             $objWorksheet->getColumnDimensionByColumn($i)->setWidth($columnWidths[$i]);
         }
 
@@ -323,13 +327,13 @@ class Excel
         $objWorksheet->getStyle('A' . $row . ':J' . ($row + 2))->getFont()->setSize(12)->setBold(true);
         $objWorksheet->getStyle('A' . $row . ':J' . ($row + 2))
             ->getAlignment()
-            ->setVertical(\PHPExcel_Style_Alignment::VERTICAL_CENTER)
-            ->setHorizontal(\PHPExcel_Style_Alignment::HORIZONTAL_CENTER)
+            ->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER)
+            ->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER)
             ->setWrapText(true);
 
         $objWorksheet->getStyle('A' . $row)->applyFromArray([
             'fill' => [
-                'type'  => \PHPExcel_Style_Fill::FILL_SOLID,
+                'type'  => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
                 'color' => ['rgb' => 'f1ee3b']
             ]
         ]);
@@ -365,7 +369,7 @@ class Excel
      * @param Route[]|iterable $routes
      * @param array $params
      * @return bool
-     * @throws \PHPExcel_Exception
+     * @throws \PhpOffice\PhpSpreadsheet\Exception
      */
     public function prepareRouteSheet(iterable $routes, array $params): bool
     {
@@ -420,7 +424,7 @@ class Excel
      * @param MarriageDish[]|iterable $marriageDish
      * @param array $params
      * @return bool
-     * @throws \PHPExcel_Exception
+     * @throws \PhpOffice\PhpSpreadsheet\Exception
      */
     public function prepareMarriageSheet(iterable $marriageDish, array $params): bool
     {
@@ -474,7 +478,7 @@ class Excel
      * @param CustomerSheet[] $customerSheets
      * @param array $params
      * @return bool
-     * @throws \PHPExcel_Exception
+     * @throws \PhpOffice\PhpSpreadsheet\Exception
      */
     public function prepareCustomerSheet(iterable $customerSheets, array $params): bool
     {
@@ -485,11 +489,169 @@ class Excel
                 $objWorksheet = $this->fileName->createSheet();
             }
 
-            $objWorksheet->setTitle('Лист покупателя: ' . $sheet->getFio());
+            $columnWidths = [
+                1 => 25,
+                2 => 40,
+                3 => 40,
+                4 => 10,
+                5 => 10,
+                6 => 10,
+                7 => 10,
+                8 => 40,
+            ];
 
-            // TODO сделать заполнение файла
+            for ($i = 1; $i <= 8; $i++) {
+                $objWorksheet->getColumnDimensionByColumn($i)->setWidth($columnWidths[$i]);
+            }
+
+            $objWorksheet->setTitle($sheet->getFio());
+
+            $objWorksheet->getCellByColumnAndRow(1, 1)->setValue('Покупатель:');
+            $objWorksheet->getCellByColumnAndRow(2, 1)->setValue($sheet->getFio());
+            $objWorksheet->getCellByColumnAndRow(3, 1)->setValue($sheet->getPhone());
+
+            $objWorksheet->getCellByColumnAndRow(1, 2)->setValue('Тип рациона:');
+            $objWorksheet->getCellByColumnAndRow(2, 2)->setValue($sheet->getSubscriptionName());
+
+            $objWorksheet->getCellByColumnAndRow(1, 3)->setValue('Исключения:');
+            $objWorksheet->getCellByColumnAndRow(2, 3)->setValue(implode(', ', $sheet->getExceptions()));
+
+            $objWorksheet->getCellByColumnAndRow(1, 4)->setValue('Адрес:');
+            $objWorksheet->getCellByColumnAndRow(2, 4)->setValue($sheet->getAddress());
+            $objWorksheet->getCellByColumnAndRow(3, 4)->setValue($sheet->getAddressComment() ?? '');
+
+            $objWorksheet->getCellByColumnAndRow(1, 5)->setValue('Время доставки:');
+            $objWorksheet->getCellByColumnAndRow(2, 5)->setValue($sheet->getDeliveryTime());
+
+            $objWorksheet->getCellByColumnAndRow(1, 6)->setValue('Подписка (дней):');
+            $objWorksheet->getCellByColumnAndRow(2, 6)->setValue($sheet->getSubscriptionDayCount());
+            $objWorksheet->getCellByColumnAndRow(3, 6)->setValue('Остаток дней по подписке:');
+            $objWorksheet->getCellByColumnAndRow(4, 6)->setValue($sheet->getSubscriptionDayBalance());
+
+            $objWorksheet->getCellByColumnAndRow(1, 7)->setValue('Приборы:');
+            $culteryText = $sheet->getCutlery() ? $sheet->getCutlery() : 'Нет (пожалуйста, сообщите нам, если Вам понадобятся приборы)';
+            $objWorksheet->getCellByColumnAndRow(2, 7)->setValue($culteryText);
+
+            $objWorksheet->getCellByColumnAndRow(1, 9)->setValue('Изготовитель:');
+            $objWorksheet->getCellByColumnAndRow(2, 9)->setValue($sheet->getFranchise()->name);
+            $objWorksheet->getCellByColumnAndRow(3, 9)->setValue((new Phone($sheet->getFranchise()->phone))->getHumanView());
+
+            $objWorksheet->getCellByColumnAndRow(1, 10)->setValue('Изготовлено и упаковано:');
+            $objWorksheet->getCellByColumnAndRow(2, 10)->setValue(date('H:i', $sheet->getManufacturedAt()));
+            $objWorksheet->getCellByColumnAndRow(3, 10)->setValue(date('d.m.Y', $sheet->getManufacturedAt()));
+
+            $objWorksheet->getCellByColumnAndRow(1, 11)->setValue('Условия хранения:');
+            $objWorksheet->getCellByColumnAndRow(2, 11)->setValue('-');
+            $objWorksheet->getCellByColumnAndRow(3, 11)->setValue($sheet->getFranchise()->sertificat_info);
+
+            $objWorksheet->mergeCells('A13:D13');
+
+            $objWorksheet->getCellByColumnAndRow(1, 13)->setValue("ВАЖНО: Мы используем органическую 100% био-разлагаемую упаковку: ланчбоксы выполнены из сахарного тростника. Они могут незначительно намокать, впитывая влагу блюда, что не сказывается на его качестве - надеемся на Ваше понимание, ведь так мы вместе минимизируем количество пластиковых отходов. Также мы будем признательны, если Вы проинформируете нас в случае, если Вам не нужны столовые приборы - так мы вместе сократим количество отходов.");
+            $objWorksheet->getRowDimension(13)->setRowHeight(70);
+            $objWorksheet->getCellByColumnAndRow(1, 14)->setValue('');
+            $objWorksheet->getCellByColumnAndRow(2, 14)->setValue('Блюдо');
+            $objWorksheet->getCellByColumnAndRow(3, 14)->setValue('Состав, выход (гр)');
+            $objWorksheet->getCellByColumnAndRow(4, 14)->setValue('К');
+            $objWorksheet->getCellByColumnAndRow(5, 14)->setValue('Б');
+            $objWorksheet->getCellByColumnAndRow(6, 14)->setValue('Ж');
+            $objWorksheet->getCellByColumnAndRow(7, 14)->setValue('У');
+            $objWorksheet->getCellByColumnAndRow(8, 14)->setValue('Комментарии');
+
+            $lastID = 15;
+            if ($sheet->isHasBreakfast()) {
+                foreach ($sheet->getDishes() as $dish) {
+                    if ($dish->is_breakfast) {
+                        $this->setDishToCustomerSheet($objWorksheet, $dish, $lastID, Dish::INGESTION_TYPE_BREAKFAST_NAME);
+                        $lastID++;
+                    }
+                }
+            }
+            if ($sheet->isHasDinner()) {
+                foreach ($sheet->getDishes() as $dish) {
+                    if ($dish->is_dinner) {
+                        $this->setDishToCustomerSheet($objWorksheet, $dish, $lastID, Dish::INGESTION_TYPE_DINNER_NAME);
+                        $lastID++;
+                    }
+                }
+            }
+            if ($sheet->isHasLunch()) {
+                foreach ($sheet->getDishes() as $dish) {
+                    if ($dish->is_lunch) {
+                        $this->setDishToCustomerSheet($objWorksheet, $dish, $lastID, Dish::INGESTION_TYPE_LUNCH_NAME);
+                        $lastID++;
+                    }
+                }
+            }
+            if ($sheet->isHasSupper()) {
+                foreach ($sheet->getDishes() as $dish) {
+                    if ($dish->is_supper) {
+                        $this->setDishToCustomerSheet($objWorksheet, $dish, $lastID, Dish::INGESTION_TYPE_SUPPER_NAME);
+                        $lastID++;
+                    }
+                }
+            }
+
+            $objWorksheet->getStyle('A' . 1 . ':H' . $lastID)
+                ->getAlignment()
+                ->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER)
+                ->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER)
+                ->setWrapText(true);
+
+            $objWorksheet->getStyle('A13:D13')
+                ->getAlignment()
+                ->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP)
+                ->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT)
+                ->setWrapText(true);
+
+            $objWorksheet->getStyle('A' . 1 . ':D' . 11)
+                ->getBorders()
+                ->getAllBorders()
+                ->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
+
+            $objWorksheet->getStyle('A' . 14 . ':H' . 14)
+                ->getFill()
+                ->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
+                ->getStartColor()
+                ->setARGB('FFD2D2D2');
+
+            $objWorksheet->getRowDimension(8)->setRowHeight(10);
+            $objWorksheet->getStyle('A' . 8 . ':D' . 8)
+                ->getFill()
+                ->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
+                ->getStartColor()
+                ->setARGB('FFD2D2D2');
+
+            $objWorksheet->getStyle('A' . 14 . ':H' . $lastID)
+                ->getBorders()
+                ->getAllBorders()
+                ->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
+
+            $objWorksheet->getCellByColumnAndRow(4, $lastID)->setValue($sheet->getTotalKkal());
+            $objWorksheet->getCellByColumnAndRow(5, $lastID)->setValue($sheet->getTotalProteins());
+            $objWorksheet->getCellByColumnAndRow(6, $lastID)->setValue($sheet->getTotalFat());
+            $objWorksheet->getCellByColumnAndRow(7, $lastID)->setValue($sheet->getTotalCarbohydrates());
+
         }
         return true;
+    }
+
+    /**
+     * @param Worksheet $objWorksheet
+     * @param Dish $dish
+     * @param int $lastID
+     * @param string $ingestionName
+     * @throws \PhpOffice\PhpSpreadsheet\Exception
+     */
+    private function setDishToCustomerSheet($objWorksheet, $dish, $lastID, $ingestionName): void
+    {
+        $objWorksheet->getCellByColumnAndRow(1, $lastID)->setValue(\Yii::t('dish', $ingestionName));
+        $objWorksheet->getCellByColumnAndRow(2, $lastID)->setValue($dish->name);
+        $objWorksheet->getCellByColumnAndRow(3, $lastID)->setValue(implode(', ', $dish->getComposition()) . ', ' . $dish->weight . 'г.');
+        $objWorksheet->getCellByColumnAndRow(4, $lastID)->setValue($dish->kkal);
+        $objWorksheet->getCellByColumnAndRow(5, $lastID)->setValue($dish->proteins);
+        $objWorksheet->getCellByColumnAndRow(6, $lastID)->setValue($dish->fat);
+        $objWorksheet->getCellByColumnAndRow(7, $lastID)->setValue($dish->carbohydrates);
+        $objWorksheet->getCellByColumnAndRow(8, $lastID)->setValue('');
     }
 
     /**
@@ -506,11 +668,12 @@ class Excel
      * @param string $name
      * @param string $path
      * @return bool
+     * @throws \PhpOffice\PhpSpreadsheet\Writer\Exception
      */
     public function save(string $name, string $path = ''): bool
     {
         try {
-            $objWriter = \PHPExcel_IOFactory::createWriter($this->fileName, 'Excel2007');
+            $objWriter = \PhpOffice\PhpSpreadsheet\IOFactory::createWriter($this->fileName, 'Xlsx');
             if (!file_exists(dirname(dirname(dirname(__FILE__))) . '/web/' . $path)) {
                 mkdir(dirname(dirname(dirname(__FILE__))) . '/web/' . $path, 0777, true);
             }
@@ -518,12 +681,12 @@ class Excel
             $objWriter->save(dirname(dirname(dirname(__FILE__))) . '/web/' . $this->url);
 
             return true;
-        } catch (\PHPExcel_Reader_Exception $exception) {
+        } catch (\PhpOffice\PhpSpreadsheet\Reader\Exception $exception) {
             \Yii::error([
                 'Не удалось создать файл выгрузки',
                 $exception
             ]);
-        }  catch (\PHPExcel_Writer_Exception $exception) {
+        }  catch (\PhpOffice\PhpSpreadsheet\Writer\Exception $exception) {
             \Yii::error([
                 'Не удалось сохранить файл выгрузки',
                 $exception

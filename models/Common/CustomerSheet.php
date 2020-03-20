@@ -20,6 +20,8 @@ class CustomerSheet extends Model
     /** @var string */
     private $address;
     /** @var string */
+    private $addressComment;
+    /** @var string */
     private $deliveryTime;
     /** @var int */
     private $cutlery;
@@ -39,6 +41,104 @@ class CustomerSheet extends Model
     private $dishes;
     /** @var Franchise */
     private $franchise;
+    /** @var bool */
+    private $hasBreakfast;
+    /** @var bool */
+    private $hasDinner;
+    /** @var bool */
+    private $hasLunch;
+    /** @var bool */
+    private $hasSupper;
+
+    /**
+     * @return bool
+     */
+    public function isHasBreakfast(): bool
+    {
+        return $this->hasBreakfast;
+    }
+
+    /**
+     * @param bool $hasBreakfast
+     * @return CustomerSheet
+     */
+    public function setHasBreakfast(bool $hasBreakfast): CustomerSheet
+    {
+        $this->hasBreakfast = $hasBreakfast;
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isHasDinner(): bool
+    {
+        return $this->hasDinner;
+    }
+
+    /**
+     * @param bool $hasDinner
+     * @return CustomerSheet
+     */
+    public function setHasDinner(bool $hasDinner): CustomerSheet
+    {
+        $this->hasDinner = $hasDinner;
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isHasLunch(): bool
+    {
+        return $this->hasLunch;
+    }
+
+    /**
+     * @param bool $hasLunch
+     * @return CustomerSheet
+     */
+    public function setHasLunch(bool $hasLunch): CustomerSheet
+    {
+        $this->hasLunch = $hasLunch;
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isHasSupper(): bool
+    {
+        return $this->hasSupper;
+    }
+
+    /**
+     * @param bool $hasSupper
+     * @return CustomerSheet
+     */
+    public function setHasSupper(bool $hasSupper): CustomerSheet
+    {
+        $this->hasSupper = $hasSupper;
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getAddressComment(): ?string
+    {
+        return $this->addressComment;
+    }
+
+    /**
+     * @param string $addressComment
+     * @return CustomerSheet
+     */
+    public function setAddressComment(string $addressComment): CustomerSheet
+    {
+        $this->addressComment = $addressComment;
+        return $this;
+    }
 
     /**
      * @param string $fio
@@ -81,10 +181,10 @@ class CustomerSheet extends Model
     }
 
     /**
-     * @param string $cutlery
+     * @param int $cutlery
      * @return CustomerSheet
      */
-    public function setCutlery(string $cutlery): CustomerSheet
+    public function setCutlery(int $cutlery): CustomerSheet
     {
         $this->cutlery = $cutlery;
         return $this;
@@ -183,7 +283,9 @@ class CustomerSheet extends Model
      */
     public function getPhone(): string
     {
-        return $this->phone;
+        return $this->phone
+            ? (new Phone($this->phone))->getHumanView()
+            : '';
     }
 
     /**
@@ -272,5 +374,61 @@ class CustomerSheet extends Model
     public function getFranchise(): Franchise
     {
         return $this->franchise;
+    }
+
+    /**
+     * @return int
+     */
+    public function getTotalKkal(): int
+    {
+        $result = 0;
+
+        foreach ($this->dishes as $dish) {
+            $result += $dish->kkal;
+        }
+
+        return $result;
+    }
+
+    /**
+     * @return int
+     */
+    public function getTotalFat(): int
+    {
+        $result = 0;
+
+        foreach ($this->dishes as $dish) {
+            $result += $dish->fat;
+        }
+
+        return $result;
+    }
+
+    /**
+     * @return int
+     */
+    public function getTotalProteins(): int
+    {
+        $result = 0;
+
+        foreach ($this->dishes as $dish) {
+            $result += $dish->proteins;
+        }
+
+        return $result;
+    }
+
+    /**
+     * @return int
+     */
+    public function getTotalCarbohydrates(): int
+    {
+        $result = 0;
+
+        foreach ($this->dishes as $dish) {
+            $result += $dish->carbohydrates;
+        }
+
+        return $result;
     }
 }

@@ -472,30 +472,20 @@ class OrderController extends BaseController
     public function actionGetCustomerSheet(int $id)
     {
         $userSheet = [];
-
-        if (\Yii::$app->request->post()) {
+        if ($post = \Yii::$app->request->post()) {
             \Yii::$app->response->format = Response::FORMAT_JSON;
-
-            $date = OrderSchedule::find()->where(['id' => \Yii::$app->request->post('schedule_id')])->one();
-            if (!$date) {
-                return [
-                    'success' => false
-                ];
-            }
-            $customerSheet = $date->order->getCustomerSheetsByDate([$date->date]);
-
-            $excel = new Excel();
-            $excel->loadFromTemplate('files/templates/base.xlsx');
-            $excel->prepare($customerSheet, Excel::MODEL_CUSTOMER_SHEET, \Yii::$app->request->post());
-            $excel->save('customer_sheet.xlsx', 'temp');
-
-            return [
-                'url' => $excel->getUrl()
-            ];
+            return $this->generateCustomerSheetFile($post);
         }
 
-        $orderId = ArrayHelper::getValue(OrderSchedule::find()->where(['order_id' => $id])->asArray()->one(), 'order_id');
-        $dates = ArrayHelper::map(OrderSchedule::find()->where(['order_id' => $id])->asArray()->all(), 'id', 'date');
+        $orderId = ArrayHelper::getValue(
+            OrderSchedule::find()->where(['order_id' => $id])->asArray()->one(),
+            'order_id'
+        );
+        $dates   = ArrayHelper::map(
+            OrderSchedule::find()->where(['order_id' => $id])->asArray()->all(),
+            'id',
+            'date'
+        );
         foreach ($dates as $id => $dateValue) {
             $dates[$id] = date('d.m.Y', strtotime($dateValue));
         }
@@ -503,9 +493,41 @@ class OrderController extends BaseController
         return $this->renderAjax('/order/_get_user_sheet', [
             'routes' => $userSheet,
             'dates'  => $dates,
-            'id'  => $orderId,
+            'id'     => $orderId,
             'title'  => \Yii::t('order', 'Customer sheet'),
         ]);
+    }
+
+    /**
+     * @param array $post
+     * @return array
+     */
+    private function generateCustomerSheetFile(array $post): array
+    {
+        $date = OrderSchedule::find()
+            ->where(['id' => $post['schedule_id']])
+            ->one();
+
+        if (!$date) {
+            return ['success' => false];
+        }
+
+        $customerSheet = $date->order->getCustomerSheetsByDate([$date->date]);
+
+        try {
+            $excel = new Excel();
+            $excel->loadFromTemplate('files/templates/base.xlsx');
+            $excel->prepare($customerSheet, Excel::MODEL_CUSTOMER_SHEET, \Yii::$app->request->post());
+            $excel->save('customer_sheet.xlsx', 'temp');
+        } catch (\Exception $e) {
+            \Yii::error($e->getMessage());
+            return ['success' => false];
+        }
+
+        return [
+            'success' => true,
+            'url'     => $excel->getUrl(),
+        ];
     }
 
     /**

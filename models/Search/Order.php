@@ -41,7 +41,7 @@ class Order extends Repository
         $query        = Repository::find();
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
-            'sort'  => ['defaultOrder' => ['id' => SORT_ASC]],
+            'sort'  => ['defaultOrder' => ['id' => SORT_DESC]],
         ]);
 
         /** @var \app\models\User $user */

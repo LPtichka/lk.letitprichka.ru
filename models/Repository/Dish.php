@@ -319,6 +319,8 @@ class Dish extends \yii\db\ActiveRecord
     }
 
     /**
+     * Все возможные рационы блюд
+     *
      * @return array
      */
     public function getIngestions(): array
@@ -332,6 +334,8 @@ class Dish extends \yii\db\ActiveRecord
     }
 
     /**
+     * Список рационов в который входит блюдо
+     *
      * @return array
      */
     public function getIngestionList(): array
@@ -355,6 +359,21 @@ class Dish extends \yii\db\ActiveRecord
     }
 
     /**
+     * Получить состав блюда
+     *
+     * @return array
+     */
+    public function getComposition(): array
+    {
+        $result = [];
+        foreach ($this->dishProducts as $product) {
+            $result[] = $product->name;
+        }
+        return $result;
+    }
+
+    /**
+     * Список ID исключений входящий в состав блюда
      * @return array
      */
     public function getExceptionList(): array

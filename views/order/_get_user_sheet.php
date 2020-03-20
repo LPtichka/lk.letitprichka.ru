@@ -58,7 +58,7 @@ Pjax::begin([
             data: {schedule_id: scheduleId},
             dataType: 'json',
             success: function(data) {
-                window.location.href = data.url;
+                window.location.href = '/' + data.url;
             }
         });
     });

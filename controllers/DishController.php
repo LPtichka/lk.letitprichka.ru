@@ -273,8 +273,6 @@ class DishController extends BaseController
     /**
      * @param int|null $id
      * @return array
-     * @throws \PHPExcel_Exception
-     * @throws \PHPExcel_Reader_Exception
      */
     public function actionExport(int $id = null)
     {
@@ -284,22 +282,29 @@ class DishController extends BaseController
             $dishes = (new Dish())->export(\Yii::$app->request->post());
         }
 
-        $excel = new Excel();
-        $excel->loadFromTemplate('files/templates/base.xlsx');
-        $excel->prepare($dishes, Excel::MODEL_DISH);
-        $excel->save('dish.xlsx', 'temp');
-
         \Yii::$app->response->format = Response::FORMAT_JSON;
+
+        try {
+            $excel = new Excel();
+            $excel->loadFromTemplate('files/templates/base.xlsx');
+            $excel->prepare($dishes, Excel::MODEL_DISH);
+            $excel->save('dish.xlsx', 'temp');
+            return [
+                'success' => true,
+                'url' => $excel->getUrl(),
+            ];
+        } catch (\Exception $e) {
+            \Yii::info($e->getMessage());
+        }
+
         return [
-            'url' => $excel->getUrl(),
+            'success' => false,
         ];
     }
 
     /**
      * @param int|null $id
      * @return array
-     * @throws \PHPExcel_Exception
-     * @throws \PHPExcel_Reader_Exception
      */
     public function actionSearch()
     {
