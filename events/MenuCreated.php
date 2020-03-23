@@ -5,6 +5,7 @@ use app\models\Repository\Menu;
 use app\models\Repository\Order;
 use app\models\Repository\OrderSchedule;
 use app\models\Repository\OrderScheduleDish;
+use app\models\Repository\Subscription;
 use yii\base\Event;
 
 class MenuCreated extends Event
@@ -62,24 +63,26 @@ class MenuCreated extends Event
         $transaction = \Yii::$app->db->beginTransaction();
         foreach ($orderSchedules as $schedule) {
             $order = Order::findOne($schedule['order_id']);
-            foreach ($schedule['dishes'] as $dish) {
-                // Сгенерируем ключ меню
-                $key                = sprintf('%s-%d-%d', $schedule['date'], $dish['ingestion_type'], $dish['type'] ?? 0);
-                $orderExceptionList = $order->getExceptionList();
+            if ($order->subscription_id != Subscription::NO_SUBSCRIPTION_ID) {
+                foreach ($schedule['dishes'] as $dish) {
+                    // Сгенерируем ключ меню
+                    $key                = sprintf('%s-%d-%d', $schedule['date'], $dish['ingestion_type'], $dish['type'] ?? 0);
+                    $orderExceptionList = $order->getExceptionList();
 
-                // В меню должен быть элемент с этим ключом
-                if (!empty($menu[$key])) {
-                    foreach ($menu[$key] as $menuDish) {
-                        $dishException = $menuDish['exception_list'];
-                        $array         = array_intersect($dishException, $orderExceptionList);
-                        // В блюде не должно быть пересекающихся исключений
-                        if (empty($array)) {
-                            $orderScheduleDish          = OrderScheduleDish::findOne($dish['id']);
-                            $orderScheduleDish->dish_id = $menuDish['dish_id'];
-                            $orderScheduleDish->name    = $menuDish['name'];
-                            if (!$orderScheduleDish->save()) {
-                                $transaction->rollBack();
-                                break;
+                    // В меню должен быть элемент с этим ключом
+                    if (!empty($menu[$key])) {
+                        foreach ($menu[$key] as $menuDish) {
+                            $dishException = $menuDish['exception_list'];
+                            $array         = array_intersect($dishException, $orderExceptionList);
+                            // В блюде не должно быть пересекающихся исключений
+                            if (empty($array)) {
+                                $orderScheduleDish          = OrderScheduleDish::findOne($dish['id']);
+                                $orderScheduleDish->dish_id = $menuDish['dish_id'];
+                                $orderScheduleDish->name    = $menuDish['name'];
+                                if (!$orderScheduleDish->save()) {
+                                    $transaction->rollBack();
+                                    break;
+                                }
                             }
                         }
                     }

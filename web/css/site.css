@@ -468,17 +468,30 @@ label input[type="checkbox"] {
 }
 
 .select2-container--krajee .select2-selection--single {
-    height: 30px;
+    height: 30px !important;
+    border-radius: 3px !important;
+    box-shadow: none !important;
+    padding: 6px 24px 6px 10px !important;
 }
 
 .select2-container--krajee .select2-selection--single .select2-selection__arrow {
-    height: 28px;
+    height: 28px !important;
+    border-left: none !important;
+    width: 26px !important;
+}
+
+.select2-container--krajee .select2-selection--single .select2-selection__placeholder {
+    color: #555 !important;
+}
+
+.select2-container--krajee .select2-selection {
+    font-size: 12px !important;
 }
 
 .select2-results__option {
     padding: 4px 10px;
-    font-size: 12px;
-    font-weight: 300;
+    font-size: 12px !important;
+    font-weight: 300 !important;
 }
 
 .select2-container--krajee .select2-selection__clear {
@@ -639,4 +652,47 @@ label input[type="checkbox"] {
     position: relative;
     left: -20px;
     display: inline-block;
+}
+
+.select-block .form-group {
+    position: relative;
+}
+
+select.form-control.input-sm {
+    border-radius: 3px;
+    box-shadow: none;
+    border:1px solid #d2d6de;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    padding: 0 20px 0 10px;
+}
+
+.select-block .form-group:after {
+    border-color: #888 transparent transparent transparent;
+    border-style: solid;
+    border-width: 5px 4px 0 4px;
+    height: 0;
+    right: 10px;
+    margin-left: -4px;
+    margin-top: -2px;
+    position: absolute;
+    top: 40px;
+    width: 0;
+    display: block;
+    content: "";
+}
+
+.datepicker table tr td, .datepicker table tr th {
+    font-size: 12px;
+}
+
+.dish-row {
+    margin-bottom: 15px;
+}
+
+.ui-menu .ui-menu-item-wrapper {
+    padding: 5px 5px 5px 10px !important;
+    color:#555;
+    font-weight: 300;
 }

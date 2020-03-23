@@ -29,7 +29,6 @@ class AppAsset extends AssetBundle
         'js/auto-complete.js',
         'js/common.js',
         'js/payment.js',
-        'js/order.js',
     ];
     public $depends = [
         'yii\web\YiiAsset',

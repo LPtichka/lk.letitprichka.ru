@@ -54,7 +54,7 @@ $selectExp = new JsExpression('function(event, ui) {
 
 <div class="dish-row" id="group-<?= $i ?>">
     <div class="row">
-        <div class="col-sm-3">
+        <div class="col-sm-6">
             <?= AutoComplete::widget([
                 'model'         => $dish,
                 'attribute'     => "[$i]name",
@@ -69,13 +69,13 @@ $selectExp = new JsExpression('function(event, ui) {
                 ],
             ]) ?>
         </div>
-        <div class="col-sm-1">
+        <div class="col-sm-2">
             <?= Html::activeInput('text', $dish, "[$i]count", ['class' => 'form-control input-sm', 'autocomplete' => false]) ?>
         </div>
-        <div class="col-sm-1">
+        <div class="col-sm-2">
             <?= Html::activeInput('text', $dish, "[$i]price", ['class' => 'form-control input-sm', 'autocomplete' => false]) ?>
         </div>
-        <div class="col-sm-1">
+        <div class="col-sm-2">
             <?= Html::activeInput('hidden', $dish, "[$i]dish_id") ?>
             <button class="btn btn-sm btn-default delete-product pull-right" type="button"><i class="fa fa-trash"></i></button>
         </div>

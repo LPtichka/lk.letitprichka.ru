@@ -197,7 +197,7 @@ class ProductController extends BaseController
      */
     public function actionGetRow(int $counter)
     {
-        return $this->renderAjax('/dish/_product', [
+        return $this->renderAjax('/dish/_order_product', [
             'product' => new \app\models\Repository\DishProduct(),
             'i'       => ++$counter,
         ]);

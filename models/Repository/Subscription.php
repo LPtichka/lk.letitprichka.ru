@@ -25,6 +25,8 @@ class Subscription extends \yii\db\ActiveRecord
     const STATUS_ACTIVE = 10;
     const STATUS_DELETED = 0;
 
+    const NO_SUBSCRIPTION_ID = 8;
+
     /** @var boolean */
     public $isTest;
 
@@ -70,6 +72,7 @@ class Subscription extends \yii\db\ActiveRecord
             [['has_breakfast', 'has_dinner', 'has_lunch', 'has_supper'], 'boolean'],
             ['price', 'integer'],
             ['name', 'string'],
+            ['status', 'default', 'value' => self::STATUS_ACTIVE],
         ];
     }
 
@@ -112,6 +115,9 @@ class Subscription extends \yii\db\ActiveRecord
         $discounts = [];
         if (!empty($post['SubscriptionDiscount'])) {
             foreach ($post['SubscriptionDiscount'] as $discount) {
+                if (empty($discount['count'])) {
+                    continue;
+                }
                 $discountModel = new SubscriptionDiscount();
                 if (!$discountModel->load($discount, '')) {
                     return false;

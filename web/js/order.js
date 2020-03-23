@@ -76,10 +76,15 @@ window.getMenuBlock = function ($orderId) {
 };
 
 let orderId = document.getElementById('order-container').getAttribute('data-order-id');
+let dishBlock = $('.dish-block');
+let subscriptionBlock = $('.subscription-block');
+let noSubscriptionId = 8;
 if (orderId) {
     // window.getAddressBlock();
     // window.getExceptionBlock();
     window.getMenuBlock(orderId);
+} else {
+    dishBlock.hide();
 }
 
 $('body').delegate('[name="Order[address_id]"]', 'change', function () {
@@ -101,12 +106,11 @@ $('body').delegate('[name="Order[address_id]"]', 'change', function () {
 });
 
 $('body').delegate('[name="Order[subscription_id]"]', 'change', function () {
-    let value = $(this).val();
-    if (value === '0') {
-        $('.subscription-block').hide();
-        $('.dish-block').show();
+    if ($(this).val() == noSubscriptionId) {
+        subscriptionBlock.hide();
+        dishBlock.show();
     } else {
-        $('.subscription-block').show();
-        $('.dish-block').hide();
+        subscriptionBlock.show();
+        dishBlock.hide();
     }
 });

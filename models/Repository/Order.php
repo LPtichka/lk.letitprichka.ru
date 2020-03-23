@@ -228,7 +228,7 @@ class Order extends \yii\db\ActiveRecord
     public function build(array $data): bool
     {
         $this->load($data);
-        if (!empty($this->subscription_id)) {
+        if (!empty($this->subscription_id) && $this->subscription_id != Subscription::NO_SUBSCRIPTION_ID) {
             $subscriptionDiscount = SubscriptionDiscount::find()
                 ->where(['subscription_id' => $this->subscription_id])
                 ->andWhere(['<=', 'count', $this->count])
@@ -242,9 +242,7 @@ class Order extends \yii\db\ActiveRecord
             } else {
                 $this->total = $subscriptionDiscount->price;
             }
-
         }
-
 
         if (empty($data['Order']['customer_id']) || !empty($data['Order']['isNewCustomer'])) {
             $customer = new Customer();
@@ -281,8 +279,7 @@ class Order extends \yii\db\ActiveRecord
                 $schedule->address_id = $address->id ?? null;
                 $schedule->order_id   = $this->id;
                 $schedule->interval   = $data['Order']['scheduleInterval'] ?? null;
-                if (empty($this->subscription_id)) {
-
+                if ($this->subscription_id == Subscription::NO_SUBSCRIPTION_ID) {
                     $dishes        = [];
                     $scheduleTotal = 0;
                     foreach ($data['OrderScheduleDish'] as $dishData) {

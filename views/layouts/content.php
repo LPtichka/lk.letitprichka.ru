@@ -3,7 +3,6 @@
 use dmstr\widgets\Alert;
 use yii\bootstrap\Modal;
 use yii\helpers\ArrayHelper;
-use yii\widgets\Breadcrumbs;
 use yii\widgets\Pjax;
 
 ?>

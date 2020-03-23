@@ -336,7 +336,7 @@ class DishController extends BaseController
      */
     public function actionGetRow(int $counter)
     {
-        return $this->renderAjax('/order/_product', [
+        return $this->renderAjax('/order/_order_product', [
             'dish' => new \app\models\Repository\OrderScheduleDish(),
             'i'    => ++$counter,
         ]);
