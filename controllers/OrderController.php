@@ -558,7 +558,7 @@ class OrderController extends BaseController
     }
 
     /**
-     * @param int $orderId
+     * @param int $id
      * @param string $date
      * @return string
      * @throws NotFoundHttpException
@@ -582,15 +582,17 @@ class OrderController extends BaseController
         }
 
         $types     = [];
-        $ingestion = new Ingestion();
-        foreach ($dishes as $dish) {
-            $types[$dish->ingestion_type] = $ingestion->getIngestionName($dish->ingestion_type);
+        if ($order->subscription_id !== Subscription::NO_SUBSCRIPTION_ID) {
+            $ingestion = new Ingestion();
+            foreach ($dishes as $dish) {
+                $types[$dish->ingestion_type] = $ingestion->getIngestionName($dish->ingestion_type);
+            }
         }
 
         return $this->renderAjax('/order/_inventory', [
             'date'           => $date,
             'types'          => $types,
-            'isSubscription' => !empty($order->subscription_id),
+            'isSubscription' => $order->subscription_id !== Subscription::NO_SUBSCRIPTION_ID,
             'dishes'         => $dishes,
         ]);
     }

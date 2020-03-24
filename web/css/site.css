@@ -701,3 +701,30 @@ select.form-control.input-sm {
     color:#555;
     font-weight: 300;
 }
+
+.inventory-row {
+    border-bottom: 1px solid #f2f2f2;
+}
+
+.inventory-row .ingestion-name {
+    text-transform: uppercase;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+.inventory-row .ingestion-content {
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+.ingestion-row {
+    border-bottom: 1px solid #f2f2f2;
+}
+
+.ingestion-row:last-child {
+    border-bottom: none;
+}
+
+.ingestion-block {
+    border-left: 1px solid #f2f2f2;
+}

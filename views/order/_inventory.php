@@ -15,28 +15,28 @@ $this->title = \Yii::t('order', 'Order inventory');
     <h1><?= Html::encode($this->title) ?></h1>
 
     <?php if ($isSubscription): ?>
-        <div class="row">
-            <?php foreach ($types as $key => $type): ?>
-                <div class="col-sm-3">
-                    <span class="text-capitalize"><strong><?= $type; ?></strong></span>
-                </div>
-            <?php endforeach; ?>
-        </div>
-        <hr/>
-        <div class="row">
-            <?php foreach ($types as $key => $type): ?>
-                <div class="col-sm-3">
+
+        <?php foreach ($types as $key => $type): ?>
+            <div class="row inventory-row">
+                <div class="col-sm-3 ingestion-name"><?php echo $type;?></div>
+                <div class="col-sm-9 ingestion-block">
                     <?php foreach ($dishes as $dish): ?>
                         <?php if ($dish->ingestion_type == $key): ?>
-                            <div><?= $dish->dish_id
-                                    ? Html::a($dish->dish->name, ['dish/view', 'id' => $dish->dish_id])
-                                    : \Yii::t('order', 'Not equipped'); ?>
+                            <div class="row ingestion-row">
+                                <div class="col-sm-12 ingestion-content">
+                                    <?php if($dish->dish_id):?>
+                                        <p><?php echo Html::a($dish->dish->name, ['dish/view', 'id' => $dish->dish_id]);?></p>
+                                        <p><?php echo implode(', ', $dish->dish->getComposition()) . ', ' . $dish->dish->weight . 'г.';?></p>
+                                    <?php else:?>
+                                        <?php echo \Yii::t('order', 'Not equipped');?>
+                                    <?php endif;?>
+                                </div>
                             </div>
                         <?php endif; ?>
                     <?php endforeach; ?>
                 </div>
-            <?php endforeach; ?>
-        </div>
+            </div>
+        <?php endforeach;?>
     <?php else: ?>
         <div class="row">
             <div class="col-sm-4"><?= \Yii::t('order', 'Name');?></div>
@@ -54,6 +54,19 @@ $this->title = \Yii::t('order', 'Order inventory');
             </div>
         <?php endforeach; ?>
     <?php endif; ?>
-    <br />
-    <br />
+
+    <div class="row modal-buttons">
+        <div class="col-md-12">
+            <div class="form-group text-right">
+                <?= Html::a(
+                    '<span>' . \Yii::t('app', 'Close') . '</span>',
+                    '#',
+                    [
+                        'class'        => 'btn btn-sm btn-default',
+                        'data-dismiss' => 'modal'
+                    ]
+                ) ?>
+            </div>
+        </div>
+    </div>
 </div>

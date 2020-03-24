@@ -28,7 +28,7 @@ class Order extends Repository
     {
         return [
             [['id', 'total', 'status_id'], 'integer'],
-            [['created_at', 'fio', 'email', 'phone', 'address'], 'string'],
+            [['created_at', 'fio', 'email', 'phone', 'address', 'subscription_id'], 'string'],
         ];
     }
 
@@ -134,13 +134,22 @@ class Order extends Repository
             }
         ];
 
-        $result['address'] = [
-            'attribute' => 'address',
-            'label'     => \Yii::t('order', 'Address'),
+        $result['subscription_id'] = [
+            'attribute' => 'subscription_id',
+            'label'     => \Yii::t('order', 'Subscription'),
             'content'   => function ($model){
-                return $model->address->full_address ?? '---';
+                /** @var \app\models\Repository\Order $model */
+                return $model->subscription->name;
             }
         ];
+
+//        $result['address'] = [
+//            'attribute' => 'address',
+//            'label'     => \Yii::t('order', 'Address'),
+//            'content'   => function ($model){
+//                return $model->address->full_address ?? '---';
+//            }
+//        ];
 
         $result['created_at'] = [
             'attribute'      => 'created_at',
