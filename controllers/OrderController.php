@@ -632,7 +632,6 @@ class OrderController extends BaseController
     }
 
     /**
-     * @param int $ration
      * @return array
      */
     public function actionAddDishForInventory()
