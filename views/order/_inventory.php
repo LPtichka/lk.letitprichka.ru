@@ -5,6 +5,7 @@ use app\widgets\Html;
 /* @var $dishes \app\models\Repository\OrderScheduleDish[] */
 /* @var $isSubscription bool */
 /* @var $types array */
+/* @var $scheduleId int */
 
 $this->title = \Yii::t('order', 'Order inventory');
 
@@ -18,40 +19,54 @@ $this->title = \Yii::t('order', 'Order inventory');
 
         <?php foreach ($types as $key => $type): ?>
             <div class="row inventory-row">
-                <div class="col-sm-3 ingestion-name"><?php echo $type;?></div>
+                <div class="col-sm-3 ingestion-name"><?php echo $type; ?></div>
                 <div class="col-sm-9 ingestion-block">
+                    <?php echo Html::a('+', '#', [
+                        'class' => 'request-dish-to-inventory',
+                        'data-ration' => $key,
+                        'data-schedule-id' => $scheduleId,
+                    ]);?>
                     <?php foreach ($dishes as $dish): ?>
                         <?php if ($dish->ingestion_type == $key): ?>
                             <div class="row ingestion-row">
-                                <div class="col-sm-12 ingestion-content">
-                                    <?php if($dish->dish_id):?>
-                                        <p><?php echo Html::a($dish->dish->name, ['dish/view', 'id' => $dish->dish_id]);?></p>
-                                        <p><?php echo implode(', ', $dish->dish->getComposition()) . ', ' . $dish->dish->weight . 'г.';?></p>
-                                    <?php else:?>
-                                        <?php echo \Yii::t('order', 'Not equipped');?>
-                                    <?php endif;?>
+                                <div class="col-sm-10 ingestion-content">
+                                    <?php if ($dish->dish_id): ?>
+                                        <p>
+                                            <?php echo Html::a($dish->dish->name, ['dish/view', 'id' => $dish->dish_id]); ?>
+                                            <a href="#"
+                                               class="reload-dish"
+                                               data-ration="<?=$key;?>"
+                                               data-dish-id="<?=$dish->dish_id;?>"
+                                               data-schedule-id="<?=$scheduleId;?>"
+                                            ><i class="material-icons">cached</i></a>
+                                        </p>
+                                        <p><?php echo implode(', ', $dish->dish->getComposition()) . ', ' . $dish->dish->weight . 'г.'; ?></p>
+                                    <?php else: ?>
+                                        <?php echo \Yii::t('order', 'Not equipped'); ?>
+                                    <?php endif; ?>
                                 </div>
                             </div>
                         <?php endif; ?>
                     <?php endforeach; ?>
                 </div>
             </div>
-        <?php endforeach;?>
+        <?php endforeach; ?>
     <?php else: ?>
         <div class="row">
-            <div class="col-sm-4"><?= \Yii::t('order', 'Name');?></div>
-            <div class="col-sm-2"><?= \Yii::t('order', 'Quantity');?></div>
-            <div class="col-sm-2"><?= \Yii::t('order', 'Price');?></div>
-            <div class="col-sm-2"><?= \Yii::t('order', 'Total');?></div>
+            <div class="col-sm-4"><label><?= \Yii::t('dish', 'Name'); ?></label></div>
+            <div class="col-sm-2"><label><?= \Yii::t('dish', 'Quantity'); ?></label></div>
+            <div class="col-sm-2"><label><?= \Yii::t('dish', 'Price'); ?></label></div>
+            <div class="col-sm-2"><label><?= \Yii::t('dish', 'Total'); ?></label></div>
         </div>
         <hr/>
         <?php foreach ($dishes as $dish): ?>
             <div class="row">
                 <div class="col-sm-4"><?= $dish->name ?? $dish->dish->name; ?></div>
-                <div class="col-sm-2"><?= $dish->count; ?></div>
-                <div class="col-sm-2"><?= $dish->price; ?></div>
-                <div class="col-sm-2"><?= $dish->price * $dish->count; ?></div>
+                <div class="col-sm-2"><?= $dish->count; ?> шт.</div>
+                <div class="col-sm-2"><?= \Yii::$app->formatter->asCurrency($dish->price ?? 0, 'RUB'); ?></div>
+                <div class="col-sm-2"><?= \Yii::$app->formatter->asCurrency($dish->price * $dish->count ?? 0, 'RUB'); ?></div>
             </div>
+            <hr/>
         <?php endforeach; ?>
     <?php endif; ?>
 

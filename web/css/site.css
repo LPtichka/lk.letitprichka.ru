@@ -298,10 +298,6 @@ hr {
     font-size: 14px;
 }
 
-.exception-row > div {
-    margin-bottom: 15px;
-}
-
 .loading {
     opacity: 0.5;
 }
@@ -717,7 +713,24 @@ select.form-control.input-sm {
     padding-bottom: 10px;
 }
 
+.inventory-row .ingestion-content:hover {
+    opacity: 0.8;
+}
+
+.reload-dish {
+    width: 20px;
+    height: 20px;
+    display: none;
+    background: #FFF;
+    color: #000;
+}
+
+.inventory-row .ingestion-content:hover .reload-dish {
+    display: inline-block;
+}
+
 .ingestion-row {
+    position: relative;
     border-bottom: 1px solid #f2f2f2;
 }
 
@@ -727,4 +740,29 @@ select.form-control.input-sm {
 
 .ingestion-block {
     border-left: 1px solid #f2f2f2;
+}
+
+.request-dish-to-inventory {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    height: 30px;
+    width: 30px;
+    line-height: 30px;
+    text-align: center;
+    color: #FFF;
+    font-size: 18px;
+    background: #3c8dbc;
+    border-radius: 15px;
+    opacity: 0.2;
+    z-index: 999;
+    transition: all 0.3s ease-in;
+}
+
+.request-dish-to-inventory:hover {
+    opacity: 1;
+}
+
+.add-dish-to-inventory {
+    margin-left: 10px;
 }

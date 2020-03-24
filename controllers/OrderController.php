@@ -5,6 +5,7 @@ use app\models\Common\Ingestion;
 use app\models\Helper\Excel;
 use app\models\Repository\Address;
 use app\models\Repository\Customer;
+use app\models\Repository\Dish;
 use app\models\Repository\Exception;
 use app\models\Repository\Franchise;
 use app\models\Repository\OrderSchedule;
@@ -14,6 +15,7 @@ use app\models\Search\Order;
 use app\models\Search\PaymentType;
 use app\models\User;
 use yii\helpers\ArrayHelper;
+use yii\helpers\Url;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
 
@@ -571,8 +573,10 @@ class OrderController extends BaseController
         }
 
         $dishes = [];
+        $scheduleId = 0;
         foreach ($order->schedules as $schedule) {
             if ($schedule->date == $date) {
+                $scheduleId = $schedule->id;
                 $dishes = $schedule->dishes;
             }
         }
@@ -592,8 +596,90 @@ class OrderController extends BaseController
         return $this->renderAjax('/order/_inventory', [
             'date'           => $date,
             'types'          => $types,
+            'scheduleId'          => $scheduleId,
             'isSubscription' => $order->subscription_id !== Subscription::NO_SUBSCRIPTION_ID,
             'dishes'         => $dishes,
         ]);
+    }
+
+    /**
+     * @param int $ration
+     * @return array
+     */
+    public function actionGetDishesForInventory(int $ration)
+    {
+        \Yii::$app->response->format = Response::FORMAT_JSON;
+
+        $dishes = Dish::find();
+        switch ($ration) {
+            case Dish::INGESTION_TYPE_BREAKFAST:
+                $dishes->andWhere(['is_breakfast' => true]);
+                break;
+            case Dish::INGESTION_TYPE_DINNER:
+                $dishes->andWhere(['is_dinner' => true]);
+                break;
+            case Dish::INGESTION_TYPE_LUNCH:
+                $dishes->andWhere(['is_lunch' => true]);
+                break;
+            case Dish::INGESTION_TYPE_SUPPER:
+                $dishes->andWhere(['is_supper' => true]);
+                break;
+        }
+
+        return [
+            'dishes' => ArrayHelper::map($dishes->asArray()->all(), 'id', 'name')
+        ];
+    }
+
+    /**
+     * @param int $ration
+     * @return array
+     */
+    public function actionAddDishForInventory()
+    {
+        \Yii::$app->response->format = Response::FORMAT_JSON;
+        $post = \Yii::$app->request->post();
+        if (!$post) {
+            return [];
+        }
+
+        $dishId = $post['dish_id'];
+        $scheduleId = $post['schedule_id'];
+        $ration = $post['ration'];
+
+        $dish = Dish::findOne($dishId);
+        if (!$dish) {
+            return [];
+        }
+
+        $scheduleDish = new OrderScheduleDish();
+        if (!empty($post['old_dish_id'])) {
+            $scheduleDish = OrderScheduleDish::find()
+                ->where(['order_schedule_id' => $scheduleId])
+                ->andWhere(['dish_id' => $post['old_dish_id']])
+                ->one();
+        }
+
+        $scheduleDish->dish_id = $dish->id;
+        $scheduleDish->order_schedule_id = $scheduleId;
+        $scheduleDish->name = $dish->name;
+        $scheduleDish->count = 1;
+        $scheduleDish->type = $dish->type;
+        $scheduleDish->ingestion_type = $ration;
+
+        if ($scheduleDish->validate() && $scheduleDish->save()) {
+            return [
+                'success' => true,
+                'dish' => [
+                    'href' => Url::to(['dish/view', 'id' => $dish->id]),
+                    'name' => $dish->name,
+                    'description' => implode(', ', $dish->getComposition()) . ', ' . $dish->weight . 'г.',
+                ],
+            ];
+        }
+
+        return [
+            'success' => false
+        ];
     }
 }

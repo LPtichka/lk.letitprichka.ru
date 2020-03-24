@@ -6,6 +6,7 @@ return [
     'Cancel'                        => 'Отменить',
     'Choose element'                => 'Выберите',
     'Choose'                        => 'Выберите',
+    'Close'                         => 'Закрыть',
     'Count'                         => 'Количество',
     'Customers'                     => 'Покупатели',
     'Disabled'                      => 'Заблокированный',

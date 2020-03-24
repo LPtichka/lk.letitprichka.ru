@@ -87,7 +87,90 @@ if (orderId) {
     dishBlock.hide();
 }
 
-$('body').delegate('[name="Order[address_id]"]', 'change', function () {
+body.delegate('.request-dish-to-inventory', 'click', function (e) {
+    e.preventDefault();
+    let ration = $(this).data('ration');
+    let scheduleId = $(this).data('schedule-id');
+    let block = $(this);
+    $.ajax({
+        url: '/order/get-dishes-for-inventory?ration=' + ration,
+        method: 'get',
+        dataType: 'json',
+        success: function (data) {
+
+            let options = '';
+            $.each(data.dishes, function (index, value) {
+                options += '<option value="' + index + '">' + value + '</option>';
+            });
+
+            let dish_request_block = '<div class="row ingestion-row">' +
+                '<div class="col-sm-10 ingestion-content">' +
+                '<select class="input-sm">' + options + '</select>' +
+                '<button class="btn btn-primary add-dish-to-inventory" ' +
+                'data-schedule-id="' + scheduleId + '" ' +
+                'data-old-dish-id="' + 0 + '" ' +
+                'data-ration="' + ration + '">Добавить</button>' +
+                '</div>' +
+                '</div>';
+            block.parent().append(dish_request_block);
+        }
+    });
+});
+
+body.delegate('.reload-dish', 'click', function (e) {
+    e.preventDefault();
+    let ration = $(this).data('ration');
+    let scheduleId = $(this).data('schedule-id');
+    let oldDishId = $(this).data('dish-id');
+    let block = $(this);
+    $.ajax({
+        url: '/order/get-dishes-for-inventory?ration=' + ration,
+        method: 'get',
+        dataType: 'json',
+        success: function (data) {
+
+            let options = '';
+            $.each(data.dishes, function (index, value) {
+                options += '<option value="' + index + '">' + value + '</option>';
+            });
+
+            let dish_request_block = '<div class="col-sm-10 ingestion-content">' +
+                '<select class="input-sm">' + options + '</select>' +
+                '<button class="btn btn-primary add-dish-to-inventory" ' +
+                'data-schedule-id="' + scheduleId + '" ' +
+                'data-old-dish-id="' + oldDishId + '" ' +
+                'data-ration="' + ration + '">Добавить</button>' +
+                '</div>';
+            block.parents('.ingestion-row').html(dish_request_block);
+        }
+    });
+});
+
+body.delegate('.add-dish-to-inventory', 'click', function (e) {
+    e.preventDefault();
+    let ration = $(this).data('ration');
+    let scheduleId = $(this).data('schedule-id');
+    let oldDishId = $(this).data('old-dish-id');
+    let dishId = $(this).parent().find('select').val();
+    let block = $(this).parent();
+
+    $.ajax({
+        url: '/order/add-dish-for-inventory?ration=' + ration,
+        method: 'post',
+        data: {dish_id: dishId, old_dish_id: oldDishId, schedule_id: scheduleId, ration: ration},
+        dataType: 'json',
+        success: function (data) {
+            let html = '';
+            if (data.success) {
+                html += '<p><a href="' + data.dish.href + '">' + data.dish.name + '</a></p>' +
+                    '<p>' + data.dish.description + '</p>';
+                block.html(html);
+            }
+        }
+    });
+});
+
+body.delegate('[name="Order[address_id]"]', 'change', function () {
     let option = $(this).find('option[value="' + $(this).val() + '"]');
 
     $('[name="Address[full_address]"]').val(option.data('full_address'));
@@ -105,7 +188,7 @@ $('body').delegate('[name="Order[address_id]"]', 'change', function () {
     }
 });
 
-$('body').delegate('[name="Order[subscription_id]"]', 'change', function () {
+body.delegate('[name="Order[subscription_id]"]', 'change', function () {
     if ($(this).val() == noSubscriptionId) {
         subscriptionBlock.hide();
         dishBlock.show();
