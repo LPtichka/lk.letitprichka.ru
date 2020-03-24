@@ -215,9 +215,10 @@ class OrderController extends BaseController
             'name'
         );
 
-        return $this->renderAjax('/order/_exception', [
+        return $this->renderAjax('/order/_order_exception', [
             'exception'  => new Exception(),
             'exceptions' => $exceptions,
+            'disabled'   => false,
             'i'          => ++$counter,
         ]);
     }
@@ -278,18 +279,20 @@ class OrderController extends BaseController
         $customer      = Customer::findOne($customerId);
         if ($customer) {
             foreach ($customer->exceptions as $key => $exception) {
-                $exceptionList .= $this->renderPartial('/order/_exception', [
+                $exceptionList .= $this->renderPartial('/order/_order_exception', [
                     'exception'  => $exception,
                     'exceptions' => $exceptions,
+                    'disabled'   => false,
                     'i'          => $key,
                 ]);
             }
         }
 
         if (empty($exceptionList)) {
-            $exceptionList = $this->renderPartial('/order/_exception', [
+            $exceptionList = $this->renderPartial('/order/_order_exception', [
                 'exception'  => new Exception(),
                 'exceptions' => $exceptions,
+                'disabled'   => false,
                 'i'          => 1,
             ]);
         }

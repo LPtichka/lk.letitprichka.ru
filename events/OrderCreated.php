@@ -40,7 +40,8 @@ class OrderCreated extends Event
     public function linkOrderDishes()
     {
         // TODO добавить логирование
-        $order              = Order::findOne($this->orderId);
+        $order = Order::findOne($this->orderId);
+
         $orderExceptionList = $order->getExceptionList();
         if (!$order) {
             return false;
@@ -48,7 +49,7 @@ class OrderCreated extends Event
 
         if ($order->subscription_id != Subscription::NO_SUBSCRIPTION_ID) {
             foreach ($order->schedules as $schedule) {
-                $date = $schedule->date;
+                $date     = $schedule->date;
                 $menuDish = MenuDish::find()->where(['date' => $date])->all();
                 foreach ($menuDish as $mDish) {
                     $dishException  = $mDish->dish->getExceptionList();

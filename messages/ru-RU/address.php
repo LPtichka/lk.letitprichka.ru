@@ -16,4 +16,6 @@ return [
     'Postcode'       => 'Индекс',
     'Street'         => 'Улица',
     'Addresses'      => 'Адреса',
+
+    'Address type was saved successfully'      => ' Адрес успешно сохранен.',
 ];

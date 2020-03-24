@@ -481,7 +481,7 @@ class Order extends \yii\db\ActiveRecord
                 $transaction->rollBack();
                 return false;
             }
-            if (empty($this->subscription_id) && !empty($schedule->dishes)) {
+            if ($this->subscription_id == Subscription::NO_SUBSCRIPTION_ID && !empty($schedule->dishes)) {
                 foreach ($schedule->dishes as $dish) {
                     $dish->order_schedule_id = $schedule->id;
                     if (!$dish->validate() || !$dish->save()) {

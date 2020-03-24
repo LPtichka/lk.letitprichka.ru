@@ -23,7 +23,7 @@ if ($model->id) {
 }
 ?>
 
-<?= $this->render('_buttons', [
+<?= $this->render('_order_buttons', [
     'order' => $model,
 ]); ?>
 <div class="row" id="order-container" data-order-id="<?php echo $model->id; ?>">
@@ -249,7 +249,7 @@ if ($model->id) {
                     <div class="box-body">
                         <div class="exceptions">
                             <?php foreach ($model->exceptions as $i => $exception): ?>
-                                <?= $this->render('_exception', [
+                                <?= $this->render('_order_exception', [
                                     'exceptions' => $exceptions,
                                     'exception'  => $exception,
                                     'disabled'   => !$model->isEditable(),

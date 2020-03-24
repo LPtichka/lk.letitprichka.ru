@@ -13,10 +13,10 @@ use yii\helpers\Url;
 </div>
 <div class="box-body order-menu-block-body">
     <div class="row">
-        <div class="col-sm-2"><?php echo \Yii::t('order', 'Delivery date');?></div>
-        <div class="col-sm-2"><?php echo \Yii::t('order', 'Delivery address');?></div>
-        <div class="col-sm-2"><?php echo \Yii::t('order', 'Delivery interval');?></div>
-        <div class="col-sm-6"><?php echo \Yii::t('order', 'Comment');?></div>
+        <div class="col-sm-2"><label><?php echo \Yii::t('order', 'Delivery date');?></label></div>
+        <div class="col-sm-2"><label><?php echo \Yii::t('order', 'Delivery address');?></label></div>
+        <div class="col-sm-2"><label><?php echo \Yii::t('order', 'Delivery interval');?></label></div>
+        <div class="col-sm-6"><label><?php echo \Yii::t('order', 'Comment');?></label></div>
     </div>
     <hr />
     <?php foreach ($order->schedules as $schedule): ?>
