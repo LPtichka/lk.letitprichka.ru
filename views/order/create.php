@@ -23,9 +23,6 @@ if ($model->id) {
 }
 ?>
 
-<?= $this->render('_order_buttons', [
-    'order' => $model,
-]); ?>
 <div class="row" id="order-container" data-order-id="<?php echo $model->id; ?>">
     <?php $form = ActiveForm::begin(); ?>
     <div class="col-sm-12">
@@ -35,6 +32,11 @@ if ($model->id) {
                 <div class="form-group">
                     <?= Html::submitButton('<i class="material-icons">done</i> ' . Yii::t('app', 'Save'), ['class' => 'btn btn-sm btn-warning']) ?>
                 </div>
+            </div>
+            <div class="col-md-6">
+                <?= $this->render('_order_buttons', [
+                    'order' => $model,
+                ]); ?>
             </div>
         </div>
         <div class="row">
@@ -49,7 +51,7 @@ if ($model->id) {
                                 <div class="row">
                                     <div class="col-sm-8">
                                         <?= $form->field($model, 'customer_id')->widget(Select2::class, [
-                                            'data'          => $customers,
+                                            'data'          => $customers ?? [],
                                             'showToggleAll' => false,
                                             'hideSearch'    => false,
                                             'disabled'      => !$model->isEditable(),
@@ -132,7 +134,7 @@ if ($model->id) {
                                 <hr/>
                                 <div class="row">
                                     <div class="col-sm-8 select-block">
-                                        <?= $form->field($model, 'payment_type')->dropDownList($payments, [
+                                        <?= $form->field($model, 'payment_type')->dropDownList($payments ?? [], [
                                             'class'    => 'form-control input-sm',
                                             'disabled' => !$model->isEditable(),
                                         ]) ?>
@@ -167,7 +169,7 @@ if ($model->id) {
                                     <div class="col-sm-8 select-block">
                                         <div class="form-group">
                                             <label><?= \Yii::t('order', 'Choose address ID'); ?></label>
-                                            <?= Html::activeDropDownList($model, 'address_id', $addresses, [
+                                            <?= Html::activeDropDownList($model, 'address_id', $addresses ?? [], [
                                                 'class'    => 'form-control input-sm',
                                                 'disabled' => !$model->isEditable(),
                                             ]); ?>

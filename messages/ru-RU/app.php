@@ -1,6 +1,7 @@
 <?php
 
 return [
+    'Approve'                       => 'Подтвердить',
     'Active'                        => 'Активный',
     'Addresses'                     => 'Адреса',
     'Cancel'                        => 'Отменить',

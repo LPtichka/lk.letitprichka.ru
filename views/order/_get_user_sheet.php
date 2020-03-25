@@ -15,11 +15,13 @@ Pjax::begin([
         <h1><?= $title; ?></h1>
         <title><?= $title; ?></title>
         <?php $form = ActiveForm::begin(); ?>
-        <div>
-            <label><?= \Yii::t('order', 'Choose date'); ?></label>
-            <?php echo Html::dropDownList('schedule_id', '', $dates, [
-                'class' => 'form-control input-sm'
-            ]); ?>
+        <div class="select-block">
+            <div class="form-group">
+                <label><?= \Yii::t('order', 'Choose date'); ?></label>
+                <?php echo Html::dropDownList('schedule_id', '', $dates ?? [], [
+                    'class' => 'form-control input-sm'
+                ]); ?>
+            </div>
         </div>
         <div class="row modal-buttons">
             <div class="col-md-6">

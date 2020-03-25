@@ -427,10 +427,7 @@ label input[type="checkbox"] {
 }
 
 .order-buttons-block {
-    position: absolute;
-    right: 15px;
-    top: 102px;
-    z-index: 999;
+
 }
 
 #pre-request-modal-buttons {
