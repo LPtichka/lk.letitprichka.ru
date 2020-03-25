@@ -7,7 +7,7 @@ use yii\widgets\Pjax;
 
 /** @var \app\models\Search\Menu $searchModel */
 
-$this->title = \Yii::t('menu', 'Menu');
+$this->title                   = \Yii::t('menu', 'Menu');
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <?php Pjax::begin([
@@ -24,7 +24,8 @@ $this->params['breadcrumbs'][] = $this->title;
                 ) ?>
             </div>
             <div class="pull-right">
-                <?= Html::a(\Yii::t('menu', 'Marriage sheet'),
+                <?= Html::a(
+                    '<span>' . \Yii::t('menu', 'Marriage sheet') . '</span>',
                     ['order/get-route-sheet'],
                     [
                         'class'       => 'btn btn-sm btn-default',
@@ -32,7 +33,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         'data-toggle' => 'modal',
                         'data-target' => '#modal',
                     ]) ?>
-                <?= Html::submitButton('<i class="fa fa-times"></i> ', [
+                <?= Html::submitButton('<i class="material-icons">clear</i>', [
                     'class'      => 'btn btn-sm btn-danger delete',
                     'data-title' => \Yii::t('menu', 'Do you really want to delete selected subscriptions?'),
                     'data-href'  => Url::to(['menu/delete']),
