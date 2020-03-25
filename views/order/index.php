@@ -13,7 +13,6 @@ $this->params['breadcrumbs'][] = $this->title;
 <?php Pjax::begin([
     'id'              => 'order-form',
     'formSelector'    => '#order-form form',
-    'enablePushState' => false,
 ]); ?>
 <div class="box">
     <div class="box-header with-border">

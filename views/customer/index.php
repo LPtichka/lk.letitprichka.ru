@@ -11,8 +11,6 @@ $this->title = \Yii::t('customer', 'Customers');
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <?php Pjax::begin([
-    'enablePushState' => false,
-    'enableReplaceState' => true,
 ]); ?>
 <div class="box">
     <div class="box-header with-border">

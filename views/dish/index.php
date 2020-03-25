@@ -13,7 +13,6 @@ $this->params['breadcrumbs'][] = $this->title;
 <?php Pjax::begin([
     'id'              => 'dish-form',
     'formSelector'    => '#dish-form form',
-    'enablePushState' => false,
 ]); ?>
 <div class="box">
     <div class="box-header with-border">
