@@ -241,6 +241,7 @@ class ProductController extends BaseController
     {
         $products = [];
         $menuList = [];
+        $success  = true;
 
         $menus = Menu::find()->all();
         foreach ($menus as $menu) {
@@ -250,12 +251,22 @@ class ProductController extends BaseController
             );
         }
 
+
         if ($post = \Yii::$app->request->post()) {
             $menuId     = $post['menu_id'];
             $chosenMenu = Menu::findOne($menuId);
-            $products   = $chosenMenu->getProcurementProducts();
+            try {
+                $products = $chosenMenu->getProcurementProducts();
+            } catch (\LogicException $e) {
+                $success = false;
+                $error   = $e->getMessage();
+            }
+
         }
+
         return $this->renderAjax('/product/_procurement_sheet', [
+            'success'  => $success,
+            'error'    => $error ?? null,
             'menus'    => $menuList,
             'menuId'   => \Yii::$app->request->post('menu_id', 0),
             'title'    => \Yii::t('product', 'Procurement sheet'),

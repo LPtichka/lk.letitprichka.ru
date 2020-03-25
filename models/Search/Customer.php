@@ -59,12 +59,12 @@ class Customer extends Repository
     public function export($params): iterable
     {
         $customerQuery = self::find();
-        $customerQuery->andFilterWhere(['>', 'status', 0]);
+        $customerQuery->andFilterWhere(['>', 'customer.status', 0]);
 
-        !empty($params['id']) && $customerQuery->filterWhere(['id' => $params['id']]);
-        !empty($params['fio']) && $customerQuery->filterWhere(['like', 'fio', urldecode($params['fio'])]);
-        !empty($params['phone']) && $customerQuery->filterWhere(['like', 'phone', urldecode($params['phone'])]);
-        !empty($params['email']) && $customerQuery->filterWhere(['like', 'email', urldecode($params['email'])]);
+        !empty($params['id']) && $customerQuery->filterWhere(['customer.id' => $params['id']]);
+        !empty($params['fio']) && $customerQuery->filterWhere(['like', 'customer.fio', urldecode($params['fio'])]);
+        !empty($params['phone']) && $customerQuery->filterWhere(['like', 'customer.phone', urldecode($params['phone'])]);
+        !empty($params['email']) && $customerQuery->filterWhere(['like', 'customer.email', urldecode($params['email'])]);
 
         $customers = $customerQuery
             ->joinWith(['addresses'])
@@ -76,7 +76,7 @@ class Customer extends Repository
                 'id'                 => $customer['id'],
                 'fio'                => $customer['fio'],
                 'email'              => $customer['email'],
-                'phone'              => $customer['phone'],
+                'phone'              => (new Phone($customer['phone']))->getHumanView(),
                 'full_address'       => '',
                 'description'        => '',
                 'is_default_address' => \Yii::t('app', 'No'),

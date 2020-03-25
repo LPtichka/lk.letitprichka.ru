@@ -54,12 +54,18 @@ Pjax::begin([
     body.delegate('.get-customer-sheet', 'click', function (e) {
         e.preventDefault();
         let scheduleId = $('[name="schedule_id"]').val();
+        let button = $(this);
+        
         $.ajax({
             url: '/order/get-customer-sheet?id=$id',
             type: 'POST',
             data: {schedule_id: scheduleId},
             dataType: 'json',
+            beforeSend: function() {
+                button.addClass('loading');
+            },
             success: function(data) {
+                button.removeClass('loading');
                 window.location.href = '/' + data.url;
             }
         });

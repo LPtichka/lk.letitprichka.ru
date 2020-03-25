@@ -276,6 +276,9 @@ class Menu extends \yii\db\ActiveRecord
 
         foreach ($schedules as $schedule) {
             foreach ($schedule->dishes as $scheduleDish) {
+                if (empty($scheduleDish->dish)) {
+                    throw new \LogicException('Имеются не назначенные блюда в меню.');
+                }
                 foreach ($scheduleDish->dish->dishProducts as $dishProduct) {
                     if (empty($products[$dishProduct->product_id])) {
                         $product = $dishProduct->product;

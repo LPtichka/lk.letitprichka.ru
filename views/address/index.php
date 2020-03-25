@@ -26,12 +26,12 @@ $this->params['breadcrumbs'][] = $this->title;
             ) ?>
         </div>
         <div class="pull-right">
-            <?= Html::button('<i class="fa fa-upload"></i> ', ['class' => 'btn btn-sm btn-default import']) ?>
-            <?= Html::button('<i class="fa fa-download"></i> ', [
+            <?= Html::button('<i class="material-icons">cloud_upload</i>', ['class' => 'btn btn-sm btn-default import']) ?>
+            <?= Html::button('<i class="material-icons">cloud_download</i>', [
                 'class'     => 'btn btn-sm btn-default export',
                 'data-href' => Url::to(['address/export']),
             ]) ?>
-            <?= Html::submitButton('<i class="fa fa-times"></i> ', [
+            <?= Html::submitButton('<i class="material-icons">clear</i>', [
                 'class'      => 'btn btn-sm btn-danger delete',
                 'data-title' => \Yii::t('address', 'Do you really want to delete selected addresses?'),
                 'data-href'  => Url::to(['address/delete']),

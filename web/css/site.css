@@ -763,3 +763,14 @@ select.form-control.input-sm {
 .add-dish-to-inventory {
     margin-left: 10px;
 }
+
+.select2-container--krajee .select2-selection__clear {
+    font-size: 14px !important;
+    cursor: pointer;
+}
+
+.loading {
+    text-indent: -9999px;
+    min-width: 120px;
+    background: url("/images/loader.gif") no-repeat center #f39c12;
+}

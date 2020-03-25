@@ -14,7 +14,7 @@ Pjax::begin([
     'formSelector'    => '#procurement-form form',
     'enablePushState' => false,
 ]); ?>
-<?php if (empty($products)): ?>
+<?php if (empty($products) && $success): ?>
     <div class="route-row">
         <h1><?= $title; ?></h1>
         <title><?= $title; ?></title>
@@ -59,28 +59,36 @@ Pjax::begin([
             <div class="col-sm-2"><?php echo \Yii::t('product', 'Not enough count'); ?></div>
         </div>
         <hr/>
-        <?php foreach ($products as $product): ?>
+        <?php if ($success): ?>
+            <?php foreach ($products as $product): ?>
+                <div class="row list-element">
+                    <div class="col-sm-2"><?php echo $product->id; ?></div>
+                    <div class="col-sm-4"><?php echo $product->name; ?></div>
+                    <div class="col-sm-2"><?php echo (new \app\models\Helper\Unit($product->unit))->format($product->count); ?></div>
+                    <div class="col-sm-2"><?php echo (new \app\models\Helper\Unit($product->unit))->format($product->getNeedCount()); ?></div>
+                    <div class="col-sm-2"><?php echo (new \app\models\Helper\Unit($product->unit))->format($product->getNotEnoughCount()); ?></div>
+                </div>
+            <?php endforeach; ?>
+        <?php else: ?>
             <div class="row list-element">
-                <div class="col-sm-2"><?php echo $product->id; ?></div>
-                <div class="col-sm-4"><?php echo $product->name; ?></div>
-                <div class="col-sm-2"><?php echo (new \app\models\Helper\Unit($product->unit))->format($product->count); ?></div>
-                <div class="col-sm-2"><?php echo (new \app\models\Helper\Unit($product->unit))->format($product->getNeedCount()); ?></div>
-                <div class="col-sm-2"><?php echo (new \app\models\Helper\Unit($product->unit))->format($product->getNotEnoughCount()); ?></div>
+                <div class="col-sm-12"><p class="text-center text-danger">Ошибка: <?php echo $error; ?></p></div>
             </div>
-        <?php endforeach; ?>
+        <?php endif; ?>
         <hr/>
         <div class="row modal-buttons">
             <div class="col-md-6">
-                <div class="form-group">
-                    <?= Html::a(
-                        '<i class="material-icons">done</i> <span>' . \Yii::t('app', 'Download') . '</span>',
-                        ['product/save-procurement-sheet'],
-                        [
-                            'class'        => 'btn btn-sm btn-warning save-procurement-sheet',
-                            'data-menu-id' => $menuId,
-                        ]
-                    ) ?>
-                </div>
+                <?php if ($success): ?>
+                    <div class="form-group">
+                        <?= Html::a(
+                            '<i class="material-icons">done</i> <span>' . \Yii::t('app', 'Download') . '</span>',
+                            ['product/save-procurement-sheet'],
+                            [
+                                'class'        => 'btn btn-sm btn-warning save-procurement-sheet',
+                                'data-menu-id' => $menuId,
+                            ]
+                        ) ?>
+                    </div>
+                <?php endif; ?>
             </div>
             <div class="col-md-6">
                 <div class="form-group text-right">
@@ -103,12 +111,17 @@ Pjax::begin([
     body.delegate('.save-procurement-sheet', 'click', function (e) {
         e.preventDefault();
         let menuId = $(this).data('menu-id');
+        let button = $(this);
         $.ajax({
             url: '/product/save-procurement-sheet',
             type: 'POST',
             data: {menu_id: menuId},
             dataType: 'json',
+            beforeSend: function () {
+               button.addClass('loading'); 
+            },
             success: function(data) {
+                button.removeClass('loading');
                 window.location.href = data.url;
             }
         });
