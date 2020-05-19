@@ -39,7 +39,7 @@ $dateObject = (new \app\models\Helper\Date($date));
                     'class' => 'btn btn-default btm-sm pull-right add-menu-ingestion'
                 ]); ?>
             </div>
-            <h5><?= \Yii::t('menu', 'Supper'); ?></h5>
+            <h5><?= \Yii::t('menu', 'Dinner'); ?></h5>
             <div class="clearfix"></div>
         </div>
         <div class="ingestion-wrapper">
