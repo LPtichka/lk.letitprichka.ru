@@ -56,17 +56,21 @@ if ($model->id) {
                 <div class="row">
                     <div class="col-sm-6 label-block">
                         <div class="row">
-                            <div class="col-sm-3">
+                            <div class="col-sm-2">
                                 <?= $form->field($model, 'is_breakfast')->checkbox() ?>
                             </div>
-                            <div class="col-sm-3">
+                            <div class="col-sm-2">
                                 <?= $form->field($model, 'is_dinner')->checkbox() ?>
                             </div>
-                            <div class="col-sm-3">
+                            <div class="col-sm-2">
                                 <?= $form->field($model, 'is_lunch')->checkbox() ?>
                             </div>
-                            <div class="col-sm-3">
+                            <div class="col-sm-2">
                                 <?= $form->field($model, 'is_supper')->checkbox() ?>
+                            </div>
+                            <div class="col-sm-1"></div>
+                            <div class="col-sm-3">
+                                <?= $form->field($model, 'with_garnish')->checkbox() ?>
                             </div>
                         </div>
                     </div>

@@ -1,19 +1,31 @@
 let body = $('body');
-let redColor, colorDanger = "#d9534f";
+let redColor, colorDanger = "#D9534F";
 let attentionTitle = "Внимание";
 let noSelectionText = "Вы не выбрали ни один элемент?";
 let approveButton = "Подтвердить";
 let cancelButton = "Отменить";
 let closeButton = "Закрыть";
 
-body.delegate('.import', 'click', function (e) {
-    e.preventDefault();
-    $('[name="import"]').trigger('click');
-});
-
 body.delegate('[name="import"]', 'change', function () {
     let url = $(this).attr('data-href');
     window.parseXML(url);
+});
+
+body.delegate('#add-product', 'click', function () {
+    window.addProduct();
+});
+
+body.delegate('#add-dish', 'click', function () {
+    window.addDish();
+});
+
+body.delegate('#add-address', 'click', function () {
+    window.addAddress();
+});
+
+body.delegate('.import', 'click', function (e) {
+    e.preventDefault();
+    $('[name="import"]').trigger('click');
 });
 
 body.delegate('.export', 'click', function (e) {
@@ -35,14 +47,6 @@ body.delegate('.export', 'click', function (e) {
     });
 });
 
-body.delegate('#add-product', 'click', function () {
-    window.addProduct();
-});
-
-body.delegate('#add-dish', 'click', function () {
-    window.addDish();
-});
-
 body.delegate('.add-row-action', 'click', function () {
     let container = $('.' + $(this).data('block')),
         lastGroupId = container.find('[class*=' + $(this).data('row') + ']:last').prop('id'),
@@ -62,10 +66,6 @@ body.delegate('.delete-row-action', 'click', function () {
     if ($('[class*=' + $(this).data('row') + ']').length > 1) {
         row.remove();
     }
-});
-
-body.delegate('#add-address', 'click', function () {
-    window.addAddress();
 });
 
 body.delegate('.delete-product', 'click', function () {
@@ -162,7 +162,7 @@ body.delegate('.action-with-approve', 'click', function (e) {
         html: true,
         confirmButtonText: 'Подтвердить',
         cancelButtonText: 'Отменить',
-        confirmButtonColor: "#5cb85c",
+        confirmButtonColor: "#5CB85C",
         showCancelButton: true,
         closeOnConfirm: false,
         showLoaderOnConfirm: true
@@ -266,6 +266,45 @@ body.delegate('.add-menu-ingestion', 'click', function (e) {
     e.preventDefault();
 });
 
+body.delegate('.dish-for-menu', 'change', function (e) {
+    let dishId = $(this).val();
+
+    let ingestionType = $(this).data('ingestion-type');
+    let ingestionNumber = $(this).data('ingestion-number');
+    let ingestionDate = $(this).data('ingestion-date');
+
+    let ingestion = $(this).parent();
+
+    $.ajax({
+        url: '/menu/get-menu-additionals?dishId=' + dishId,
+        data: {
+            dishId: dishId,
+            ingestionType: ingestionType,
+            ingestionNumber: ingestionNumber,
+            ingestionDate: ingestionDate
+        },
+        type: 'GET',
+        success: function (json) {
+            if (json.dishType == 2) {
+                ingestion.find('.dish-garnish').remove();
+
+                if (json.isNeedAddGarnish) {
+                    let dropdown = '<select class="form-control input-sm dish-for-menu dish-garnish" name="dish[' + json.ingestionDate + '][' + json.ingestionType + '][garnish][' + json.ingestionNumber + ']">';
+                    dropdown += '<option></option>';
+
+                    $.each(json.dishes, function (index, value) {
+                        dropdown += '<option value="' + value.id + '">' + value.name + '</option>';
+                    });
+
+                    dropdown += '</select>';
+                    ingestion.append(dropdown);
+                }
+            }
+
+        }
+    });
+});
+
 window.parseXML = function (url) {
     let formData = new FormData();
 
@@ -322,7 +361,7 @@ window.getAllUrlParams = function (url) {
             });
 
             // передача значения параметра ('true' если значение не задано)
-            var paramValue = typeof(a[1]) === 'undefined' ? true : a[1];
+            var paramValue = typeof (a[1]) === 'undefined' ? true : a[1];
 
             // преобразование регистра
             paramName = paramName.toLowerCase();

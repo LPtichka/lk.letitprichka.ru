@@ -302,10 +302,15 @@ class Order extends \yii\db\ActiveRecord
                     $schedules[] = $schedule;
                 } else {
                     for ($i = 0; $i < $data['Order']['count']; $i++) {
+                        $orderSchedule = new OrderSchedule();
                         $price = $subscriptionDiscount->price ?? $subscription->price;
 
-                        $schedule->cost = $price / $data['Order']['count'];
-                        $schedules[]    = $schedule;
+                        $orderSchedule->address_id = $schedule->address_id;
+                        $orderSchedule->order_id = $schedule->order_id;
+                        $orderSchedule->interval = $schedule->interval;
+                        $orderSchedule->date       = date('Y-m-d', $firstDateTime + $i * 86400);
+                        $orderSchedule->cost = $price / $data['Order']['count'];
+                        $schedules[]    = $orderSchedule;
                     }
                 }
             }

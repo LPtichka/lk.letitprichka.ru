@@ -102,7 +102,7 @@ class Menu extends \yii\db\ActiveRecord
         $dishList = [];
         foreach ($data['dish'] as $date => $dayMenu) {
             foreach ($dayMenu as $ingestionType => $ingestion) {
-                if ($ingestionType == 'dinner') {
+                if ($ingestionType == 'dinner' || $ingestionType == 'supper') {
                     foreach ($ingestion as $type => $dishes) {
                         foreach ($dishes as $ingestionId => $dishId) {
                             if ($dishId) {
@@ -209,6 +209,9 @@ class Menu extends \yii\db\ActiveRecord
         string $type = '',
         int $ingestionType = 0
     ): int{
+//        if ($ingestionType == 5) {
+//            $t = 3;
+//        }
         foreach ($this->dishes as $dish) {
             if ($dish->ingestion == $ingestionID && $dish->date == $date) {
                 if ($type == 'breakfast' && $dish->dish->is_breakfast) {
@@ -217,16 +220,39 @@ class Menu extends \yii\db\ActiveRecord
                 if ($type == 'lunch' && $dish->dish->is_lunch) {
                     return $dish->dish_id;
                 }
-                if ($type == 'dinner' && $dish->dish->is_dinner && $ingestionType == $dish->dish->type) {
+                if ($type == 'dinner' && $dish->dish->is_dinner && $dish->ingestion_type == Dish::INGESTION_TYPE_DINNER && $ingestionType == $dish->dish->type) {
                     return $dish->dish_id;
                 }
-                if ($type == 'supper' && $dish->dish->is_supper) {
+                if ($type == 'supper' && $dish->dish->is_supper && $dish->ingestion_type == Dish::INGESTION_TYPE_SUPPER && $ingestionType == $dish->dish->type) {
                     return $dish->dish_id;
                 }
             }
         }
 
         return 0;
+    }
+
+    /**
+     * @param int $ingestionID
+     * @param string $date
+     * @param string $type
+     * @param int $ingestionType
+     * @return int
+     */
+    public function isGarnishNeeded(
+        int $ingestionID = 0,
+        string $date = '',
+        string $type = '',
+        int $ingestionType = 0
+    ): bool{
+        $dishId = $this->getDishIDByParams($ingestionID, $date, $type, $ingestionType);
+
+        $dish = Dish::findOne($dishId);
+        if (!$dish) {
+            return false;
+        }
+
+        return (bool) $dish->with_garnish;
     }
 
     /**

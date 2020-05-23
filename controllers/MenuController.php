@@ -130,10 +130,35 @@ class MenuController extends BaseController
             'menu'               => $menu,
             'breakfasts'         => ArrayHelper::map(Dish::find()->where(['is_breakfast' => true])->asArray()->all(), 'id', 'name'),
             'lunches'            => ArrayHelper::map(Dish::find()->where(['is_lunch' => true])->asArray()->all(), 'id', 'name'),
-            'suppers'            => ArrayHelper::map(Dish::find()->where(['is_supper' => true])->asArray()->all(), 'id', 'name'),
+            'suppers'            => ArrayHelper::map(Dish::find()->where(['type' => Dish::TYPE_SECOND, 'is_supper' => true])->asArray()->all(), 'id', 'name'),
             'firstDishesDinner'  => ArrayHelper::map(Dish::find()->where(['type' => Dish::TYPE_FIRST, 'is_dinner' => true])->asArray()->all(), 'id', 'name'),
             'secondDishesDinner' => ArrayHelper::map(Dish::find()->where(['type' => Dish::TYPE_SECOND, 'is_dinner' => true])->asArray()->all(), 'id', 'name'),
+            'garnishDishes'      => ArrayHelper::map(Dish::find()->where(['type' => Dish::TYPE_GARNISH])->asArray()->all(), 'id', 'name'),
         ]);
+    }
+
+    /**
+     * Нужен ли гарнир к блюду
+     *
+     * @param int $dishId
+     * @return array
+     */
+    public function actionGetMenuAdditionals(int $dishId): array
+    {
+        $dish = Dish::findOne($dishId);
+
+        \Yii::$app->response->format = Response::FORMAT_JSON;
+
+        $dishes = Dish::find()->select(['id', 'name'])->where(['type' => Dish::TYPE_GARNISH])->asArray()->all();
+
+        return [
+            'isNeedAddGarnish' => $dish->with_garnish,
+            'ingestionNumber'  => \Yii::$app->request->get('ingestionNumber'),
+            'ingestionType'    => \Yii::$app->request->get('ingestionType'),
+            'ingestionDate'    => \Yii::$app->request->get('ingestionDate'),
+            'dishes'           => $dishes,
+            'dishType'         => $dish->type
+        ];
     }
 
     /**
@@ -156,7 +181,7 @@ class MenuController extends BaseController
     }
 
     /**
-     * @return string
+     * @return array
      */
     public function actionSaveMarriageSheet()
     {

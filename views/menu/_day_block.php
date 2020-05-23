@@ -26,7 +26,10 @@ $dateObject = (new \app\models\Helper\Date($date));
                     $menu->getDishIDByParams($i, $date, 'breakfast', $i),
                     (new \app\models\Helper\Arrays($breakfasts))->getSelectOptions(),
                     [
-                        'class' => 'form-control input-sm'
+                        'class' => 'form-control input-sm dish-for-menu',
+                        'data-ingestion-date' => $date,
+                        'data-ingestion-type' => 'breakfast',
+                        'data-ingestion-number' => $i,
                     ]
                 ); ?>
             </div>
@@ -49,7 +52,10 @@ $dateObject = (new \app\models\Helper\Date($date));
                     $menu->getDishIDByParams($i, $date, 'dinner', \app\models\Repository\Dish::TYPE_FIRST),
                     (new \app\models\Helper\Arrays($firstDishesDinner))->getSelectOptions(),
                     [
-                        'class' => 'form-control input-sm'
+                        'class' => 'form-control input-sm dish-for-menu',
+                        'data-ingestion-date' => $date,
+                        'data-ingestion-type' => 'dinner',
+                        'data-ingestion-number' => $i,
                     ]
                 ); ?>
                 <?php echo \yii\helpers\Html::dropDownList(
@@ -57,9 +63,26 @@ $dateObject = (new \app\models\Helper\Date($date));
                     $menu->getDishIDByParams($i, $date, 'dinner', \app\models\Repository\Dish::TYPE_SECOND),
                     (new \app\models\Helper\Arrays($secondDishesDinner))->getSelectOptions(),
                     [
-                        'class' => 'form-control input-sm'
+                        'class' => 'form-control input-sm dish-for-menu',
+                        'data-ingestion-date' => $date,
+                        'data-ingestion-type' => 'dinner',
+                        'data-ingestion-number' => $i,
                     ]
                 ); ?>
+
+                <?php if($menu->isGarnishNeeded($i, $date, 'dinner', \app\models\Repository\Dish::TYPE_SECOND)):?>
+                    <?php echo \yii\helpers\Html::dropDownList(
+                        'dish[' . $date . '][dinner][garnish][' . $i . ']',
+                        $menu->getDishIDByParams($i, $date, 'dinner', \app\models\Repository\Dish::TYPE_GARNISH),
+                        (new \app\models\Helper\Arrays($garnishDishes))->getSelectOptions(),
+                        [
+                            'class' => 'form-control input-sm dish-for-menu dish-garnish',
+                            'data-ingestion-date' => $date,
+                            'data-ingestion-type' => 'dinner',
+                            'data-ingestion-number' => $i,
+                        ]
+                    ); ?>
+                <?php endif;?>
             </div>
         </div>
     </div>
@@ -80,7 +103,10 @@ $dateObject = (new \app\models\Helper\Date($date));
                     $menu->getDishIDByParams($i, $date, 'lunch', $i),
                     (new \app\models\Helper\Arrays($lunches))->getSelectOptions(),
                     [
-                        'class' => 'form-control input-sm'
+                        'class' => 'form-control input-sm dish-for-menu',
+                        'data-ingestion-date' => $date,
+                        'data-ingestion-type' => 'lunch',
+                        'data-ingestion-number' => $i,
                     ]
                 ); ?>
             </div>
@@ -99,13 +125,29 @@ $dateObject = (new \app\models\Helper\Date($date));
         <div class="ingestion-wrapper">
             <div class="ingestion" id="ingestion_supper_<?php echo $i; ?>">
                 <?php echo \yii\helpers\Html::dropDownList(
-                    'dish[' . $date . '][supper][' . $i . ']',
-                    $menu->getDishIDByParams($i, $date, 'supper', \app\models\Repository\Dish::TYPE_FIRST),
+                    'dish[' . $date . '][supper][second][' . $i . ']',
+                    $menu->getDishIDByParams($i, $date, 'supper', \app\models\Repository\Dish::TYPE_SECOND),
                     (new \app\models\Helper\Arrays($suppers))->getSelectOptions(),
                     [
-                        'class' => 'form-control input-sm'
+                        'class' => 'form-control input-sm dish-for-menu',
+                        'data-ingestion-date' => $date,
+                        'data-ingestion-type' => 'supper',
+                        'data-ingestion-number' => $i,
                     ]
                 ); ?>
+                <?php if($menu->isGarnishNeeded($i, $date, 'supper', \app\models\Repository\Dish::TYPE_SECOND)):?>
+                    <?php echo \yii\helpers\Html::dropDownList(
+                        'dish[' . $date . '][supper][garnish][' . $i . ']',
+                        $menu->getDishIDByParams($i, $date, 'supper', \app\models\Repository\Dish::TYPE_GARNISH),
+                        (new \app\models\Helper\Arrays($garnishDishes))->getSelectOptions(),
+                        [
+                            'class' => 'form-control input-sm dish-for-menu dish-garnish',
+                            'data-ingestion-date' => $date,
+                            'data-ingestion-type' => 'supper',
+                            'data-ingestion-number' => $i,
+                        ]
+                    ); ?>
+                <?php endif;?>
             </div>
         </div>
     </div>

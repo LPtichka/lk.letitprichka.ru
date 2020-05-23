@@ -103,6 +103,7 @@ class Dish extends \yii\db\ActiveRecord
             [['type'], 'integer'],
             [['fat', 'weight', 'proteins', 'kkal', 'carbohydrates'], 'number'],
             [['name', 'process', 'fat', 'weight', 'proteins', 'kkal', 'carbohydrates'], 'required'],
+            [['with_garnish'], 'validateGarnish'],
         ];
     }
 
@@ -114,6 +115,17 @@ class Dish extends \yii\db\ActiveRecord
         return [
             TimestampBehavior::class,
         ];
+    }
+
+    /**
+     * @param $attribute
+     * @param $params
+     */
+    public function validateGarnish($attribute, $params)
+    {
+        if (!empty($this->$attribute) && $this->type == self::TYPE_GARNISH) {
+            $this->addError($attribute, \Yii::t('dish', 'The type of dish cannot be a side dish and have an option with a side dish'));
+        }
     }
 
     /**
@@ -136,7 +148,7 @@ class Dish extends \yii\db\ActiveRecord
             self::TYPE_SECOND => \Yii::t('dish', 'Second course'),
 //            self::TYPE_SALAD   => \Yii::t('dish', 'Salad'),
 //            self::TYPE_DESERT  => \Yii::t('dish', 'Dessert'),
-//            self::TYPE_GARNISH => \Yii::t('dish', 'Garnish'),
+            self::TYPE_GARNISH => \Yii::t('dish', 'Garnish'),
         ];
     }
 
@@ -300,6 +312,8 @@ class Dish extends \yii\db\ActiveRecord
                 return self::TYPE_FIRST;
             case 'second':
                 return self::TYPE_SECOND;
+            case 'garnish':
+                return self::TYPE_GARNISH;
             default:
                 return null;
         }

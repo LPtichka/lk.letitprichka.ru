@@ -13,6 +13,7 @@
             'lunches'            => $lunches,
             'suppers'            => $suppers,
             'firstDishesDinner'  => $firstDishesDinner,
+            'garnishDishes'      => $garnishDishes,
             'secondDishesDinner' => $secondDishesDinner,
         ]);
     }; ?>

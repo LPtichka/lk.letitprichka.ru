@@ -3,7 +3,6 @@ namespace app\controllers;
 
 use app\models\Helper\Excel;
 use app\models\Helper\ExcelParser;
-use app\models\Helper\Unit;
 use app\models\Helper\Weight;
 use app\models\Repository\DishProduct;
 use app\models\Search\Dish;
@@ -291,7 +290,7 @@ class DishController extends BaseController
             $excel->save('dish.xlsx', 'temp');
             return [
                 'success' => true,
-                'url' => $excel->getUrl(),
+                'url'     => $excel->getUrl(),
             ];
         } catch (\Exception $e) {
             \Yii::info($e->getMessage());

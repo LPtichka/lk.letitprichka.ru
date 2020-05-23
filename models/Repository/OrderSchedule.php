@@ -66,9 +66,13 @@ class OrderSchedule extends \yii\db\ActiveRecord
         Dish::INGESTION_TYPE_DINNER => [
             Dish::TYPE_FIRST,
             Dish::TYPE_SECOND,
+            Dish::TYPE_GARNISH,
         ],
         Dish::INGESTION_TYPE_LUNCH => [],
-        Dish::INGESTION_TYPE_SUPPER => [],
+        Dish::INGESTION_TYPE_SUPPER => [
+            Dish::TYPE_SECOND,
+            Dish::TYPE_GARNISH,
+        ],
     ];
 
     /**
