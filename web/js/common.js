@@ -290,7 +290,7 @@ body.delegate('.dish-for-menu', 'change', function (e) {
 
                 if (json.isNeedAddGarnish) {
                     let dropdown = '<select class="form-control input-sm dish-for-menu dish-garnish" name="dish[' + json.ingestionDate + '][' + json.ingestionType + '][garnish][' + json.ingestionNumber + ']">';
-                    dropdown += '<option></option>';
+                    dropdown += '<option>Выберите блюдо на гарнир</option>';
 
                     $.each(json.dishes, function (index, value) {
                         dropdown += '<option value="' + value.id + '">' + value.name + '</option>';

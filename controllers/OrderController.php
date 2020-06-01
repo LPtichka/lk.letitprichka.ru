@@ -572,12 +572,12 @@ class OrderController extends BaseController
             throw new NotFoundHttpException('Заказ не найден');
         }
 
-        $dishes = [];
+        $dishes     = [];
         $scheduleId = 0;
         foreach ($order->schedules as $schedule) {
             if ($schedule->date == $date) {
                 $scheduleId = $schedule->id;
-                $dishes = $schedule->dishes;
+                $dishes     = $schedule->dishes;
             }
         }
 
@@ -585,7 +585,7 @@ class OrderController extends BaseController
             throw new NotFoundHttpException('Расписание не найденно');
         }
 
-        $types     = [];
+        $types = [];
         if ($order->subscription_id !== Subscription::NO_SUBSCRIPTION_ID) {
             $ingestion = new Ingestion();
             foreach ($dishes as $dish) {
@@ -596,7 +596,7 @@ class OrderController extends BaseController
         return $this->renderAjax('/order/_inventory', [
             'date'           => $date,
             'types'          => $types,
-            'scheduleId'          => $scheduleId,
+            'scheduleId'     => $scheduleId,
             'isSubscription' => $order->subscription_id !== Subscription::NO_SUBSCRIPTION_ID,
             'dishes'         => $dishes,
         ]);
@@ -637,14 +637,14 @@ class OrderController extends BaseController
     public function actionAddDishForInventory()
     {
         \Yii::$app->response->format = Response::FORMAT_JSON;
-        $post = \Yii::$app->request->post();
+        $post                        = \Yii::$app->request->post();
         if (!$post) {
             return [];
         }
 
-        $dishId = $post['dish_id'];
+        $dishId     = $post['dish_id'];
         $scheduleId = $post['schedule_id'];
-        $ration = $post['ration'];
+        $ration     = $post['ration'];
 
         $dish = Dish::findOne($dishId);
         if (!$dish) {
@@ -659,19 +659,19 @@ class OrderController extends BaseController
                 ->one();
         }
 
-        $scheduleDish->dish_id = $dish->id;
+        $scheduleDish->dish_id           = $dish->id;
         $scheduleDish->order_schedule_id = $scheduleId;
-        $scheduleDish->name = $dish->name;
-        $scheduleDish->count = 1;
-        $scheduleDish->type = $dish->type;
-        $scheduleDish->ingestion_type = $ration;
+        $scheduleDish->name              = $dish->name;
+        $scheduleDish->count             = 1;
+        $scheduleDish->type              = $dish->type;
+        $scheduleDish->ingestion_type    = $ration;
 
         if ($scheduleDish->validate() && $scheduleDish->save()) {
             return [
                 'success' => true,
-                'dish' => [
-                    'href' => Url::to(['dish/view', 'id' => $dish->id]),
-                    'name' => $dish->name,
+                'dish'    => [
+                    'href'        => Url::to(['dish/view', 'id' => $dish->id]),
+                    'name'        => $dish->name,
                     'description' => implode(', ', $dish->getComposition()) . ', ' . $dish->weight . 'г.',
                 ],
             ];

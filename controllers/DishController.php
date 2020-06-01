@@ -328,7 +328,6 @@ class DishController extends BaseController
         return $result;
     }
 
-
     /**
      * @param int $counter
      * @return string

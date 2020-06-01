@@ -24,7 +24,7 @@ $dateObject = (new \app\models\Helper\Date($date));
                 <?php echo \yii\helpers\Html::dropDownList(
                     'dish[' . $date . '][breakfast][' . $i . ']',
                     $menu->getDishIDByParams($i, $date, 'breakfast', $i),
-                    (new \app\models\Helper\Arrays($breakfasts))->getSelectOptions(),
+                    (new \app\models\Helper\Arrays($breakfasts))->getSelectOptions('Выберите блюдо на завтрак'),
                     [
                         'class' => 'form-control input-sm dish-for-menu',
                         'data-ingestion-date' => $date,
@@ -50,7 +50,7 @@ $dateObject = (new \app\models\Helper\Date($date));
                 <?php echo \yii\helpers\Html::dropDownList(
                     'dish[' . $date . '][dinner][first][' . $i . ']',
                     $menu->getDishIDByParams($i, $date, 'dinner', \app\models\Repository\Dish::TYPE_FIRST),
-                    (new \app\models\Helper\Arrays($firstDishesDinner))->getSelectOptions(),
+                    (new \app\models\Helper\Arrays($firstDishesDinner))->getSelectOptions('Выберите блюдо на первое - обед'),
                     [
                         'class' => 'form-control input-sm dish-for-menu',
                         'data-ingestion-date' => $date,
@@ -61,7 +61,7 @@ $dateObject = (new \app\models\Helper\Date($date));
                 <?php echo \yii\helpers\Html::dropDownList(
                     'dish[' . $date . '][dinner][second][' . $i . ']',
                     $menu->getDishIDByParams($i, $date, 'dinner', \app\models\Repository\Dish::TYPE_SECOND),
-                    (new \app\models\Helper\Arrays($secondDishesDinner))->getSelectOptions(),
+                    (new \app\models\Helper\Arrays($secondDishesDinner))->getSelectOptions('Выберите блюдо на второе - обед'),
                     [
                         'class' => 'form-control input-sm dish-for-menu',
                         'data-ingestion-date' => $date,
@@ -74,7 +74,7 @@ $dateObject = (new \app\models\Helper\Date($date));
                     <?php echo \yii\helpers\Html::dropDownList(
                         'dish[' . $date . '][dinner][garnish][' . $i . ']',
                         $menu->getDishIDByParams($i, $date, 'dinner', \app\models\Repository\Dish::TYPE_GARNISH),
-                        (new \app\models\Helper\Arrays($garnishDishes))->getSelectOptions(),
+                        (new \app\models\Helper\Arrays($garnishDishes))->getSelectOptions('Выберите блюдо на гарнир'),
                         [
                             'class' => 'form-control input-sm dish-for-menu dish-garnish',
                             'data-ingestion-date' => $date,
@@ -101,7 +101,7 @@ $dateObject = (new \app\models\Helper\Date($date));
                 <?php echo \yii\helpers\Html::dropDownList(
                     'dish[' . $date . '][lunch][' . $i . ']',
                     $menu->getDishIDByParams($i, $date, 'lunch', $i),
-                    (new \app\models\Helper\Arrays($lunches))->getSelectOptions(),
+                    (new \app\models\Helper\Arrays($lunches))->getSelectOptions('Выберите блюдо на ланч'),
                     [
                         'class' => 'form-control input-sm dish-for-menu',
                         'data-ingestion-date' => $date,
@@ -127,7 +127,7 @@ $dateObject = (new \app\models\Helper\Date($date));
                 <?php echo \yii\helpers\Html::dropDownList(
                     'dish[' . $date . '][supper][second][' . $i . ']',
                     $menu->getDishIDByParams($i, $date, 'supper', \app\models\Repository\Dish::TYPE_SECOND),
-                    (new \app\models\Helper\Arrays($suppers))->getSelectOptions(),
+                    (new \app\models\Helper\Arrays($suppers))->getSelectOptions('Выберите блюдо на второе - ужин'),
                     [
                         'class' => 'form-control input-sm dish-for-menu',
                         'data-ingestion-date' => $date,
@@ -139,7 +139,7 @@ $dateObject = (new \app\models\Helper\Date($date));
                     <?php echo \yii\helpers\Html::dropDownList(
                         'dish[' . $date . '][supper][garnish][' . $i . ']',
                         $menu->getDishIDByParams($i, $date, 'supper', \app\models\Repository\Dish::TYPE_GARNISH),
-                        (new \app\models\Helper\Arrays($garnishDishes))->getSelectOptions(),
+                        (new \app\models\Helper\Arrays($garnishDishes))->getSelectOptions('Выберите блюдо на гарнир'),
                         [
                             'class' => 'form-control input-sm dish-for-menu dish-garnish',
                             'data-ingestion-date' => $date,

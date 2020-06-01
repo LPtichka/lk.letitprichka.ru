@@ -16,11 +16,12 @@ class Arrays
     }
 
     /**
+     * @param string $placeholder
      * @return array
      */
-    public function getSelectOptions(): array
+    public function getSelectOptions(string $placeholder = ''): array
     {
-        $result = ['' => ''];
+        $result = ['' => $placeholder];
         return $result + $this->data;
     }
 }

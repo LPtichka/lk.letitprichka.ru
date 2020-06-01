@@ -15,12 +15,16 @@ use yii\behaviors\TimestampBehavior;
  * @property int $count
  * @property int $ingestion_type
  * @property int $type
+ * @property int $with_garnish
+ * @property int $garnish_id
  * @property int $manufactured_at
  * @property string $storage_condition
  * @property int $created_at
  * @property int $updated_at
  *
  * @property Dish $dish
+ *
+ * @property Dish $garnish
  */
 class OrderScheduleDish extends \yii\db\ActiveRecord
 {
@@ -59,7 +63,7 @@ class OrderScheduleDish extends \yii\db\ActiveRecord
             ['dish_id', 'exist', 'targetClass' => Dish::class, 'targetAttribute' => 'id', 'message' => 'Указан не существующий ID блюда'],
             ['order_schedule_id', 'exist', 'targetClass' => OrderSchedule::class, 'targetAttribute' => 'id', 'message' => 'Указан не существующий ID расписания'],
             [['storage_condition', 'name'], 'string'],
-            [['manufactured_at', 'count'], 'integer'],
+            [['manufactured_at', 'count', 'with_garnish', 'garnish_id'], 'integer'],
             [['count'], 'default', 'value' => 1],
         ];
     }
@@ -74,12 +78,19 @@ class OrderScheduleDish extends \yii\db\ActiveRecord
         ];
     }
 
-
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getDish()
     {
         return $this->hasOne(Dish::class, ['id' => 'dish_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getGarnish()
+    {
+        return $this->hasOne(Dish::class, ['id' => 'garnish_id']);
     }
 }

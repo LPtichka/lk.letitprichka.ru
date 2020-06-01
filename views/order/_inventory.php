@@ -22,29 +22,63 @@ $this->title = \Yii::t('order', 'Order inventory');
                 <div class="col-sm-3 ingestion-name"><?php echo $type; ?></div>
                 <div class="col-sm-9 ingestion-block">
                     <?php echo Html::a('+', '#', [
-                        'class' => 'request-dish-to-inventory',
-                        'data-ration' => $key,
+                        'class'            => 'request-dish-to-inventory',
+                        'data-ration'      => $key,
                         'data-schedule-id' => $scheduleId,
-                    ]);?>
+                    ]); ?>
                     <?php foreach ($dishes as $dish): ?>
                         <?php if ($dish->ingestion_type == $key): ?>
                             <div class="row ingestion-row">
-                                <div class="col-sm-10 ingestion-content">
-                                    <?php if ($dish->dish_id): ?>
-                                        <p>
-                                            <?php echo Html::a($dish->dish->name, ['dish/view', 'id' => $dish->dish_id]); ?>
-                                            <a href="#"
-                                               class="reload-dish"
-                                               data-ration="<?=$key;?>"
-                                               data-dish-id="<?=$dish->dish_id;?>"
-                                               data-schedule-id="<?=$scheduleId;?>"
-                                            ><i class="material-icons">cached</i></a>
-                                        </p>
-                                        <p><?php echo implode(', ', $dish->dish->getComposition()) . ', ' . $dish->dish->weight . 'г.'; ?></p>
+                                <?php if ($dish->dish_id): ?>
+                                    <?php if ($dish->with_garnish): ?>
+                                        <div class="col-sm-5 ingestion-content">
+                                            <p>
+                                                <?php echo Html::a($dish->dish->name, ['dish/view', 'id' => $dish->dish_id]); ?>
+                                                <a href="#"
+                                                   class="reload-dish"
+                                                   data-ration="<?= $key; ?>"
+                                                   data-dish-id="<?= $dish->dish_id; ?>"
+                                                   data-schedule-id="<?= $scheduleId; ?>"
+                                                ><i class="material-icons">cached</i></a>
+                                            </p>
+                                            <p><?php echo implode(', ', $dish->dish->getComposition()) . ', ' . $dish->dish->weight . 'г.'; ?></p>
+                                        </div>
+                                        <div class="col-sm-5 ingestion-content">
+                                            <?php if ($dish->garnish_id): ?>
+                                                <p>
+                                                    <?php echo Html::a($dish->garnish->name, ['dish/view', 'id' => $dish->garnish_id]); ?>
+                                                    <a href="#"
+                                                       class="reload-dish"
+                                                       data-ration="<?= $key; ?>"
+                                                       data-dish-id="<?= $dish->garnish_id; ?>"
+                                                       data-schedule-id="<?= $scheduleId; ?>"
+                                                    ><i class="material-icons">cached</i></a>
+                                                </p>
+                                                <p><?php echo implode(', ', $dish->garnish->getComposition()) . ', ' . $dish->garnish->weight . 'г.'; ?></p>
+                                            <?php else: ?>
+                                                <p>Еще не назначено</p>
+                                            <?php endif; ?>
+                                        </div>
                                     <?php else: ?>
-                                        <?php echo \Yii::t('order', 'Not equipped'); ?>
+                                        <div class="col-sm-10 ingestion-content">
+                                            <p>
+                                                <?php echo Html::a($dish->dish->name, ['dish/view', 'id' => $dish->dish_id]); ?>
+                                                <a href="#"
+                                                   class="reload-dish"
+                                                   data-ration="<?= $key; ?>"
+                                                   data-dish-id="<?= $dish->dish_id; ?>"
+                                                   data-schedule-id="<?= $scheduleId; ?>"
+                                                ><i class="material-icons">cached</i></a>
+                                            </p>
+                                            <p><?php echo implode(', ', $dish->dish->getComposition()) . ', ' . $dish->dish->weight . 'г.'; ?></p>
+                                        </div>
                                     <?php endif; ?>
-                                </div>
+
+                                <?php else: ?>
+                                    <div class="col-sm-10 ingestion-content">
+                                        <?php echo \Yii::t('order', 'Not equipped'); ?>
+                                    </div>
+                                <?php endif; ?>
                             </div>
                         <?php endif; ?>
                     <?php endforeach; ?>

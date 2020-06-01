@@ -203,6 +203,29 @@ class Menu extends \yii\db\ActiveRecord
      * @param int $ingestionType
      * @return int
      */
+    public function isGarnishNeeded(
+        int $ingestionID = 0,
+        string $date = '',
+        string $type = '',
+        int $ingestionType = 0
+    ): bool{
+        $dishId = $this->getDishIDByParams($ingestionID, $date, $type, $ingestionType);
+
+        $dish = Dish::findOne($dishId);
+        if (!$dish) {
+            return false;
+        }
+
+        return (bool) $dish->with_garnish;
+    }
+
+    /**
+     * @param int $ingestionID
+     * @param string $date
+     * @param string $type
+     * @param int $ingestionType
+     * @return int
+     */
     public function getDishIDByParams(
         int $ingestionID = 0,
         string $date = '',
@@ -233,29 +256,6 @@ class Menu extends \yii\db\ActiveRecord
     }
 
     /**
-     * @param int $ingestionID
-     * @param string $date
-     * @param string $type
-     * @param int $ingestionType
-     * @return int
-     */
-    public function isGarnishNeeded(
-        int $ingestionID = 0,
-        string $date = '',
-        string $type = '',
-        int $ingestionType = 0
-    ): bool{
-        $dishId = $this->getDishIDByParams($ingestionID, $date, $type, $ingestionType);
-
-        $dish = Dish::findOne($dishId);
-        if (!$dish) {
-            return false;
-        }
-
-        return (bool) $dish->with_garnish;
-    }
-
-    /**
      * @param array $data
      * @return array
      */
@@ -263,10 +263,12 @@ class Menu extends \yii\db\ActiveRecord
     {
         $result = [];
         foreach ($data['dishes'] as $item) {
-            $indexName                              = sprintf('%s-%d-%d', $item['date'], $item['ingestion_type'], $item['dish_type']);
-            $dish                                   = Dish::findOne($item['dish_id']);
-            $item['exception_list']                 = $dish->getExceptionList();
-            $item['name']                           = $dish->name;
+            $indexName              = sprintf('%s-%d-%d', $item['date'], $item['ingestion_type'], $item['dish_type']);
+            $dish                   = Dish::findOne($item['dish_id']);
+            $item['exception_list'] = $dish->getExceptionList();
+            $item['name']           = $dish->name;
+            $item['with_garnish']   = $dish->with_garnish;
+
             $result[$indexName][$item['ingestion']] = $item;
         }
 
@@ -282,7 +284,9 @@ class Menu extends \yii\db\ActiveRecord
         $sql = 'SELECT COUNT(*) as `count` FROM `order_schedule` AS os 
                       LEFT JOIN `order_schedule_dish` AS osd
                         ON os.id = osd.order_schedule_id
-                      WHERE os.date >= "' . $this->menu_start_date . '" AND os.date <= "' . $this->menu_end_date . '" AND osd.dish_id IS NULL';
+                      WHERE os.date >= "' . $this->menu_start_date . '" 
+                            AND os.date <= "' . $this->menu_end_date . '" 
+                            AND (osd.dish_id IS NULL OR (osd.with_garnish = 1 AND osd.garnish_id is NULL))';
 
         $result = \Yii::$app->db->createCommand($sql)->queryOne();
         return (bool) $result['count'];

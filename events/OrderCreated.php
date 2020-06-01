@@ -1,6 +1,7 @@
 <?php
 namespace app\events;
 
+use app\models\Repository\Dish;
 use app\models\Repository\MenuDish;
 use app\models\Repository\Order;
 use app\models\Repository\Subscription;
@@ -61,7 +62,21 @@ class OrderCreated extends Event
                                 continue;
                             }
 
-                            if ($dish->ingestion_type == $mDish->ingestion_type && $dish->type == $mDish->dish_type) {
+                            if ($dish->ingestion_type == $mDish->ingestion_type
+                                && $dish->type == $mDish->dish_type
+                            ) {
+                                $dish->with_garnish = $mDish->dish->with_garnish;
+                                if ($dish->with_garnish) {
+                                    foreach ($menuDish as $gDish) {
+                                        if ($gDish->dish_type == Dish::TYPE_GARNISH) {
+                                            $garnishException  = $mDish->dish->getExceptionList();
+                                            $crossGarnishException = array_intersect($garnishException, $orderExceptionList);
+                                            if (empty($crossGarnishException)) {
+                                                $dish->garnish_id = $gDish->dish_id;
+                                            }
+                                        }
+                                    }
+                                }
                                 $dish->dish_id = $mDish->dish_id;
                                 $dish->save(false);
                             }

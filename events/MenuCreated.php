@@ -1,6 +1,7 @@
 <?php
 namespace app\events;
 
+use app\models\Repository\Dish;
 use app\models\Repository\Menu;
 use app\models\Repository\Order;
 use app\models\Repository\OrderSchedule;
@@ -67,6 +68,7 @@ class MenuCreated extends Event
                 foreach ($schedule['dishes'] as $dish) {
                     // Сгенерируем ключ меню
                     $key                = sprintf('%s-%d-%d', $schedule['date'], $dish['ingestion_type'], $dish['type'] ?? 0);
+                    $garnishKey         = sprintf('%s-%d-%d', $schedule['date'], $dish['ingestion_type'], Dish::TYPE_GARNISH);
                     $orderExceptionList = $order->getExceptionList();
 
                     // В меню должен быть элемент с этим ключом
@@ -76,9 +78,24 @@ class MenuCreated extends Event
                             $array         = array_intersect($dishException, $orderExceptionList);
                             // В блюде не должно быть пересекающихся исключений
                             if (empty($array)) {
-                                $orderScheduleDish          = OrderScheduleDish::findOne($dish['id']);
-                                $orderScheduleDish->dish_id = $menuDish['dish_id'];
-                                $orderScheduleDish->name    = $menuDish['name'];
+                                $orderScheduleDish               = OrderScheduleDish::findOne($dish['id']);
+                                $orderScheduleDish->dish_id      = $menuDish['dish_id'];
+                                $orderScheduleDish->name         = $menuDish['name'];
+                                $orderScheduleDish->with_garnish = $menuDish['with_garnish'];
+
+                                if ($menuDish['with_garnish']) {
+                                    if (!empty($menu[$garnishKey])) {
+                                        foreach ($menu[$key] as $menuGarnish) {
+                                            $garnishException = $menuGarnish['exception_list'];
+                                            $gArray           = array_intersect($garnishException, $orderExceptionList);
+                                            if (empty($gArray)) {
+                                                $orderScheduleDish->garnish_id = $menuGarnish['dish_id'];
+                                                break;
+                                            }
+                                        }
+                                    }
+                                }
+
                                 if (!$orderScheduleDish->save()) {
                                     $transaction->rollBack();
                                     break;
