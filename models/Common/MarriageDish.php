@@ -22,6 +22,8 @@ class MarriageDish extends Model
     private $rating;
     /** @var string */
     private $result;
+    /** @var int */
+    private $weight;
     /** @var string */
     private $signature;
 
@@ -86,6 +88,14 @@ class MarriageDish extends Model
     }
 
     /**
+     * @return int
+     */
+    public function getWeight(): int
+    {
+        return $this->weight ?? 0;
+    }
+
+    /**
      * @return string
      */
     public function getRating(): string
@@ -104,8 +114,24 @@ class MarriageDish extends Model
     /**
      * @return string
      */
+    public function getQuality(): string
+    {
+        return '+';
+    }
+
+    /**
+     * @return string
+     */
     public function getSignature(): string
     {
         return (string) $this->signature;
+    }
+
+    /**
+     * @param int $weight
+     */
+    public function setWeight(int $weight): void
+    {
+        $this->weight = $weight;
     }
 }

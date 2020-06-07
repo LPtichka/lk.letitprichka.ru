@@ -438,13 +438,17 @@ class Excel
         $objWorksheet->getCellByColumnAndRow(1, 1)->setValue('время бракеража');
         $objWorksheet->getCellByColumnAndRow(2, 1)->setValue('тип');
         $objWorksheet->getCellByColumnAndRow(3, 1)->setValue('наименование изделия');
-        $objWorksheet->getCellByColumnAndRow(4, 1)->setValue('результат органолептической оценки и степени готовности');
-        $objWorksheet->getCellByColumnAndRow(5, 1)->setValue('разрешение к реализации');
-        $objWorksheet->getCellByColumnAndRow(6, 1)->setValue('подписи членов бракеражной комиссии');
+        $objWorksheet->getCellByColumnAndRow(4, 1)->setValue('выход (г.)');
+        $objWorksheet->getCellByColumnAndRow(5, 1)->setValue('результат органолептической оценки и степени готовности');
+        $objWorksheet->getCellByColumnAndRow(6, 1)->setValue('качество');
+        $objWorksheet->getCellByColumnAndRow(7, 1)->setValue('разрешение к реализации');
+        $objWorksheet->getCellByColumnAndRow(8, 1)->setValue('подписи членов бракеражной комиссии');
+
+        $date = ($params['date'] ?? '') . " " . ($params['time'] ?? date("H:i", time()));
 
         $i = 2;
         foreach ($marriageDish as $key => $dish) {
-            $objWorksheet->getCellByColumnAndRow(1, ($i + $key))->setValue($dish->getTime());
+            $objWorksheet->getCellByColumnAndRow(1, ($i + $key))->setValue($date);
             $cell = $objWorksheet->getCellByColumnAndRow(0, ($i + $key));
             $objWorksheet->getColumnDimension($cell->getColumn())->setAutoSize(true);
 
@@ -456,23 +460,30 @@ class Excel
             $cell = $objWorksheet->getCellByColumnAndRow(2, ($i + $key));
             $objWorksheet->getColumnDimension($cell->getColumn())->setAutoSize(true);
 
-            $objWorksheet->getCellByColumnAndRow(4, ($i + $key))->setValue($dish->getRating());
+            $objWorksheet->getCellByColumnAndRow(4, ($i + $key))->setValue($dish->getWeight());
+            $cell = $objWorksheet->getCellByColumnAndRow(2, ($i + $key));
+            $objWorksheet->getColumnDimension($cell->getColumn())->setAutoSize(true);
+
+            $objWorksheet->getCellByColumnAndRow(5, ($i + $key))->setValue($dish->getRating());
             $cell = $objWorksheet->getCellByColumnAndRow(3, ($i + $key));
             $objWorksheet->getColumnDimension($cell->getColumn())->setAutoSize(true);
 
-            $objWorksheet->getCellByColumnAndRow(5, ($i + $key))->setValue($dish->getResult());
+            $objWorksheet->getCellByColumnAndRow(6, ($i + $key))->setValue($dish->getQuality());
             $cell = $objWorksheet->getCellByColumnAndRow(4, ($i + $key));
             $objWorksheet->getColumnDimension($cell->getColumn())->setAutoSize(true);
 
-            $objWorksheet->getCellByColumnAndRow(6, ($i + $key))->setValue($dish->getSignature());
+            $objWorksheet->getCellByColumnAndRow(7, ($i + $key))->setValue($dish->getResult());
+            $cell = $objWorksheet->getCellByColumnAndRow(4, ($i + $key));
+            $objWorksheet->getColumnDimension($cell->getColumn())->setAutoSize(true);
+
+            $objWorksheet->getCellByColumnAndRow(8, ($i + $key))->setValue($dish->getSignature());
             $cell = $objWorksheet->getCellByColumnAndRow(5, ($i + $key));
             $objWorksheet->getColumnDimension($cell->getColumn())->setAutoSize(true);
         }
 
         $objWorksheet->mergeCells('A2:A' . (count($marriageDish) + 1));
-        $objWorksheet->getCellByColumnAndRow(0, 2)->setValue($params['date'] ?? '');
-
-        $objWorksheet->getStyle('A1:G1')->applyFromArray($this->fillGreen);
+        $objWorksheet->getCellByColumnAndRow(0, 1)->setValue($date);
+        $objWorksheet->getStyle('A1:H1')->applyFromArray($this->fillGreen);
 
         return true;
     }

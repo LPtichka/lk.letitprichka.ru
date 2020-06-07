@@ -176,6 +176,7 @@ class MenuController extends BaseController
         return $this->renderAjax('/menu/_get_marriage_sheet', [
             'ingestions' => $ingestions,
             'date'       => $date ?? '',
+            'time'       => \Yii::$app->request->post('time', date('H:i', time())),
             'title'      => \Yii::t('menu', 'Marriage sheet'),
         ]);
     }
@@ -188,7 +189,7 @@ class MenuController extends BaseController
         $ingestions = [];
 
         if (\Yii::$app->request->post()) {
-            $date       = \Yii::$app->request->post('date');
+            $date       = \Yii::$app->request->post('date') . " " . \Yii::$app->request->post('time', date("H:i", time()));
             $ingestions = (new \app\models\Repository\MenuDish())->getMarriageForDate($date);
 
             $excel = new Excel();

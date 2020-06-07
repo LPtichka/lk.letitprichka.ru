@@ -16,16 +16,24 @@ Pjax::begin([
         <h1><?= $title; ?></h1>
         <title><?= $title; ?></title>
         <?php $form = ActiveForm::begin(); ?>
-        <div>
-            <label><?= \Yii::t('menu', 'Choose date'); ?></label>
-            <?php echo DatePicker::widget([
-                'name'          => 'date',
-                'removeButton'  => false,
-                'pluginOptions' => [
-                    'autoclose' => true,
-                    'format'    => 'dd.mm.yyyy'
-                ]
-            ]); ?>
+        <div class="row">
+            <div class="col-sm-9">
+                <label><?= \Yii::t('menu', 'Choose date'); ?></label>
+                <?php echo DatePicker::widget([
+                    'name'          => 'date',
+                    'removeButton'  => false,
+                    'pluginOptions' => [
+                        'autoclose' => true,
+                        'format'    => 'dd.mm.yyyy'
+                    ]
+                ]); ?>
+            </div>
+            <div class="col-sm-3">
+                <label><?= \Yii::t('menu', 'Choose time'); ?></label>
+                <?= Html::textInput('time', date('H:i', time()), [
+                    'class' => 'form-control'
+                ]) ?>
+            </div>
         </div>
         <div class="row modal-buttons">
             <div class="col-md-6">
@@ -54,14 +62,14 @@ Pjax::begin([
 <?php else: ?>
     <div class="route-row">
         <div class="row header-table">
-            <div class="col-sm-2">Дата</div>
+            <div class="col-sm-2">Дата и время</div>
             <div class="col-sm-10">
                 <div class="row">
-                    <div class="col-sm-2">Время</div>
-                    <div class="col-sm-2">Тип</div>
-                    <div class="col-sm-2">Наименование</div>
+                    <div class="col-sm-3">Наименование</div>
+                    <div class="col-sm-1">Выход</div>
                     <div class="col-sm-2">Результат</div>
                     <div class="col-sm-2">Разрешение</div>
+                    <div class="col-sm-2">Качество</div>
                     <div class="col-sm-2">Подписи</div>
                 </div>
             </div>
@@ -69,16 +77,16 @@ Pjax::begin([
         <hr/>
         <div class="row">
             <div class="col-sm-2 left-element">
-                <?= $date; ?>
+                <?= $date . " " . $time; ?>
             </div>
             <div class="col-sm-10">
                 <?php foreach ($ingestions as $ingestion): ?>
                     <div class="row list-element">
-                        <div class="col-sm-2"><?php echo $ingestion->getTime(); ?></div>
-                        <div class="col-sm-2"><?php echo $ingestion->getType(); ?></div>
-                        <div class="col-sm-2"><?php echo $ingestion->getDishName(); ?></div>
+                        <div class="col-sm-3"><?php echo $ingestion->getDishName(); ?></div>
+                        <div class="col-sm-1"><?php echo $ingestion->getWeight(); ?>&nbsp;г.</div>
                         <div class="col-sm-2"><?php echo $ingestion->getRating(); ?></div>
                         <div class="col-sm-2"><?php echo $ingestion->getResult(); ?></div>
+                        <div class="col-sm-2"><?php echo $ingestion->getQuality(); ?></div>
                         <div class="col-sm-2"><?php echo $ingestion->getSignature(); ?></div>
                     </div>
                 <?php endforeach; ?>
@@ -95,6 +103,7 @@ Pjax::begin([
                         [
                             'class'     => 'btn btn-sm btn-warning save-marriage-sheet',
                             'data-date' => $date,
+                            'data-time' => $time,
                         ]
                     ) ?>
                 </div>
@@ -119,14 +128,32 @@ Pjax::begin([
 \Yii::$app->view->registerJs(<<<JS
     body.delegate('.save-marriage-sheet', 'click', function (e) {
         e.preventDefault();
-        let date = $(this).data('date');
+        let button = $(this);
+        let date = button.data('date');
+        let time = button.data('time');
+        
         $.ajax({
             url: '/menu/save-marriage-sheet',
             type: 'POST',
-            data: {date: date},
+            data: {date: date, time: time},
             dataType: 'json',
+            beforeSend: function() {
+                button.button('loading');
+            },
+            complete: function() {
+                button.button('reset');
+            },
             success: function(data) {
                 window.location.href = data.url;
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                swal({
+                    title: "Ошибка",
+                    text: thrownError,
+                    type: 'error',
+                    showCancelButton: true,
+                    closeOnConfirm: false,
+                });
             }
         });
     });
