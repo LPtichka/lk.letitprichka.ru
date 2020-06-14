@@ -141,7 +141,7 @@ class Order extends Repository
             'label'     => \Yii::t('order', 'Subscription'),
             'content'   => function ($model){
                 /** @var \app\models\Repository\Order $model */
-                return $model->subscription->name . ', '. $model->count . 'д.';
+                return $model->subscription->name . ($model->without_soup ? ' б/супа' : '') .', '. $model->count . 'д.';
             }
         ];
 
