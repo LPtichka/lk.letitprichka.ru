@@ -48,6 +48,7 @@ return [
     'Schedule First Date'                   => 'Первая дата доставки',
     'Schedule interval'                     => 'Интервал доставки',
     'Status'                                => 'Статус',
+    'Subscription'                          => 'Подписка',
     'Subscription ID'                       => 'Вариант подписки',
     'Total'                                 => 'Итого',
     'Without soup'                          => 'Без супов',

@@ -83,7 +83,7 @@ class Order extends Repository
 
         $result['id'] = [
             'attribute'      => 'id',
-            'contentOptions' => ['style' => 'width:120px;'],
+            'contentOptions' => ['style' => 'width:60px;'],
             'label'          => \Yii::t('order', 'ID'),
             'content'        => function ($model){
                 return Html::a($model->id, ['order/view', 'id' => $model->id]);
@@ -105,6 +105,7 @@ class Order extends Repository
         $result['status_id'] = [
             'attribute' => 'status_id',
             'label'     => \Yii::t('order', 'Status'),
+            'contentOptions' => ['style' => 'width:100px;'],
             'content'   => function ($model){
                 return (new Status($model->status_id))->getStatusName();
             }
@@ -129,6 +130,7 @@ class Order extends Repository
         $result['total'] = [
             'attribute' => 'total',
             'label'     => \Yii::t('order', 'Total'),
+            'contentOptions' => ['style' => 'width:100px;'],
             'content'   => function ($model){
                 return \Yii::$app->formatter->asCurrency($model->total, 'RUB');
             }
@@ -139,7 +141,7 @@ class Order extends Repository
             'label'     => \Yii::t('order', 'Subscription'),
             'content'   => function ($model){
                 /** @var \app\models\Repository\Order $model */
-                return $model->subscription->name;
+                return $model->subscription->name . ', '. $model->count . 'д.';
             }
         ];
 
@@ -153,7 +155,7 @@ class Order extends Repository
 
         $result['created_at'] = [
             'attribute'      => 'created_at',
-            'contentOptions' => ['style' => 'width:240px;'],
+            'contentOptions' => ['style' => 'width:130px;'],
             'label'          => \Yii::t('order', 'Created at'),
             'content'        => function ($model){
                 return date('d.m.Y \в H:i', $model->created_at);
