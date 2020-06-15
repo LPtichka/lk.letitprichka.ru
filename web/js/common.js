@@ -332,6 +332,35 @@ window.parseXML = function (url) {
     });
 };
 
+window.defferOrder = function (orderId, dateFrom, dateTo) {
+    swal({
+        confirmButtonColor: redColor,
+        title: 'Внимание',
+        html: true,
+        confirmButtonText: approveButton,
+        cancelButtonText: cancelButton,
+        showCancelButton: true,
+        text: 'Вы действительно хотите перенести дату доставки. Обратите внимание что все даты после измененной сместятся соответственно.'
+    }, function (isConfirm) {
+        if (isConfirm) {
+            $.ajax({
+                url: '/order/' + orderId + '/deffer',
+                data: {dateTo: dateTo, dateFrom: dateFrom},
+                type: 'POST',
+                dataType: 'json',
+                success: function (data) {
+                    window.location.reload();
+                },
+                error: function (data) {
+                    console.log(data)
+                }
+            });
+        } else {
+            window.location.reload();
+        }
+    });
+};
+
 // Получение GET параметров
 window.getAllUrlParams = function (url) {
     // извлекаем строку из URL или объекта window
@@ -543,7 +572,7 @@ $(document).ready(function () {
                 ' data-street="' + item['data']['streetWithType'] + '"' +
                 ' data-house="' + (item['data']['house'] || '') + '"' +
                 ' data-flat="' + (item['data']['flat'] || '') + '"' +
-                ' data-housing="' + ((item['data']['blockType'] +'. '+ item['data']['block']) || '') + '"' +
+                ' data-housing="' + ((item['data']['blockType'] + '. ' + item['data']['block']) || '') + '"' +
                 ' data-postcode="' + (item['data']['postalCode'] || '') + '"' +
                 ' data-val="' + item['value'] + '">' + item['value'].replace(re, "<b>$1</b>") + '</div>';
         },

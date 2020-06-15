@@ -1,7 +1,6 @@
 <?php
 
 use app\models\Repository\Order;
-use kartik\date\DatePicker;
 use kartik\select2\Select2;
 use kartik\switchinput\SwitchInput;
 use yii\helpers\Html;
@@ -167,7 +166,7 @@ if ($model->id) {
                                 <hr/>
                                 <div class="row" id="order-address-block">
                                     <div class="col-sm-8 select-block">
-                                        <div class="form-group">
+                                        <div class="form-group <?php if(!empty($model->getErrorMessages('address'))):?> has-error<?php endif;?>">
                                             <label><?= \Yii::t('order', 'Choose address ID'); ?></label>
                                             <?= Html::activeDropDownList($model, 'address_id', $addresses ?? [], [
                                                 'class'    => 'form-control input-sm',
@@ -205,6 +204,7 @@ if ($model->id) {
                                     </div>
                                     <?= $this->render('_address', [
                                         'address' => $model->address,
+                                        'order' => $model
                                     ]); ?>
                                 </div>
                                 <hr/>
@@ -281,14 +281,25 @@ if ($model->id) {
             </div>
         </div>
 
-        <?= $this->render('_order_menu_block', [
-            'form' => $form,
-            'franchises' => $franchises ?? [],
-            'intervals' => $intervals ?? [],
-            'model' => $model,
-            'subscriptionCounts' => $subscriptionCounts ?? [],
-            'subscriptions' => $subscriptions ?? [],
-        ]); ?>
+        <?php if ($model->id): ?>
+            <div class="box box-primary" id="order-menu-block">
+                <?= $this->render('_menu', [
+                    'order'     => $model,
+                    'addresses' => $addresses,
+                    'intervals' => $intervals,
+                ]); ?>
+            </div>
+        <?php else: ?>
+            <?= $this->render('_order_menu_block', [
+                'form'               => $form,
+                'franchises'         => $franchises ?? [],
+                'intervals'          => $intervals ?? [],
+                'model'              => $model,
+                'subscriptionCounts' => $subscriptionCounts ?? [],
+                'subscriptions'      => $subscriptions ?? [],
+            ]); ?>
+        <?php endif; ?>
+
     </div>
     <?php ActiveForm::end(); ?>
 </div>

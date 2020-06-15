@@ -376,10 +376,10 @@ class OrderController extends BaseController
     /**
      * Отложить выполнение заказа с определенной даты
      *
-     * @param int $orderID
+     * @param int $id
      * @return array
      */
-    public function actionDeffer(int $orderID)
+    public function actionDeffer(int $id)
     {
         \Yii::$app->response->format = Response::FORMAT_JSON;
 
@@ -395,7 +395,7 @@ class OrderController extends BaseController
 
         $transaction    = \Yii::$app->db->beginTransaction();
         $orderSchedules = OrderSchedule::find()
-            ->where(['order_id' => $orderID])
+            ->where(['order_id' => $id])
             ->andWhere(['>=', 'date', date('Y-m-d', strtotime($oldDateFrom))])
             ->orderBy(['date' => SORT_ASC])
             ->all();
@@ -405,6 +405,7 @@ class OrderController extends BaseController
             $orderSchedule->date = date('Y-m-d', $newDateTimestamp + ($key * 86400));
             if (!$orderSchedule->save(false)) {
                 $transaction->rollBack();
+                \Yii::$app->session->addFlash('danger', \Yii::t('order', 'Error schedule saving'));
                 return [
                     'success' => false,
                     'title'   => \Yii::t('order', 'Error schedule saving'),
@@ -415,12 +416,14 @@ class OrderController extends BaseController
         try {
             $transaction->commit();
         } catch (\yii\db\Exception $e) {
+            \Yii::$app->session->addFlash('danger', \Yii::t('order', 'Error schedule saving'));
             return [
                 'success' => false,
                 'title'   => \Yii::t('order', 'Error saving to database'),
             ];
         }
 
+        \Yii::$app->session->addFlash('success', \Yii::t('order', 'Order schedule saved successfully'));
         return [
             'success' => true,
             'title'   => \Yii::t('order', 'Order schedule saved successfully'),

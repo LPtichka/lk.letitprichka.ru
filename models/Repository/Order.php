@@ -729,4 +729,18 @@ class Order extends \yii\db\ActiveRecord
     {
         return !in_array($this->status_id, self::STATUSES_NO_EDITABLE);
     }
+
+    public function getErrorMessages(string $model): array
+    {
+        if ($model == 'address') {
+            if (!empty($this->address->getFirstErrors())) {
+                return $this->address->getFirstErrors();
+            }
+            if (isset($this->customer->addresses[0]) && !empty($this->customer->addresses[0]->getFirstErrors())) {
+                return $this->customer->addresses[0]->getFirstErrors();
+            }
+        }
+
+        return [];
+    }
 }

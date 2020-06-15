@@ -62,17 +62,31 @@ window.getExceptionBlock = function () {
 };
 
 window.getMenuBlock = function ($orderId) {
-    $.ajax({
-        url: '/order/get-menu?orderId=' + $orderId,
-        method: 'get',
-        beforeSend: function () {
-            document.getElementById('order-menu-block').classList.add('loading');
-        },
-        success: function (html) {
-            document.getElementById('order-menu-block').classList.remove('loading');
-            document.getElementById('order-menu-block').innerHTML = html;
-        }
-    });
+    // $.ajax({
+    //     url: '/order/get-menu?orderId=' + $orderId,
+    //     method: 'get',
+    //     beforeSend: function () {
+    //         document.getElementById('order-menu-block').classList.add('loading');
+    //     },
+    //     success: function (html) {
+    //         document.getElementById('order-menu-block').classList.remove('loading');
+    //         document.getElementById('order-menu-block').innerHTML = html;
+    //
+    //         setTimeout(function () {
+    //             let scriptElements = document.getElementById('order-menu-block').getElementsByTagName('SCRIPT');
+    //             for (i = 0; i < scriptElements.length; i ++) {
+    //                 let scriptElement = document.createElement('SCRIPT');
+    //                 scriptElement.type = 'text/javascript';
+    //                 if (!scriptElements[i].src) {
+    //                     scriptElement.innerHTML = scriptElements[i].innerHTML;
+    //                 } else {
+    //                     scriptElement.src = scriptElements[i].src;
+    //                 }
+    //                 document.head.appendChild(scriptElement);
+    //             }
+    //         }, 500);
+    //     }
+    // });
 };
 
 let orderId = document.getElementById('order-container').getAttribute('data-order-id');

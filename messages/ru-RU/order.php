@@ -63,6 +63,7 @@ return [
     'completed'                                                                                                                                 => 'Завершить',
     'deffered'                                                                                                                                  => 'Отложить',
     'Do you want change status to processed'                                                                                                    => 'Вы дейстивтельно хотите перевести&nbsp;заказ в статус "В&nbsp;работе"?',
+    'Order schedule saved successfully'                                                                                                         => 'Вы успешно изменили дату доставки',
     'Do you want change status to canceled'                                                                                                     => 'Вы дейстивтельно хотите отменить&nbsp;заказ?',
     'Order change status successfully'                                                                                                          => 'Заказ успешно переведен в статус.',
     'Defer the implementation of the order'                                                                                                     => 'Отложить выполнение заказа.',
