@@ -21,9 +21,13 @@ return [
     'FIO'                                              => 'ФИО',
     'fio'                                              => 'ФИО',
     'full_address'                                     => 'Адрес',
+    'Full address'                                     => 'Адрес',
+    'Address additional info'                          => 'Доп. информация (этаж, подъезд, домофон)',
+    'Comment'                                          => 'Дополнительная информация',
     'id'                                               => 'ID',
     'is_default_address'                               => 'Адрес по умолчанию?',
     'Phone'                                            => 'Телефон',
+    'Main address'                                     => 'Основной',
     'phone'                                            => 'Телефон',
     'updated'                                          => 'Обновлен',
 ];

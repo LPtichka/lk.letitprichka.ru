@@ -29,15 +29,17 @@ use yii\widgets\Pjax;
             <?php Pjax::begin(
                 ['id' => 'pre-request-modal-buttons']
             ); ?>
-            <?php echo \yii\helpers\Html::a(
-                '<span>' . \Yii::t('order', 'Deffer order') . '</span>',
-                '#',
-                [
-                    'class'                => 'action-with-request btn btn-default',
-                    'data-pre-request-url' => \yii\helpers\Url::to(['order/deffer-request', 'orderID' => $order->id]),
-                    'data-request-url'     => \yii\helpers\Url::to(['order/deffer', 'orderID' => $order->id]),
-                ]
-            ); ?>
+            <?php if (false): ?>
+                <?php echo \yii\helpers\Html::a(
+                    '<span>' . \Yii::t('order', 'Deffer order') . '</span>',
+                    '#',
+                    [
+                        'class'                => 'action-with-request btn btn-default',
+                        'data-pre-request-url' => \yii\helpers\Url::to(['order/deffer-request', 'orderID' => $order->id]),
+                        'data-request-url'     => \yii\helpers\Url::to(['order/deffer', 'orderID' => $order->id]),
+                    ]
+                ); ?>
+            <?php endif; ?>
             <?php echo \yii\helpers\Html::a(
                 '<span>' . \Yii::t('menu', 'Customer sheet') . '</span>',
                 ['/order/get-customer-sheet', 'id' => $order->id],

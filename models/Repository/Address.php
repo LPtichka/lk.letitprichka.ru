@@ -19,6 +19,8 @@ use yii\behaviors\TimestampBehavior;
  * @property string $housing
  * @property string $building
  * @property string $flat
+ * @property string $floor
+ * @property string $porch
  * @property int $postcode
  * @property string $description
  * @property string $full_address
@@ -48,15 +50,6 @@ class Address extends \yii\db\ActiveRecord
     }
 
     /**
-     * @inheritdoc
-     * @return AddressQuery the active query used by this AR class.
-     */
-    public static function find()
-    {
-        return new AddressQuery(get_called_class());
-    }
-
-    /**
      * @return array
      */
     public function attributeLabels()
@@ -71,6 +64,8 @@ class Address extends \yii\db\ActiveRecord
             'housing'      => \Yii::t('address', 'Housing'),
             'building'     => \Yii::t('address', 'Building'),
             'flat'         => \Yii::t('address', 'Flat'),
+            'floor'        => \Yii::t('address', 'Floor'),
+            'porch'        => \Yii::t('address', 'Porch'),
             'postcode'     => \Yii::t('address', 'Postcode'),
             'description'  => \Yii::t('address', 'Extra info'),
         ];
@@ -84,7 +79,7 @@ class Address extends \yii\db\ActiveRecord
         return [
             [['status'], 'default', 'value' => 10],
             [['customer_id', 'postcode', 'status'], 'integer'],
-            [['city', 'street', 'house', 'housing', 'building', 'flat', 'full_address', 'description'], 'string'],
+            [['city', 'street', 'house', 'housing', 'floor', 'porch', 'building', 'flat', 'full_address', 'description'], 'string'],
             [['city', 'street', 'house', 'customer_id', 'full_address'], 'required'],
             [['customer_id'], 'exist', 'targetClass' => Customer::class, 'targetAttribute' => 'id', 'message' => 'Указан не существующий ID покупателя'],
         ];
@@ -108,8 +103,8 @@ class Address extends \yii\db\ActiveRecord
     {
         $address = new Address();
 
-        $address->description = (string)$data['description'];
-        $address->customer_id = (int)$data['customer_id'];
+        $address->description = (string) $data['description'];
+        $address->customer_id = (int) $data['customer_id'];
         $address->prepareAddress($address, $data['full_address']);
 
         return $address;
@@ -158,6 +153,15 @@ class Address extends \yii\db\ActiveRecord
     {
         $address = Address::find()->where(['full_address' => $fullAddress, 'customer_id' => $customerId])->one();
         return $address;
+    }
+
+    /**
+     * @inheritdoc
+     * @return AddressQuery the active query used by this AR class.
+     */
+    public static function find()
+    {
+        return new AddressQuery(get_called_class());
     }
 
     /**

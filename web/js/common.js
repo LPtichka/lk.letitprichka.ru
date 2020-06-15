@@ -543,7 +543,7 @@ $(document).ready(function () {
                 ' data-street="' + item['data']['streetWithType'] + '"' +
                 ' data-house="' + (item['data']['house'] || '') + '"' +
                 ' data-flat="' + (item['data']['flat'] || '') + '"' +
-                ' data-housing="' + (item['data']['block'] || '') + '"' +
+                ' data-housing="' + ((item['data']['blockType'] +'. '+ item['data']['block']) || '') + '"' +
                 ' data-postcode="' + (item['data']['postalCode'] || '') + '"' +
                 ' data-val="' + item['value'] + '">' + item['value'].replace(re, "<b>$1</b>") + '</div>';
         },
@@ -555,10 +555,14 @@ $(document).ready(function () {
             streetInput.val(item.getAttribute('data-street'));
 
             $('[name="Address[region]"]').val(item.getAttribute('data-region'));
-            $('[name="Address[house]"]').val(item.getAttribute('data-house'));
+            let house = item.getAttribute('data-house');
+            if (item.getAttribute('data-housing')) {
+                house += ', ' + item.getAttribute('data-housing');
+            }
+            $('[name="Address[house]"]').val(house);
             $('[name="Address[flat]"]').val(item.getAttribute('data-flat'));
-            $('[name="Address[housing]"]').val(item.getAttribute('data-housing'));
-            $('[name="Address[postcode]"]').val(item.getAttribute('data-postcode'));
+            // $('[name="Address[housing]"]').val(item.getAttribute('data-housing'));
+            // $('[name="Address[postcode]"]').val(item.getAttribute('data-postcode'));
         }
     });
 });

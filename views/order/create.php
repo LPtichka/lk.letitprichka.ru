@@ -54,7 +54,7 @@ if ($model->id) {
                                             'data'          => $customers ?? [],
                                             'showToggleAll' => false,
                                             'hideSearch'    => false,
-                                            'disabled'      => !$model->isEditable(),
+                                            'disabled'      => $model->id,
                                             'options'       => ['placeholder' => 'Выберите покупателя...'],
                                             'pluginOptions' => [
                                                 'closeOnSelect' => true,
@@ -80,7 +80,7 @@ if ($model->id) {
                                                         'offText' => 'Нет',
                                                     ],
                                                     'inlineLabel'   => true,
-                                                    'disabled'      => !$model->isEditable(),
+                                                    'disabled'      => $model->id,
                                                     'labelOptions'  => ['style' => 'font-size: 12px'],
                                                     'options'       => [
                                                         'data-toggle'   => "collapse",

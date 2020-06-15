@@ -64,7 +64,7 @@ $selectExp = new JsExpression('function(event, ui) {
 
 <div class="address-row" id="group-<?= $i ?>">
     <div class="row">
-        <div class="col-sm-4 col-print-4">
+        <div class="col-sm-5 col-print-5">
             <?= AutoComplete::widget([
                 'model'         => $address,
                 'attribute'     => "[$i]full_address",
@@ -79,7 +79,7 @@ $selectExp = new JsExpression('function(event, ui) {
                 ],
             ]) ?>
         </div>
-        <div class="col-sm-6">
+        <div class="col-sm-5">
             <?= Html::activeInput('text', $address, "[$i]description", [
                 'class' => 'form-control input-sm address-input',
             ]) ?>

@@ -63,40 +63,39 @@ $this->title = \Yii::t('address', 'Address create');
                 </div>
             </div>
             <div class="row collapse" id="collapse-address">
-                <div class="col-sm-4">
+                <div class="col-sm-2">
                     <?= $form->field($model, 'city')->textInput([
                         'class' => 'form-control input-sm',
                     ]) ?>
                 </div>
-                <div class="col-sm-4">
+                <div class="col-sm-3">
                     <?= $form->field($model, 'street')->textInput([
                         'class' => 'form-control input-sm',
                     ]) ?>
                 </div>
-                <div class="col-sm-4">
-                    <?= $form->field($model, 'house')->textInput([
-                        'class' => 'form-control input-sm',
-                    ]) ?>
-                </div>
-                <div class="col-sm-3">
-                    <?= $form->field($model, 'housing')->textInput([
-                        'class' => 'form-control input-sm',
-                    ]) ?>
-                </div>
-                <div class="col-sm-3">
-                    <?= $form->field($model, 'building')->textInput([
-                        'class' => 'form-control input-sm',
-                    ]) ?>
-                </div>
-                <div class="col-sm-3">
-                    <?= $form->field($model, 'flat')->textInput([
-                        'class' => 'form-control input-sm',
-                    ]) ?>
-                </div>
-                <div class="col-sm-3">
-                    <?= $form->field($model, 'postcode')->textInput([
-                        'class' => 'form-control input-sm',
-                    ]) ?>
+                <div class="col-sm-7">
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <?= $form->field($model, 'house')->textInput([
+                                'class' => 'form-control input-sm',
+                            ]) ?>
+                        </div>
+                        <div class="col-sm-3">
+                            <?= $form->field($model, 'flat')->textInput([
+                                'class' => 'form-control input-sm',
+                            ]) ?>
+                        </div>
+                        <div class="col-sm-3">
+                            <?= $form->field($model, 'floor')->textInput([
+                                'class' => 'form-control input-sm',
+                            ]) ?>
+                        </div>
+                        <div class="col-sm-3">
+                            <?= $form->field($model, 'porch')->textInput([
+                                'class' => 'form-control input-sm',
+                            ]) ?>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="row">
@@ -151,7 +150,7 @@ $this->title = \Yii::t('address', 'Address create');
                     ' data-street="' + item['data']['streetWithType'] + '"' +
                     ' data-house="' + (item['data']['house'] || '') + '"' +
                     ' data-flat="' + (item['data']['flat'] || '') + '"' +
-                    ' data-housing="' + (item['data']['block'] || '') + '"' +
+                    ' data-housing="' + ((item['data']['blockType'] +'. '+ item['data']['block']) || '') + '"' +
                     ' data-postcode="' + (item['data']['postalCode'] || '') + '"' +
                     ' data-val="' + item['value'] + '">' + item['value'].replace(re, "<b>$1</b>") + '</div>';
             },
@@ -161,12 +160,17 @@ $this->title = \Yii::t('address', 'Address create');
     
                 cityInput.val(item.getAttribute('data-city'));
                 streetInput.val(item.getAttribute('data-street'));
+                
+                let house = item.getAttribute('data-house');
+                if (item.getAttribute('data-housing')) {
+                    house += ', ' + item.getAttribute('data-housing');
+                }
     
                 $('[name="Address[region]"]').val(item.getAttribute('data-region'));
-                $('[name="Address[house]"]').val(item.getAttribute('data-house'));
+                $('[name="Address[house]"]').val(house);
                 $('[name="Address[flat]"]').val(item.getAttribute('data-flat'));
-                $('[name="Address[housing]"]').val(item.getAttribute('data-housing'));
-                $('[name="Address[postcode]"]').val(item.getAttribute('data-postcode'));
+                // $('[name="Address[housing]"]').val(item.getAttribute('data-housing'));
+                // $('[name="Address[postcode]"]').val(item.getAttribute('data-postcode'));
             }
         });
     });

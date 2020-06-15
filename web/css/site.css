@@ -375,6 +375,7 @@ hr.devider {
 
 input[type="radio"].input-sm {
     margin-top: 0;
+    width: 14px;
 }
 
 .label-block {
@@ -729,6 +730,10 @@ select.form-control.input-sm {
 .ingestion-row {
     position: relative;
     border-bottom: 1px solid #f2f2f2;
+}
+
+.exception-row {
+    margin-bottom: 10px;
 }
 
 .ingestion-row:last-child {

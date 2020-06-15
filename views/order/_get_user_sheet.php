@@ -64,9 +64,23 @@ Pjax::begin([
             beforeSend: function() {
                 button.addClass('loading');
             },
-            success: function(data) {
+            complete: function () {
                 button.removeClass('loading');
-                window.location.href = '/' + data.url;
+            },
+            success: function(data) {
+                if (data.success) {
+                    button.removeClass('loading');
+                    window.location.href = '/' + data.url;
+                } else {
+                    swal({
+                        title: "Ошибка",
+                        text: 'Возможно не все блюда назначены заказу в выбранный вами день. Попробуйте проверить содержание дня доставки для заказа.',
+                        type: 'error',
+                        showCancelButton: true,
+                        closeOnConfirm: false,
+                    });
+                }
+                
             }
         });
     });

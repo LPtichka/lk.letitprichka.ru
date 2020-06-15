@@ -115,6 +115,7 @@ class Address extends Repository
         $result['id'] = [
             'attribute' => 'id',
             'label'     => \Yii::t('address', 'ID'),
+            'contentOptions' => ['style' => 'width:60px;'],
             'content'   => function ($model) {
                 return Html::a(
                     $model->id,
@@ -130,6 +131,7 @@ class Address extends Repository
 
         $result['customer_id'] = [
             'attribute' => 'customer_id',
+            'contentOptions' => ['style' => 'width:60px;'],
             'label'     => \Yii::t('address', 'Customer id'),
         ];
 
@@ -148,6 +150,7 @@ class Address extends Repository
 
         $result['updated_at'] = [
             'attribute' => 'updated_at',
+            'contentOptions' => ['style' => 'width:130px;'],
             'label'     => \Yii::t('payment', 'Updated at'),
             'content'   => function ($model) {
                 return date('d.m.Y \в H:i', $model->updated_at);

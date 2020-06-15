@@ -17,6 +17,7 @@ use yii\behaviors\TimestampBehavior;
  * @property int $type
  * @property string $fio
  * @property string $email
+ * @property string $comment
  * @property string $phone
  * @property string $default_address_id
  * @property int $created_at
@@ -39,15 +40,6 @@ class Customer extends \yii\db\ActiveRecord
     }
 
     /**
-     * @inheritdoc
-     * @return CustomerQuery the active query used by this AR class.
-     */
-    public static function find()
-    {
-        return new CustomerQuery(get_called_class());
-    }
-
-    /**
      * @return array
      */
     public function attributeLabels()
@@ -57,6 +49,7 @@ class Customer extends \yii\db\ActiveRecord
             'fio'                => \Yii::t('customer', 'FIO'),
             'phone'              => \Yii::t('customer', 'Phone'),
             'email'              => \Yii::t('customer', 'Email'),
+            'comment'            => \Yii::t('customer', 'Comment'),
             'default_address_id' => \Yii::t('customer', 'Default address ID'),
         ];
     }
@@ -67,11 +60,11 @@ class Customer extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['phone'], 'filter', 'filter' => function () {
-                return '+7' . (new Phone((string)$this->phone))->getClearPhone();
+            [['phone'], 'filter', 'filter' => function (){
+                return '+7' . (new Phone((string) $this->phone))->getClearPhone();
             }],
             [['default_address_id', 'type', 'status'], 'integer'],
-            [['fio', 'email', 'phone'], 'string'],
+            [['fio', 'email', 'phone', 'comment'], 'string'],
             [['type'], 'default', 'value' => 1],
             [['status'], 'default', 'value' => 10],
             [['fio', 'email', 'phone'], 'required', 'on' => self::SCENARIO_NEW_CUSTOMER],
@@ -113,7 +106,7 @@ class Customer extends \yii\db\ActiveRecord
      */
     public function build(array $data): Customer
     {
-        $customer = new Customer();
+        $customer           = new Customer();
         $customer->scenario = self::SCENARIO_NEW_CUSTOMER;
 
         $customer->fio   = trim($data['fio']);
@@ -122,7 +115,7 @@ class Customer extends \yii\db\ActiveRecord
 
         if (!empty(trim($data['full_address']))) {
             $address              = new Address();
-            $address->description = (string)$data['description'];
+            $address->description = (string) $data['description'];
 
             $suggestions = (new Dadata())->getSuggestions('address', [
                 'query' => $data['full_address'],
@@ -189,6 +182,15 @@ class Customer extends \yii\db\ActiveRecord
             $customer = new Customer();
         }
         return $customer;
+    }
+
+    /**
+     * @inheritdoc
+     * @return CustomerQuery the active query used by this AR class.
+     */
+    public static function find()
+    {
+        return new CustomerQuery(get_called_class());
     }
 
     /**

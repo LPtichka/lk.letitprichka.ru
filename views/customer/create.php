@@ -55,6 +55,11 @@ if ($model->id) {
                                 ]
                             ]) ?>
                     </div>
+                    <div class="col-sm-12">
+                        <?= $form->field($model, 'comment')->textarea([
+                            'class' => 'form-control input-sm'
+                        ]) ?>
+                    </div>
                 </div>
             </div>
             <div class="col-md-4">
@@ -91,9 +96,9 @@ if ($model->id) {
         <div class="addresses">
             <hr/>
             <div class="row">
-                <div class="col-sm-4 col-print-4"><label>Полный адрес</label></div>
-                <div class="col-sm-6 col-print-6"><label>Комментарий</label></div>
-                <div class="col-sm-2 col-print-2"><label>Основной</label></div>
+                <div class="col-sm-5 col-print-5"><label><?php echo \Yii::t('customer', 'Full address');?></label></div>
+                <div class="col-sm-5 col-print-5"><label><?php echo \Yii::t('customer', 'Address additional info');?></label></div>
+                <div class="col-sm-2 col-print-2"><label><?php echo \Yii::t('customer', 'Main address');?></label></div>
             </div>
             <hr class="devider"/>
             <?php foreach ($model->addresses as $i => $address) : ?>

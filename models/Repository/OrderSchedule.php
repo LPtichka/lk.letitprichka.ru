@@ -53,12 +53,12 @@ class OrderSchedule extends \yii\db\ActiveRecord
         self::STATUS_DELAYED,
     ];
 
-    const BASE_INTERVAL = '10:00 - 19:00';
+    const BASE_INTERVAL = '08:00 - 10:00';
 
     const INTERVALS = [
-        '10:00 - 19:00' => '10:00 - 19:00',
-        '10:00 - 14:00' => '10:00 - 14:00',
-        '14:00 - 19:00' => '14:00 - 19:00',
+        '08:00 - 10:00' => '08:00 - 10:00',
+        '09:00 - 11:00' => '09:00 - 11:00',
+        '10:00 - 12:00' => '10:00 - 12:00',
     ];
 
     const INGESTION_CONTENT = [
