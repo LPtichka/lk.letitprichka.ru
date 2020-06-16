@@ -67,8 +67,8 @@ class Order extends \yii\db\ActiveRecord
         ],
         self::STATUS_PROCESSED => [
             self::STATUS_COMPLETED,
-            self::STATUS_CANCELED,
-            self::STATUS_DEFERRED,
+//            self::STATUS_CANCELED,
+//            self::STATUS_DEFERRED,
         ],
         self::STATUS_DEFERRED  => [
             self::STATUS_COMPLETED,

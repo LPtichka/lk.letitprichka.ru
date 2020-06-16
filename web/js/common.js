@@ -57,14 +57,17 @@ body.delegate('.add-row-action', 'click', function () {
     }
 
     $.get($(this).data('href') + '?counter=' + lastIndex, function (row) {
+        container.find('.empty-text').remove();
         container.append($(row));
     });
 });
 
 body.delegate('.delete-row-action', 'click', function () {
     let row = $(this).parents('[class*=' + $(this).data('row') + ']');
-    if ($('[class*=' + $(this).data('row') + ']').length > 1) {
-        row.remove();
+    let block = row.parent();
+    row.remove();
+    if ($('[class*=' + $(this).data('row') + ']').length == 0) {
+        block.html('<p class="empty-text">' + block.data('empty-text') + '</p>');
     }
 });
 

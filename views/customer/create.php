@@ -65,14 +65,19 @@ if ($model->id) {
             <div class="col-md-4">
                 <label>Исключения</label>
 
-                <div class="exceptions">
-                    <?php foreach ($model->exceptions as $i => $exception): ?>
-                        <?= $this->render('_exception', [
-                            'exceptions' => $exceptions,
-                            'exception'  => $exception,
-                            'i'          => $i,
-                        ]); ?>
-                    <?php endforeach; ?>
+                <div class="exceptions" data-empty-text="<?php echo \Yii::t('order', 'No exceptions'); ?>">
+                    <?php if (empty($model->exceptions)): ?>
+                        <p class="empty-text"><?php echo \Yii::t('order', 'No exceptions'); ?></p>
+                    <?php else: ?>
+                        <?php foreach ($model->exceptions as $i => $exception): ?>
+                            <?= $this->render('_exception', [
+                                'exceptions' => $exceptions,
+                                'exception'  => $exception,
+                                'i'          => $i + 1,
+                            ]); ?>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
+
                 </div>
                 <hr/>
                 <div class="row">
@@ -96,9 +101,12 @@ if ($model->id) {
         <div class="addresses">
             <hr/>
             <div class="row">
-                <div class="col-sm-5 col-print-5"><label><?php echo \Yii::t('customer', 'Full address');?></label></div>
-                <div class="col-sm-5 col-print-5"><label><?php echo \Yii::t('customer', 'Address additional info');?></label></div>
-                <div class="col-sm-2 col-print-2"><label><?php echo \Yii::t('customer', 'Main address');?></label></div>
+                <div class="col-sm-5 col-print-5"><label><?php echo \Yii::t('customer', 'Full address'); ?></label>
+                </div>
+                <div class="col-sm-5 col-print-5">
+                    <label><?php echo \Yii::t('customer', 'Address additional info'); ?></label></div>
+                <div class="col-sm-2 col-print-2"><label><?php echo \Yii::t('customer', 'Main address'); ?></label>
+                </div>
             </div>
             <hr class="devider"/>
             <?php foreach ($model->addresses as $i => $address) : ?>

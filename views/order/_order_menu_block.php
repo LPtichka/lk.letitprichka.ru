@@ -1,7 +1,6 @@
 <?php
 
 use kartik\date\DatePicker;
-use kartik\switchinput\SwitchInput;
 
 /** @var \app\models\Repository\Order $model */
 
@@ -17,12 +16,15 @@ use kartik\switchinput\SwitchInput;
                     <div class="col-sm-12 select-block">
                         <?= $form->field($model, 'subscription_id')->dropDownList(
                             [
-                                ''  => \Yii::t('app', 'Choose'),
+                                '' => \Yii::t('app', 'Choose'),
                             ] + $subscriptions,
                             [
                                 'class' => 'form-control input-sm'
                             ]
                         ) ?>
+                    </div>
+                    <div class="col-sm-12">
+                        <?= $form->field($model, 'without_soup')->checkbox(); ?>
                     </div>
                     <div class="col-sm-12">
                         <?= $form->field($model, 'cutlery')->textInput([
@@ -70,17 +72,7 @@ use kartik\switchinput\SwitchInput;
                             ]
                         ) ?>
                     </div>
-                    <div class="col-sm-3">
-                        <div class="switch detailed-address">
-                            <?= $form->field($model, 'without_soup')->widget(SwitchInput::class, [
-                                'pluginOptions' => [
-                                    'size'    => 'mini',
-                                    'onText'  => 'Да',
-                                    'offText' => 'Нет',
-                                ],
-                            ]); ?>
-                        </div>
-                    </div>
+
                 </div>
                 <div class="row dish-block">
                     <div class="col-sm-12">

@@ -149,7 +149,9 @@ class CustomerController extends BaseController
                 }
 
                 if ($defaultAddressKey !== null) {
-                    $customer->default_address_id = $customer->addresses[$defaultAddressKey]->id;
+                    $customer->default_address_id = !empty($customer->addresses[$defaultAddressKey])
+                        ? $customer->addresses[$defaultAddressKey]->id
+                        : $customer->addresses[0]->id;
                     if (!$customer->save()) {
                         $transaction->rollBack();
                         \Yii::$app->session->addFlash('warning', \Yii::t('customer', 'Customer save error'));
@@ -199,9 +201,9 @@ class CustomerController extends BaseController
             'name'
         );
 
-        if (empty($customer->exceptions)) {
-            $customer->setExceptions([new Exception()]);
-        }
+//        if (empty($customer->exceptions)) {
+//            $customer->setExceptions([new Exception()]);
+//        }
 
         return $this->renderAjax('/customer/create', [
             'model'      => $customer,

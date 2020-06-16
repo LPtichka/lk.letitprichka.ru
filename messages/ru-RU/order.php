@@ -51,8 +51,9 @@ return [
     'Subscription'                          => 'Подписка',
     'Subscription ID'                       => 'Вариант подписки',
     'Total'                                 => 'Итого',
-    'Without soup'                          => 'Без супов',
+    'Without soup'                          => 'Убрать супы из рациона',
     'Without subscription'                  => 'Без подписки',
+    'No exceptions'                         => 'Нет исключений',
 
     'Order was not saved successfully'                                                                                                          => 'Не удалось сохранить заказ, проверите форму на наличие ошибок.',
     'Order was saved successfully'                                                                                                              => 'Заказ успешно сохранен.',

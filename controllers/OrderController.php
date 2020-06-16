@@ -156,9 +156,9 @@ class OrderController extends BaseController
             $order->setAddress(new Address());
         }
 
-        if (empty($order->exceptions)) {
-            $order->setExceptions([new Exception()]);
-        }
+//        if (empty($order->exceptions)) {
+//            $order->setExceptions([new Exception()]);
+//        }
 
 
         $paymentTypes = ArrayHelper::map(

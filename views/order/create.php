@@ -166,7 +166,7 @@ if ($model->id) {
                                 <hr/>
                                 <div class="row" id="order-address-block">
                                     <div class="col-sm-8 select-block">
-                                        <div class="form-group <?php if(!empty($model->getErrorMessages('address'))):?> has-error<?php endif;?>">
+                                        <div class="form-group <?php if (!empty($model->getErrorMessages('address'))): ?> has-error<?php endif; ?>">
                                             <label><?= \Yii::t('order', 'Choose address ID'); ?></label>
                                             <?= Html::activeDropDownList($model, 'address_id', $addresses ?? [], [
                                                 'class'    => 'form-control input-sm',
@@ -204,7 +204,7 @@ if ($model->id) {
                                     </div>
                                     <?= $this->render('_address', [
                                         'address' => $model->address,
-                                        'order' => $model
+                                        'order'   => $model
                                     ]); ?>
                                 </div>
                                 <hr/>
@@ -249,15 +249,20 @@ if ($model->id) {
                         <h2 class="box-title"><?php echo \Yii::t('order', 'Order exceptions'); ?></h2>
                     </div>
                     <div class="box-body">
-                        <div class="exceptions">
-                            <?php foreach ($model->exceptions as $i => $exception): ?>
-                                <?= $this->render('_order_exception', [
-                                    'exceptions' => $exceptions,
-                                    'exception'  => $exception,
-                                    'disabled'   => !$model->isEditable(),
-                                    'i'          => $i,
-                                ]); ?>
-                            <?php endforeach; ?>
+                        <div class="exceptions" data-empty-text="<?php echo \Yii::t('order', 'No exceptions'); ?>">
+                            <?php if (empty($model->exceptions)): ?>
+                                <p class="empty-text"><?php echo \Yii::t('order', 'No exceptions'); ?></p>
+                            <?php else: ?>
+                                <?php foreach ($model->exceptions as $i => $exception): ?>
+                                    <?= $this->render('_order_exception', [
+                                        'exceptions' => $exceptions,
+                                        'exception'  => $exception,
+                                        'disabled'   => !$model->isEditable(),
+                                        'i'          => $i + 1,
+                                    ]); ?>
+                                <?php endforeach; ?>
+                            <?php endif; ?>
+
                         </div>
                         <hr/>
                         <?php if ($model->isEditable()): ?>
