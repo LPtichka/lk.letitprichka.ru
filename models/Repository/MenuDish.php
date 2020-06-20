@@ -103,7 +103,7 @@ class MenuDish extends \yii\db\ActiveRecord
 
             $marriageDish = new MarriageDish($time, $ingestionName, $dish->dish->name);
             $marriageDish->setWeight($dish->dish->weight);
-            $marriageDish->setResult('проба снята, разрешено к выдачи');
+            $marriageDish->setResult('проба снята, разрешено к выдаче');
             $result[] = $marriageDish;
         }
         return $result;

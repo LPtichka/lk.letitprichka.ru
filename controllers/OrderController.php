@@ -66,7 +66,11 @@ class OrderController extends BaseController
         }
 
         if (empty($order->address)) {
-            $order->setAddress(new Address());
+            if (!empty($order->customer->addresses)) {
+                $order->address = $order->customer->addresses[0];
+            } else {
+                $order->setAddress(new Address());
+            }
         }
 
         if (empty($order->exceptions)) {

@@ -13,10 +13,7 @@ use app\widgets\Html;
 
 <div class="exception-row" id="group-exc-<?= $i ?>">
     <div class="row">
-        <div class="col-sm-1 col-print-1 text-center">
-            <span class="counter"><?= $i ?></span>
-        </div>
-        <div class="col-sm-<?php echo $disabled ? '11' : '9'; ?> select-block no-label">
+        <div class="col-sm-<?php echo $disabled ? '12' : '10'; ?> select-block no-label">
             <div class="form-group">
                 <?= Html::activeDropDownList(
                     $exception,

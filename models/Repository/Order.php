@@ -125,9 +125,11 @@ class Order extends \yii\db\ActiveRecord
     {
         return [
             [['status_id', 'payment_type', 'cutlery', 'count', 'total', 'address_id', 'franchise_id'], 'integer'],
+            [['count', 'franchise_id', 'cutlery', 'payment_type', 'subscription_id', 'scheduleFirstDate', 'scheduleInterval'], 'required'],
             [['status_id'], 'in', 'range' => self::STATUSES],
             [['cash_machine', 'without_soup'], 'boolean'],
             [['comment', 'shop_order_number'], 'string'],
+            [['count', 'cutlery'], 'number', 'min' => 1],
             [['status_id'], 'default', 'value' => self::STATUS_NEW],
             ['payment_type', 'exist', 'targetClass' => PaymentType::class, 'targetAttribute' => 'id'],
             ['subscription_id', 'exist', 'targetClass' => Subscription::class, 'targetAttribute' => 'id'],
@@ -248,6 +250,7 @@ class Order extends \yii\db\ActiveRecord
             $customer = new Customer();
             $customer->load($data);
             $this->setCustomer($customer);
+            $customer->scenario = Customer::SCENARIO_NEW_CUSTOMER;
         } else {
             $this->setCustomer(Customer::findOne($data['Order']['customer_id']));
         }
@@ -454,6 +457,10 @@ class Order extends \yii\db\ActiveRecord
         }
         $this->customer_id = $this->customer->id;
         $this->address_id  = $this->customer->addresses[0]->id;
+        if (!$this->validate()) {
+            $transaction->rollBack();
+            return false;
+        }
         if (!$this->save()) {
             $transaction->rollBack();
             return false;
@@ -738,6 +745,12 @@ class Order extends \yii\db\ActiveRecord
             }
             if (isset($this->customer->addresses[0]) && !empty($this->customer->addresses[0]->getFirstErrors())) {
                 return $this->customer->addresses[0]->getFirstErrors();
+            }
+        }
+
+        if ($model == 'customer') {
+            if (!empty($this->customer)) {
+                return $this->customer->getFirstErrors();
             }
         }
 

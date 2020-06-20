@@ -7,7 +7,7 @@ return [
     'Choose time'      => 'Выберите время бракеража',
     'Create menu'      => 'Создать меню',
     'Created at'       => 'Создано',
-    'Customer sheet'   => 'Лист покупателя',
+    'Customer sheet'   => 'Бланк заказа',
     'Dinner'           => 'Обед',
     'End day'          => 'Конечная дата',
     'Equipped'         => 'Укомплектован',

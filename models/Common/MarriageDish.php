@@ -19,7 +19,7 @@ class MarriageDish extends Model
     /** @var string */
     private $dishName;
     /** @var string */
-    private $rating;
+    private $rating = 'отлично';
     /** @var string */
     private $result;
     /** @var int */

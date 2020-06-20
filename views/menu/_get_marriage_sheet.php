@@ -62,15 +62,15 @@ Pjax::begin([
 <?php else: ?>
     <div class="route-row">
         <div class="row header-table">
-            <div class="col-sm-2">Дата и время</div>
+            <div class="col-sm-2">дата приготовления блюда и время бракеража</div>
             <div class="col-sm-10">
                 <div class="row">
-                    <div class="col-sm-3">Наименование</div>
-                    <div class="col-sm-1">Выход</div>
-                    <div class="col-sm-2">Результат</div>
-                    <div class="col-sm-2">Разрешение</div>
-                    <div class="col-sm-2">Качество</div>
-                    <div class="col-sm-2">Подписи</div>
+                    <div class="col-sm-3">наименование изделия</div>
+                    <div class="col-sm-1">выход</div>
+                    <div class="col-sm-2">результат органолептической оценки и степени готовности</div>
+                    <div class="col-sm-2">разрешение к реализации</div>
+                    <div class="col-sm-2">качество</div>
+                    <div class="col-sm-2">подписи членов бракеражной комиссии</div>
                 </div>
             </div>
         </div>

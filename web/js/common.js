@@ -569,13 +569,17 @@ $(document).ready(function () {
             search = search.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
             var re = new RegExp("(" + search.split(' ').join('|') + ")", "gi");
 
+            let block = '';
+            if (item['data']['blockType']) {
+                block = item['data']['blockType'] + '. ' + item['data']['block'];
+            }
             return '<div class="autocomplete-suggestion" ' +
                 ' data-region="' + item['data']['regionWithType'] + '"' +
                 ' data-city="' + item['data']['cityWithType'] + '"' +
                 ' data-street="' + item['data']['streetWithType'] + '"' +
                 ' data-house="' + (item['data']['house'] || '') + '"' +
                 ' data-flat="' + (item['data']['flat'] || '') + '"' +
-                ' data-housing="' + ((item['data']['blockType'] + '. ' + item['data']['block']) || '') + '"' +
+                ' data-housing="' + block + '"' +
                 ' data-postcode="' + (item['data']['postalCode'] || '') + '"' +
                 ' data-val="' + item['value'] + '">' + item['value'].replace(re, "<b>$1</b>") + '</div>';
         },

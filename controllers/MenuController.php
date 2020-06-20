@@ -186,8 +186,6 @@ class MenuController extends BaseController
      */
     public function actionSaveMarriageSheet()
     {
-        $ingestions = [];
-
         if (\Yii::$app->request->post()) {
             $date       = \Yii::$app->request->post('date') . " " . \Yii::$app->request->post('time', date("H:i", time()));
             $ingestions = (new \app\models\Repository\MenuDish())->getMarriageForDate($date);
