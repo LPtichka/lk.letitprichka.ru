@@ -14,7 +14,7 @@ return [
     'Created at'                            => 'Создан',
     'Customer Id'                           => 'Покупатель',
     'Customer sheet'                        => 'Бланк заказа',
-    'Cutlery'                               => 'Количество приборов',
+    'Cutlery'                               => 'Приборы',
     'Deffer order'                          => 'Отложить заказ',
     'Delivery address'                      => 'Адрес доставки',
     'Delivery date'                         => 'Дата',

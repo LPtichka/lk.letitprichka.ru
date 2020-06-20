@@ -27,9 +27,10 @@ use kartik\date\DatePicker;
                         <?= $form->field($model, 'without_soup')->checkbox(); ?>
                     </div>
                     <div class="col-sm-12">
-                        <?= $form->field($model, 'cutlery')->textInput([
-                            'class' => 'form-control input-sm'
-                        ]) ?>
+                        <?= $form->field($model, 'cutlery')->checkbox([
+                                'value' => 1,
+                                'checked' => $model->cutlery || !$model->id
+                        ]); ?>
                     </div>
                     <div class="col-sm-12 date-input-wrapper">
                         <?= $form->field($model, 'scheduleFirstDate')->widget(DatePicker::class, [
@@ -55,15 +56,6 @@ use kartik\date\DatePicker;
             </div>
             <div class="col-md-9 col-sm-12">
                 <div class="row subscription-block">
-                    <div class="col-sm-6 select-block">
-                        <?= $form->field($model, 'franchise_id')->dropDownList(
-                            (count($franchises) > 1) ? (['' => \Yii::t('app', 'Choose')] + $franchises) : $franchises,
-                            [
-                                'class' => 'form-control input-sm'
-                            ]
-                        ) ?>
-                    </div>
-
                     <div class="col-sm-3 select-block">
                         <?= $form->field($model, 'count')->dropDownList(
                             ['' => \Yii::t('app', 'Choose')] + $subscriptionCounts,

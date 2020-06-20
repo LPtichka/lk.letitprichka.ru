@@ -1,6 +1,7 @@
 <?php
 namespace app\controllers;
 
+use app\events\OrderCompleted;
 use app\models\Common\Ingestion;
 use app\models\Helper\Excel;
 use app\models\Repository\Address;
@@ -26,6 +27,10 @@ class OrderController extends BaseController
      */
     public function actionIndex()
     {
+        $event = new OrderCompleted();
+        $event->prepareEvent();
+        \Yii::$app->trigger(\app\events\OrderCompleted::EVENT_ORDER_COMPLETED, $event);
+
         $searchModel  = new Order();
         $dataProvider = $searchModel->search(\Yii::$app->request->queryParams);
 

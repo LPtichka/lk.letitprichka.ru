@@ -229,7 +229,7 @@ if ($model->id) {
                                 <span><?= $model->getStatusName() ?? '---'; ?></span></p>
                             <p><?= \Yii::t('order', 'Order subscription'); ?>
                                 <span><?= $model->getOrderSubscription() ?? '---'; ?></span></p>
-                            <p><?= \Yii::t('order', 'Cutlery'); ?> <span><?= $model->cutlery ?? '---'; ?></span></p>
+                            <p><?= \Yii::t('order', 'Cutlery'); ?> <span><?= $model->id ? ($model->cutlery ? 'Да' : 'Нет') : '---'; ?></span></p>
                             <p><?= \Yii::t('order', 'Order subscription dates'); ?>
                                 <span><?= $model->getSubscriptionDates() ?? '---'; ?></span></p>
                             <p><?= \Yii::t('order', 'Order total'); ?>

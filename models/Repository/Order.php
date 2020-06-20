@@ -66,7 +66,7 @@ class Order extends \yii\db\ActiveRecord
             self::STATUS_PROCESSED,
         ],
         self::STATUS_PROCESSED => [
-            self::STATUS_COMPLETED,
+//            self::STATUS_COMPLETED,
 //            self::STATUS_CANCELED,
 //            self::STATUS_DEFERRED,
         ],
@@ -125,11 +125,12 @@ class Order extends \yii\db\ActiveRecord
     {
         return [
             [['status_id', 'payment_type', 'cutlery', 'count', 'total', 'address_id', 'franchise_id'], 'integer'],
-            [['count', 'franchise_id', 'cutlery', 'payment_type', 'subscription_id', 'scheduleFirstDate', 'scheduleInterval'], 'required'],
+            [['count', 'franchise_id', 'payment_type', 'subscription_id', 'scheduleFirstDate', 'scheduleInterval'], 'required'],
             [['status_id'], 'in', 'range' => self::STATUSES],
+            [['cutlery'], 'default', 'value' => 1],
             [['cash_machine', 'without_soup'], 'boolean'],
             [['comment', 'shop_order_number'], 'string'],
-            [['count', 'cutlery'], 'number', 'min' => 1],
+            [['count'], 'number', 'min' => 1],
             [['status_id'], 'default', 'value' => self::STATUS_NEW],
             ['payment_type', 'exist', 'targetClass' => PaymentType::class, 'targetAttribute' => 'id'],
             ['subscription_id', 'exist', 'targetClass' => Subscription::class, 'targetAttribute' => 'id'],
@@ -230,6 +231,8 @@ class Order extends \yii\db\ActiveRecord
     public function build(array $data): bool
     {
         $this->load($data);
+        // TODO переделать
+        $this->franchise_id = 1;
         if (!empty($this->subscription_id) && $this->subscription_id != Subscription::NO_SUBSCRIPTION_ID) {
             $subscriptionDiscount = SubscriptionDiscount::find()
                 ->where(['subscription_id' => $this->subscription_id])
@@ -304,6 +307,7 @@ class Order extends \yii\db\ActiveRecord
                     $schedule->setDishes($dishes);
                     $schedules[] = $schedule;
                 } else {
+                    $time = $firstDateTime;
                     for ($i = 0; $i < $data['Order']['count']; $i++) {
                         $orderSchedule = new OrderSchedule();
                         $price = $subscriptionDiscount->price ?? $subscription->price;
@@ -311,9 +315,19 @@ class Order extends \yii\db\ActiveRecord
                         $orderSchedule->address_id = $schedule->address_id;
                         $orderSchedule->order_id = $schedule->order_id;
                         $orderSchedule->interval = $schedule->interval;
-                        $orderSchedule->date       = date('Y-m-d', $firstDateTime + $i * 86400);
+
+                        if (date('N', $firstDateTime) == 7) {
+                            $time += 86400;
+                        }
+                        $orderSchedule->date       = date('Y-m-d', $time);
                         $orderSchedule->cost = $price / $data['Order']['count'];
                         $schedules[]    = $orderSchedule;
+
+                        if (date('N', $time + 86400) == 7) {
+                            $time += 2 * 86400;
+                        } else {
+                            $time += 86400;
+                        }
                     }
                 }
             }
