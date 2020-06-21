@@ -108,7 +108,7 @@ class User extends ActiveRecord implements IdentityInterface
             return false;
         }
 
-        $timestamp = (int)substr($token, strrpos($token, '_') + 1);
+        $timestamp = (int) substr($token, strrpos($token, '_') + 1);
         $expire    = Yii::$app->params['user.passwordResetTokenExpire'];
         return $timestamp + $expire >= time();
     }
@@ -140,7 +140,7 @@ class User extends ActiveRecord implements IdentityInterface
     public function rules()
     {
         $rules = [
-            [['phone'], 'filter', 'filter' => function () {
+            [['phone'], 'filter', 'filter' => function (){
                 return '+7' . (new Phone($this->phone))->getClearPhone();
             }],
             ['password', 'default', 'value' => (new Security())->generateRandomString(8), 'on' => self::SCENARIO_CREATE],
@@ -239,13 +239,14 @@ class User extends ActiveRecord implements IdentityInterface
     public function attributeLabels()
     {
         return [
-            'id'         => \Yii::t('user', 'ID'),
-            'email'      => \Yii::t('user', 'Email'),
-            'fio'        => \Yii::t('user', 'Fio'),
-            'phone'      => \Yii::t('user', 'Phone'),
-            'status'     => \Yii::t('user', 'Status'),
-            'role'       => \Yii::t('user', 'Role'),
-            'updated_at' => \Yii::t('app', 'Updated at'),
+            'id'           => \Yii::t('user', 'ID'),
+            'email'        => \Yii::t('user', 'Email'),
+            'fio'          => \Yii::t('user', 'Fio'),
+            'phone'        => \Yii::t('user', 'Phone'),
+            'status'       => \Yii::t('user', 'Status'),
+            'role'         => \Yii::t('user', 'Role'),
+            'updated_at'   => \Yii::t('app', 'Updated at'),
+            'franchise_id' => \Yii::t('user', 'Franchise id'),
         ];
     }
 

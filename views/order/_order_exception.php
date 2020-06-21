@@ -3,7 +3,7 @@
 use app\widgets\Html;
 
 /* @var $this yii\web\View */
-/* @var $exception app\models\Repository\Exception */
+/* @var $exception app\models\Repository\OrderException */
 /* @var $i integer */
 /* @var $form yii\widgets\ActiveForm */
 /* @var $disabled bool */
@@ -17,15 +17,28 @@ use app\widgets\Html;
             <div class="form-group">
                 <?= Html::activeDropDownList(
                     $exception,
-                    "[$i]id",
+                    "[$i]exception_id",
                     ['' => \Yii::t('app', 'Choose')] + $exceptions,
+                    [
+                        'class'             => 'form-control input-sm',
+                        'disabled'          => $disabled,
+                    ]
+                ) ?>
+            </div>
+
+            <div class="comment-exception form-group <?php if (!$exception->exception || !$exception->exception->with_comment): ?> hidden <?php endif; ?>">
+                <?= Html::textarea(
+                    "OrderException[$i][comment]",
+                    $exception->comment ?? '',
                     [
                         'class'    => 'form-control input-sm',
                         'disabled' => $disabled,
                     ]
                 ) ?>
             </div>
+
         </div>
+
         <?php if (!$disabled): ?>
             <div class="col-sm-2 col-print-2">
                 <button

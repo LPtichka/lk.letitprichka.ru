@@ -39,10 +39,14 @@ window.getAddressBlock = function () {
                     $('[name="Address[description]"]').val(value.description);
                 }
             });
-            if (address.length === 1 && !$('[name="address_detailed"]').is(':checked')) {
-                $('[name="address_detailed"]').trigger('click');
-            }
+
             addressInput.html(options);
+            setTimeout(function () {
+                if (address.length >= 1) {
+                    // $('#collapse-address').collapse('hide');
+                    $('[name="address_detailed"]').trigger('click');
+                }
+            }, 300);
         }
     });
 };
@@ -59,6 +63,15 @@ window.getExceptionBlock = function () {
             $('.exceptions').html(exceptions)
         }
     });
+};
+
+window.userReChoosen = function () {
+    let customerInput = $('[name="Order[customer_id]"]');
+    let customerId = customerInput.val() ? customerInput.val() : 0;
+
+    if (customerId) {
+        $('#collapse-customer').collapse('hide');
+    }
 };
 
 window.getMenuBlock = function ($orderId) {
@@ -160,6 +173,16 @@ body.delegate('.reload-dish', 'click', function (e) {
     });
 });
 
+body.delegate('.exception-row select', 'change', function (e) {
+    e.preventDefault();
+
+    if ($(this).val() == '10') {
+        $(this).parents('.exception-row').find('.comment-exception').removeClass('hidden');
+    } else {
+        $(this).parents('.exception-row').find('.comment-exception').addClass('hidden');
+    }
+});
+
 body.delegate('.add-dish-to-inventory', 'click', function (e) {
     e.preventDefault();
     let ration = $(this).data('ration');
@@ -200,6 +223,11 @@ body.delegate('[name="Order[address_id]"]', 'change', function () {
     if ($(this).val() === '' && !$('[name="address_detailed"]').is(':checked')) {
         $('[name="address_detailed"]').trigger('click');
     }
+
+    if ($(this).val() !== '' && $('[name="address_detailed"]').is(':checked')) {
+        $('[name="address_detailed"]').trigger('click');
+    }
+
 });
 
 body.delegate('[name="Order[subscription_id]"]', 'change', function () {

@@ -779,3 +779,7 @@ select.form-control.input-sm {
     min-width: 120px;
     background: url("/images/loader.gif") no-repeat center #f39c12;
 }
+
+.checkbox-div {
+    padding-top: 28px;
+}

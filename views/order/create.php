@@ -61,9 +61,10 @@ if ($model->id) {
                                                 ],
                                                 'pluginEvents'  => [
                                                     "change" => "function() {
-                                                    window.getAddressBlock();
-                                                    window.getExceptionBlock();
-                                                }",
+                                                        window.userReChoosen();
+                                                        window.getAddressBlock();
+                                                        window.getExceptionBlock();
+                                                    }",
                                                 ]
                                             ]);
                                             ?>
@@ -245,7 +246,7 @@ if ($model->id) {
                                 <?php if (empty($model->exceptions)): ?>
                                     <p class="empty-text"><?php echo \Yii::t('order', 'No exceptions'); ?></p>
                                 <?php else: ?>
-                                    <?php foreach ($model->exceptions as $i => $exception): ?>
+                                    <?php foreach ($model->orderExceptions as $i => $exception): ?>
                                         <?= $this->render('_order_exception', [
                                             'exceptions' => $exceptions,
                                             'exception'  => $exception,

@@ -21,14 +21,14 @@ $this->title = $title;
     <?php $form = ActiveForm::begin(); ?>
     <div class="col-sm-12">
         <div class="row">
-            <div class="col-sm-12">
+            <div class="col-sm-6">
                 <?= $form->field($model, 'fio') ?>
             </div>
-        </div>
-        <div class="row">
             <div class="col-md-6">
                 <?= $form->field($model, 'email') ?>
             </div>
+        </div>
+        <div class="row">
             <div class="col-md-6">
                 <?= $form->field($model, 'phone')->widget(
                     MaskedInput::class,
@@ -41,6 +41,13 @@ $this->title = $title;
                         ]
                     ]) ?>
             </div>
+            <?php if ($canGrantPrivileges): ?>
+            <div class="col-md-6">
+                <?= $form->field($model, 'franchise_id')->dropDownList($franchises, [
+                    'class'       => 'form-control',
+                ]);?>
+            </div>
+            <?php endif; ?>
         </div>
         <div class="row">
             <?php if ($canBlockUser): ?>

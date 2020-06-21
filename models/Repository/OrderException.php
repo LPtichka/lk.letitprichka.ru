@@ -11,8 +11,11 @@ use yii\behaviors\TimestampBehavior;
  * @property int $id
  * @property int $order_id
  * @property int $exception_id
+ * @property string $comment
  * @property int $created_at
  * @property int $updated_at
+ *
+ * @property Exception $exception
  */
 class OrderException extends \yii\db\ActiveRecord
 {
@@ -48,6 +51,7 @@ class OrderException extends \yii\db\ActiveRecord
     {
         return [
             [['order_id', 'exception_id'], 'integer'],
+            [['comment'], 'string'],
             [['order_id'], 'exist', 'targetClass' => Order::class, 'targetAttribute' => 'id', 'message' => 'Указан не существующий заказ'],
             [['exception_id'], 'exist', 'targetClass' => Exception::class, 'targetAttribute' => 'id', 'message' => 'Указан не существующее исключение'],
         ];
@@ -61,5 +65,13 @@ class OrderException extends \yii\db\ActiveRecord
         return [
             TimestampBehavior::class,
         ];
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getException()
+    {
+        return $this->hasOne(Exception::class, ['id' => 'exception_id']);
     }
 }

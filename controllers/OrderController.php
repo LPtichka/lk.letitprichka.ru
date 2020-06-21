@@ -9,6 +9,7 @@ use app\models\Repository\Customer;
 use app\models\Repository\Dish;
 use app\models\Repository\Exception;
 use app\models\Repository\Franchise;
+use app\models\Repository\OrderException;
 use app\models\Repository\OrderSchedule;
 use app\models\Repository\OrderScheduleDish;
 use app\models\Repository\Subscription;
@@ -108,12 +109,6 @@ class OrderController extends BaseController
         );
 
         $subscriptionCounts = (new Subscription())->getCounts();
-        $franchiseQuery     = Franchise::find()->where(['status' => Franchise::STATUS_ACTIVE]);
-        /** @var User $user */
-        $user = \Yii::$app->user->identity;
-        if (!empty($user->franchise_id)) {
-            $franchiseQuery->andWhere(['franchise_id' => $user->franchise_id]);
-        }
 
         return $this->render('/order/create', [
             'model'              => $order,
@@ -122,7 +117,6 @@ class OrderController extends BaseController
                 '' => \Yii::t('order', 'New address'),
             ],
             'exceptions'         => $exceptions,
-            'franchises'         => ArrayHelper::map($franchiseQuery->asArray()->all(), 'id', 'name'),
             'subscriptions'      => $subscriptions,
             'intervals'          => (new OrderSchedule())->getIntervals(),
             'customers'          => ArrayHelper::map(Customer::find()->asArray()->all(), 'id', 'fio'),
@@ -189,12 +183,6 @@ class OrderController extends BaseController
         );
 
         $subscriptionCounts = (new Subscription())->getCounts();
-        $franchiseQuery     = Franchise::find()->where(['status' => Franchise::STATUS_ACTIVE]);
-        /** @var User $user */
-        $user = \Yii::$app->user->identity;
-        if (!empty($user->franchise_id)) {
-            $franchiseQuery->andWhere(['franchise_id' => $user->franchise_id]);
-        }
 
         return $this->render('/order/create', [
             'model'              => $order,
@@ -206,7 +194,6 @@ class OrderController extends BaseController
             'payments'           => $paymentTypes,
             'exceptions'         => $exceptions,
             'subscriptions'      => $subscriptions,
-            'franchises'         => ArrayHelper::map($franchiseQuery->asArray()->all(), 'id', 'name'),
             'customers'          => ArrayHelper::map(Customer::find()->asArray()->all(), 'id', 'fio'),
             'intervals'          => (new OrderSchedule())->getIntervals(),
             'subscriptionCounts' => $subscriptionCounts,
@@ -227,7 +214,7 @@ class OrderController extends BaseController
         );
 
         return $this->renderAjax('/order/_order_exception', [
-            'exception'  => new Exception(),
+            'exception'  => new OrderException(),
             'exceptions' => $exceptions,
             'disabled'   => false,
             'i'          => ++$counter,

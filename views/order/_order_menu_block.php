@@ -32,7 +32,21 @@ use kartik\date\DatePicker;
                                 'checked' => $model->cutlery || !$model->id
                         ]); ?>
                     </div>
-                    <div class="col-sm-12 date-input-wrapper">
+
+
+                </div>
+            </div>
+            <div class="col-md-9 col-sm-12">
+                <div class="row subscription-block">
+                    <div class="col-sm-4 select-block">
+                        <?= $form->field($model, 'count')->dropDownList(
+                            ['' => \Yii::t('app', 'Choose')] + $subscriptionCounts,
+                            [
+                                'class' => 'form-control input-sm'
+                            ]
+                        ) ?>
+                    </div>
+                    <div class="col-sm-4 date-input-wrapper">
                         <?= $form->field($model, 'scheduleFirstDate')->widget(DatePicker::class, [
                             'options'       => [
                                 'placeholder' => \Yii::t('order', 'Choose date'),
@@ -44,21 +58,9 @@ use kartik\date\DatePicker;
                             ]
                         ]); ?>
                     </div>
-                    <div class="col-sm-12 select-block">
+                    <div class="col-sm-4 select-block">
                         <?= $form->field($model, 'scheduleInterval')->dropDownList(
                             ['' => \Yii::t('app', 'Choose')] + $intervals,
-                            [
-                                'class' => 'form-control input-sm'
-                            ]
-                        ) ?>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-9 col-sm-12">
-                <div class="row subscription-block">
-                    <div class="col-sm-3 select-block">
-                        <?= $form->field($model, 'count')->dropDownList(
-                            ['' => \Yii::t('app', 'Choose')] + $subscriptionCounts,
                             [
                                 'class' => 'form-control input-sm'
                             ]

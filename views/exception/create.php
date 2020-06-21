@@ -24,10 +24,14 @@ $this->title = $title;
     <div class="col-sm-12">
         <?php $form = ActiveForm::begin(); ?>
         <div class="row">
-            <div class="col-sm-12">
+            <div class="col-sm-9">
                 <?= $form->field($model, 'name')->textInput([
                     'class' => 'form-control input-sm',
                 ]) ?>
+            </div>
+            <div class="col-sm-3 checkbox-div">
+                <?= $form->field($model, 'with_comment')->checkbox([
+                    'value' => 1]) ?>
             </div>
         </div>
         <div class="row modal-buttons">

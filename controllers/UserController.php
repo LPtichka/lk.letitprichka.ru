@@ -2,7 +2,9 @@
 namespace app\controllers;
 
 use app\models\Helper\Excel;
+use app\models\Repository\Franchise;
 use app\models\Search\User;
+use yii\helpers\ArrayHelper;
 use yii\rbac\DbManager;
 use yii\rbac\Role;
 use yii\web\ForbiddenHttpException;
@@ -61,11 +63,13 @@ class UserController extends BaseController
                 ]);
             }
         }
+
         return $this->renderAjax('/user/create', [
-            'model' => $user,
+            'model'              => $user,
+            'franchises'         => ArrayHelper::map(Franchise::find()->asArray()->all(), 'id', 'name'),
             'canBlockUser'       => \Yii::$app->user->can('/user/block'),
             'canGrantPrivileges' => \Yii::$app->user->can('/user/grant-privilege'),
-            'title' => \Yii::t('user', 'User create'),
+            'title'              => \Yii::t('user', 'User create'),
         ]);
     }
 
@@ -100,6 +104,7 @@ class UserController extends BaseController
 
         return $this->renderAjax('/user/create', [
             'model'              => $user,
+            'franchises'         => ArrayHelper::map(Franchise::find()->asArray()->all(), 'id', 'name'),
             'canBlockUser'       => \Yii::$app->user->can('/user/block'),
             'canGrantPrivileges' => \Yii::$app->user->can('/user/grant-privilege'),
             'title'              => \Yii::t('user', 'User update'),
@@ -117,7 +122,7 @@ class UserController extends BaseController
             throw new ForbiddenHttpException(\Yii::t('app', 'Access denided'));
         }
 
-        $userIds = \Yii::$app->request->post('selection');
+        $userIds                     = \Yii::$app->request->post('selection');
         \Yii::$app->response->format = Response::FORMAT_JSON;
 
         $this->log('user-delete', $userIds);
@@ -127,7 +132,7 @@ class UserController extends BaseController
             if (!$user) {
                 $message = \Yii::t('user', 'Users #{id} is not exist', ['id' => $id]);
                 $this->log('user-delete-fail', [
-                    'id'    => (string)$id,
+                    'id'    => (string) $id,
                     'error' => $message,
                 ]);
                 return [
@@ -139,7 +144,7 @@ class UserController extends BaseController
             if ($user->status !== \app\models\User::STATUS_INACTIVE) {
                 $message = \Yii::t('user', 'Users #{id} is not blocked', ['id' => $id]);
                 $this->log('user-delete-fail', [
-                    'id'    => (string)$id,
+                    'id'    => (string) $id,
                     'error' => $message,
                 ]);
                 return [
@@ -152,7 +157,7 @@ class UserController extends BaseController
             $isDelete = \app\models\User::deleteAll(['id' => $id]);
             if (!$isDelete) {
                 $transaction->rollBack();
-                $this->log('user-delete-fail', ['id' => (string)$id]);
+                $this->log('user-delete-fail', ['id' => (string) $id]);
                 return [
                     'status' => false,
                     'title'  => \Yii::t('user', 'Users was not deleted')

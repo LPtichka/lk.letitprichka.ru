@@ -10,6 +10,7 @@ return [
     'Exception was saved successfully'                  => 'Исключение было успешно сохранено',
     'Do you really want to delete selected exceptions?' => 'Вы действительно хотите удалить выбранные исключения?',
     'Exceptions'                                        => 'Исключения',
+    'With comment'                                      => 'С комментарием',
     'Created at'                                        => 'Дата создания',
     'Updated at'                                        => 'Дата обновления',
     'Exception was imported successfully'               => 'Исключения были успешно импортированы',

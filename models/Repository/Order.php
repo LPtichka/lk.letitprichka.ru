@@ -35,6 +35,7 @@ use yii\helpers\ArrayHelper;
  * @property Address $address
  * @property PaymentType $payment
  * @property Exception[] $exceptions
+ * @property OrderException[] $orderExceptions
  * @property OrderSchedule[] $schedules
  */
 class Order extends \yii\db\ActiveRecord
@@ -80,6 +81,8 @@ class Order extends \yii\db\ActiveRecord
     public $isNewCustomer = false;
     public $scheduleFirstDate;
     public $scheduleInterval;
+
+    private $isUpdated = false;
 
     /**
      * @inheritdoc
@@ -217,6 +220,15 @@ class Order extends \yii\db\ActiveRecord
      * @return \yii\db\ActiveQuery
      * @throws \yii\base\InvalidConfigException
      */
+    public function getOrderExceptions()
+    {
+        return $this->hasMany(OrderException::class, ['order_id' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     * @throws \yii\base\InvalidConfigException
+     */
     public function getExceptions()
     {
         return $this->hasMany(Exception::class, ['id' => 'exception_id'])->viaTable('{{%order_exception}}', ['order_id' => 'id']);
@@ -230,9 +242,16 @@ class Order extends \yii\db\ActiveRecord
      */
     public function build(array $data): bool
     {
-        $this->load($data);
+        if ($this->id) {
+            $this->isUpdated = true;
+        } else {
+            $this->load($data);
+        }
+
         // TODO переделать
-        $this->franchise_id = 1;
+        /** @var \app\models\User $user */
+        $user = \Yii::$app->user->identity;
+        $this->franchise_id = $user->franchise_id ?? 1;
         if (!empty($this->subscription_id) && $this->subscription_id != Subscription::NO_SUBSCRIPTION_ID) {
             $subscriptionDiscount = SubscriptionDiscount::find()
                 ->where(['subscription_id' => $this->subscription_id])
@@ -249,13 +268,13 @@ class Order extends \yii\db\ActiveRecord
             }
         }
 
-        if (empty($data['Order']['customer_id']) || !empty($data['Order']['isNewCustomer'])) {
+        if ((empty($data['Order']['customer_id']) || !empty($data['Order']['isNewCustomer'])) && !$this->isUpdated) {
             $customer = new Customer();
             $customer->load($data);
             $this->setCustomer($customer);
             $customer->scenario = Customer::SCENARIO_NEW_CUSTOMER;
         } else {
-            $this->setCustomer(Customer::findOne($data['Order']['customer_id']));
+            $this->setCustomer(Customer::findOne($this->customer_id));
         }
 
         if (empty($data['Order']['address_id'])) {
@@ -265,11 +284,17 @@ class Order extends \yii\db\ActiveRecord
         }
 
         $exceptions = [];
-        foreach ($data['Exception'] as $exception) {
-            if (empty($exception['id'])) {
-                continue;
+        if (!empty($data['OrderException'])) {
+            foreach ($data['OrderException'] as $exception) {
+                if (empty($exception['exception_id'])) {
+                    continue;
+                }
+                $exceptionData = Exception::findOne($exception['exception_id']);
+                if ($exception['comment']) {
+                    $exceptionData->comment = $exception['comment'];
+                }
+                $exceptions[] = $exceptionData;
             }
-            $exceptions[] = Exception::findOne($exception['id']);
         }
         $this->setExceptions($exceptions);
 
@@ -470,23 +495,28 @@ class Order extends \yii\db\ActiveRecord
             }
         }
         $this->customer_id = $this->customer->id;
-        $this->address_id  = $this->customer->addresses[0]->id;
-        if (!$this->validate()) {
+        if (!empty($this->customer->addresses[0]->id)) {
+            $this->address_id  = $this->customer->addresses[0]->id;
+        }
+
+        if (!$this->isUpdated && !$this->validate()) {
             $transaction->rollBack();
             return false;
         }
-        if (!$this->save()) {
+        if (!$this->save(!$this->isUpdated)) {
             $transaction->rollBack();
             return false;
         }
         $event->setOrderId($this->id);
 
         CustomerException::deleteAll(['customer_id' => $this->customer_id]);
+        OrderException::deleteAll(['order_id' => $this->id]);
 
         foreach ($this->exceptions as $exception) {
             $oException               = new OrderException();
             $oException->order_id     = $this->id;
             $oException->exception_id = $exception->id;
+            $oException->comment = $exception->comment;
             if (!$oException->validate() || !$oException->save()) {
                 $transaction->rollBack();
                 return false;
@@ -500,50 +530,52 @@ class Order extends \yii\db\ActiveRecord
             }
         }
 
-        foreach ($this->schedules as $schedule) {
-            $schedule->order_id = $this->id;
-            empty($schedule->address_id) && $schedule->address_id = $this->address_id;
-            if (!$schedule->validate() || !$schedule->save()) {
-                $transaction->rollBack();
-                return false;
-            }
-            if ($this->subscription_id == Subscription::NO_SUBSCRIPTION_ID && !empty($schedule->dishes)) {
-                foreach ($schedule->dishes as $dish) {
-                    $dish->order_schedule_id = $schedule->id;
-                    if (!$dish->validate() || !$dish->save()) {
-                        $transaction->rollBack();
-                        return false;
-                    }
+        if (!$this->isUpdated) {
+            foreach ($this->schedules as $schedule) {
+                $schedule->order_id = $this->id;
+                empty($schedule->address_id) && $schedule->address_id = $this->address_id;
+                if (!$schedule->validate() || !$schedule->save()) {
+                    $transaction->rollBack();
+                    return false;
                 }
-            } else {
-                // TODO тут нужно сохранить сразу ORDER_SCHEDULE_DISH
-                foreach (OrderSchedule::INGESTION_CONTENT as $key => $ingestion) {
-                    if (empty($ingestion)) {
-                        $orderScheduleDish = new OrderScheduleDish();
-
-                        $orderScheduleDish->order_schedule_id = $schedule->id;
-                        $orderScheduleDish->ingestion_type    = $key;
-                        $orderScheduleDish->dish_id           = null;
-
-                        if (!$orderScheduleDish->validate() || !$orderScheduleDish->save()) {
+                if ($this->subscription_id == Subscription::NO_SUBSCRIPTION_ID && !empty($schedule->dishes)) {
+                    foreach ($schedule->dishes as $dish) {
+                        $dish->order_schedule_id = $schedule->id;
+                        if (!$dish->validate() || !$dish->save()) {
                             $transaction->rollBack();
                             return false;
                         }
-                    } else {
-                        foreach ($ingestion as $iType) {
-                            if ($this->without_soup && $iType == Dish::TYPE_FIRST) {
-                                continue;
-                            }
+                    }
+                } else {
+                    // TODO тут нужно сохранить сразу ORDER_SCHEDULE_DISH
+                    foreach (OrderSchedule::INGESTION_CONTENT as $key => $ingestion) {
+                        if (empty($ingestion)) {
+                            $orderScheduleDish = new OrderScheduleDish();
 
-                            $orderScheduleDish                    = new OrderScheduleDish();
                             $orderScheduleDish->order_schedule_id = $schedule->id;
                             $orderScheduleDish->ingestion_type    = $key;
                             $orderScheduleDish->dish_id           = null;
-                            $orderScheduleDish->type              = $iType;
 
                             if (!$orderScheduleDish->validate() || !$orderScheduleDish->save()) {
                                 $transaction->rollBack();
                                 return false;
+                            }
+                        } else {
+                            foreach ($ingestion as $iType) {
+                                if ($this->without_soup && $iType == Dish::TYPE_FIRST) {
+                                    continue;
+                                }
+
+                                $orderScheduleDish                    = new OrderScheduleDish();
+                                $orderScheduleDish->order_schedule_id = $schedule->id;
+                                $orderScheduleDish->ingestion_type    = $key;
+                                $orderScheduleDish->dish_id           = null;
+                                $orderScheduleDish->type              = $iType;
+
+                                if (!$orderScheduleDish->validate() || !$orderScheduleDish->save()) {
+                                    $transaction->rollBack();
+                                    return false;
+                                }
                             }
                         }
                     }
