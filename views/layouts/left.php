@@ -30,6 +30,7 @@
                     ['label' => \Yii::t('app', 'Payment types'), 'icon' => 'money', 'url' => ['/payment-type/index']],
                     ['label' => \Yii::t('app', 'Users'), 'icon' => 'user-o', 'url' => ['/user/index']],
                     ['label' => \Yii::t('app', 'Franchise'), 'icon' => 'briefcase', 'url' => ['/franchise/index']],
+                    ['label' => \Yii::t('app', 'Reports'), 'icon' => 'briefcase', 'url' => ['/report/index']],
                 ],
             ]
         ) ?>

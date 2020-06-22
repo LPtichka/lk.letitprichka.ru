@@ -638,7 +638,7 @@ class Order extends \yii\db\ActiveRecord
         foreach ($orderSchedules as $schedule) {
             $route = new Route(
                 $schedule->order->customer->fio,
-                $schedule->address->full_address,
+                $schedule->address->full_address . " " . $schedule->comment,
                 $schedule->order->customer->phone
             );
             $route->setInterval($schedule->interval);
@@ -650,6 +650,8 @@ class Order extends \yii\db\ActiveRecord
                     $payment .= ' + касса';
                 }
                 $route->setPayment($payment);
+            } else {
+                $route->setPayment('нет');
             }
 
             $routes[] = $route;

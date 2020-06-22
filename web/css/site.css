@@ -510,7 +510,7 @@ label input[type="checkbox"] {
 .breadcrumb {
     padding: 3px 15px;
     margin-bottom: 0;
-    box-shadow: 0 0 3px rgba(0,0,0,.1);
+    box-shadow: 0 0 3px rgba(0, 0, 0, .1);
 }
 
 .breadcrumb ul {
@@ -539,8 +539,8 @@ label input[type="checkbox"] {
 }
 
 .btn-warning {
-    background: #ff9800;
-    border:none !important;
+    background: #FF9800;
+    border: none !important;
     letter-spacing: 1px;
     padding: 8px 15px;
     font-weight: 300;
@@ -554,8 +554,8 @@ label input[type="checkbox"] {
 }
 
 .btn-danger {
-    background: #f44336;
-    border:none !important;
+    background: #F44336;
+    border: none !important;
     letter-spacing: 1px;
     padding: 8px 15px;
     font-weight: 300;
@@ -570,8 +570,8 @@ label input[type="checkbox"] {
 
 .btn-default {
     background: #999 !important;
-    border:none !important;
-    color:#FFF !important;
+    border: none !important;
+    color: #FFF !important;
     letter-spacing: 1px;
     padding: 8px 15px;
     font-weight: 300;
@@ -585,9 +585,9 @@ label input[type="checkbox"] {
 }
 
 .btn-success {
-    background: #4caf50 !important;
-    border:none !important;
-    color:#FFF !important;
+    background: #4CAF50 !important;
+    border: none !important;
+    color: #FFF !important;
     letter-spacing: 1px;
     padding: 8px 15px;
     font-weight: 300;
@@ -601,9 +601,9 @@ label input[type="checkbox"] {
 }
 
 .btn-primary {
-    background: #00acc1 !important;
-    border:none !important;
-    color:#FFF !important;
+    background: #00ACC1 !important;
+    border: none !important;
+    color: #FFF !important;
     letter-spacing: 1px;
     padding: 8px 15px;
     font-weight: 300;
@@ -617,9 +617,9 @@ label input[type="checkbox"] {
 }
 
 .bg-green, .callout.callout-success, .alert-success, .label-success, .modal-success .modal-body {
-    background-color: #5cb860;
+    background-color: #5CB860;
     color: #FFF;
-    box-shadow: 0 4px 20px 0 rgba(0, 0, 0,.14), 0 7px 10px -5px rgba(76, 175, 80,.4);
+    box-shadow: 0 4px 20px 0 rgba(0, 0, 0, .14), 0 7px 10px -5px rgba(76, 175, 80, .4);
     padding: 20px 15px;
     font-size: 14px;
     line-height: 20px !important;
@@ -656,7 +656,7 @@ label input[type="checkbox"] {
 select.form-control.input-sm {
     border-radius: 3px;
     box-shadow: none;
-    border:1px solid #d2d6de;
+    border: 1px solid #D2D6DE;
     -webkit-appearance: none;
     -moz-appearance: none;
     appearance: none;
@@ -692,12 +692,12 @@ select.form-control.input-sm {
 
 .ui-menu .ui-menu-item-wrapper {
     padding: 5px 5px 5px 10px !important;
-    color:#555;
+    color: #555;
     font-weight: 300;
 }
 
 .inventory-row {
-    border-bottom: 1px solid #f2f2f2;
+    border-bottom: 1px solid #F2F2F2;
 }
 
 .inventory-row .ingestion-name {
@@ -729,7 +729,7 @@ select.form-control.input-sm {
 
 .ingestion-row {
     position: relative;
-    border-bottom: 1px solid #f2f2f2;
+    border-bottom: 1px solid #F2F2F2;
 }
 
 .exception-row {
@@ -741,7 +741,7 @@ select.form-control.input-sm {
 }
 
 .ingestion-block {
-    border-left: 1px solid #f2f2f2;
+    border-left: 1px solid #F2F2F2;
 }
 
 .request-dish-to-inventory {
@@ -754,7 +754,7 @@ select.form-control.input-sm {
     text-align: center;
     color: #FFF;
     font-size: 18px;
-    background: #3c8dbc;
+    background: #3C8DBC;
     border-radius: 15px;
     opacity: 0.2;
     z-index: 999;
@@ -777,9 +777,24 @@ select.form-control.input-sm {
 .loading {
     text-indent: -9999px;
     min-width: 120px;
-    background: url("/images/loader.gif") no-repeat center #f39c12;
+    background: url("/images/loader.gif") no-repeat center #F39C12;
 }
 
 .checkbox-div {
     padding-top: 28px;
+}
+
+.report-item {
+    border: 1px solid #F2f2f2;
+    padding: 20px 10px;
+    box-shadow: 5px 5px 10px rgba(0, 0, 0, .1);
+}
+
+.report-item h4 {
+    text-transform: uppercase;
+}
+
+.report-item p {
+    font-size: 12px;
+    color: #999;
 }

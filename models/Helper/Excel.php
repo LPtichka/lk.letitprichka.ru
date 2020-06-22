@@ -379,39 +379,39 @@ class Excel
         $objWorksheet = $this->fileName->getActiveSheet();
         $objWorksheet->setTitle('Маршрутный лист');
 
-        $objWorksheet->getCellByColumnAndRow(0, 1)->setValue('Дата');
-        $objWorksheet->getCellByColumnAndRow(1, 1)->setValue($params['date'] ?? '');
+        $objWorksheet->getCellByColumnAndRow(1, 1)->setValue('Дата');
+        $objWorksheet->getCellByColumnAndRow(2, 1)->setValue($params['date'] ?? '');
 
-        $objWorksheet->getCellByColumnAndRow(0, 3)->setValue('Клиент');
-        $objWorksheet->getCellByColumnAndRow(1, 3)->setValue('Адрес');
-        $objWorksheet->getCellByColumnAndRow(2, 3)->setValue('Время');
-        $objWorksheet->getCellByColumnAndRow(3, 3)->setValue('Комментарий');
-        $objWorksheet->getCellByColumnAndRow(4, 3)->setValue('Телефон');
-        $objWorksheet->getCellByColumnAndRow(5, 3)->setValue('Оплата');
+        $objWorksheet->getCellByColumnAndRow(1, 3)->setValue('Клиент');
+        $objWorksheet->getCellByColumnAndRow(2, 3)->setValue('Адрес');
+        $objWorksheet->getCellByColumnAndRow(3, 3)->setValue('Время');
+        $objWorksheet->getCellByColumnAndRow(4, 3)->setValue('Комментарий');
+        $objWorksheet->getCellByColumnAndRow(5, 3)->setValue('Телефон');
+        $objWorksheet->getCellByColumnAndRow(6, 3)->setValue('Оплата');
 
         $i = 4;
         foreach ($routes as $key => $route) {
-            $objWorksheet->getCellByColumnAndRow(0, ($i + $key))->setValue($route->getFio());
+            $objWorksheet->getCellByColumnAndRow(1, ($i + $key))->setValue($route->getFio());
             $cell = $objWorksheet->getCellByColumnAndRow(0, ($i + $key));
             $objWorksheet->getColumnDimension($cell->getColumn())->setAutoSize(true);
 
-            $objWorksheet->getCellByColumnAndRow(1, ($i + $key))->setValue($route->getAddress());
+            $objWorksheet->getCellByColumnAndRow(2, ($i + $key))->setValue($route->getAddress());
             $cell = $objWorksheet->getCellByColumnAndRow(1, ($i + $key));
             $objWorksheet->getColumnDimension($cell->getColumn())->setAutoSize(true);
 
-            $objWorksheet->getCellByColumnAndRow(2, ($i + $key))->setValue($route->getInterval());
+            $objWorksheet->getCellByColumnAndRow(3, ($i + $key))->setValue($route->getInterval());
             $cell = $objWorksheet->getCellByColumnAndRow(2, ($i + $key));
             $objWorksheet->getColumnDimension($cell->getColumn())->setAutoSize(true);
 
-            $objWorksheet->getCellByColumnAndRow(3, ($i + $key))->setValue($route->getComment());
+            $objWorksheet->getCellByColumnAndRow(4, ($i + $key))->setValue($route->getComment());
             $cell = $objWorksheet->getCellByColumnAndRow(3, ($i + $key));
             $objWorksheet->getColumnDimension($cell->getColumn())->setAutoSize(true);
 
-            $objWorksheet->getCellByColumnAndRow(4, ($i + $key))->setValue($route->getPhone());
+            $objWorksheet->getCellByColumnAndRow(5, ($i + $key))->setValue($route->getPhone());
             $cell = $objWorksheet->getCellByColumnAndRow(4, ($i + $key));
             $objWorksheet->getColumnDimension($cell->getColumn())->setAutoSize(true);
 
-            $objWorksheet->getCellByColumnAndRow(5, ($i + $key))->setValue($route->getPayment());
+            $objWorksheet->getCellByColumnAndRow(6, ($i + $key))->setValue($route->getPayment());
             $cell = $objWorksheet->getCellByColumnAndRow(5, ($i + $key));
             $objWorksheet->getColumnDimension($cell->getColumn())->setAutoSize(true);
         }
