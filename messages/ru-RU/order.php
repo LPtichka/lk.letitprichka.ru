@@ -6,6 +6,7 @@ return [
     'Base info'                             => 'Основная информация',
     'Cash machine'                          => 'Кассовый аппарат',
     'Choose address ID'                     => 'Выберите адрес доставки',
+    'Choose order id'                     => 'Выберите номер заказа',
     'Client'                                => 'Клиент',
     'Comment block'                         => 'Комментарий',
     'Comment'                               => 'Доп. информация',

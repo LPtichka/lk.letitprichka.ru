@@ -15,14 +15,38 @@ Pjax::begin([
         <h1><?= $title; ?></h1>
         <title><?= $title; ?></title>
         <?php $form = ActiveForm::begin(); ?>
-        <div class="select-block">
-            <div class="form-group">
-                <label><?= \Yii::t('order', 'Choose date'); ?></label>
-                <?php echo Html::dropDownList('schedule_id', '', $dates ?? [], [
-                    'class' => 'form-control input-sm'
-                ]); ?>
+        <?php if ($id): ?>
+            <div class="select-block">
+                <div class="form-group">
+                    <label><?= \Yii::t('order', 'Choose date'); ?></label>
+                    <?php echo Html::dropDownList('schedule_id', '', $dates ?? [], [
+                        'class' => 'form-control input-sm'
+                    ]); ?>
+                </div>
             </div>
-        </div>
+
+        <?php else: ?>
+            <div class="row">
+                <div class="col-sm-6">
+                    <label><?= \Yii::t('order', 'Choose order id'); ?></label>
+                    <?php echo Html::textInput('order_id', '', [
+                        'id'    => 'input-order-id',
+                        'class' => 'form-control input-sm'
+                    ]); ?>
+                </div>
+                <div class="col-sm-6">
+                    <div class="select-block">
+                        <div class="form-group">
+                            <label><?= \Yii::t('order', 'Choose date'); ?></label>
+                            <?php echo Html::dropDownList('schedule_id', '', $dates ?? [], [
+                                'class' => 'form-control input-sm'
+                            ]); ?>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        <?php endif; ?>
+
         <div class="row modal-buttons">
             <div class="col-md-6">
                 <div class="form-group">
@@ -55,9 +79,13 @@ Pjax::begin([
         e.preventDefault();
         let scheduleId = $('[name="schedule_id"]').val();
         let button = $(this);
+        let id = '$id';
+        if ($('#input-order-id').length > 0) {
+            id = $('#input-order-id').val();
+        }
         
         $.ajax({
-            url: '/order/get-customer-sheet?id=$id',
+            url: '/order/get-customer-sheet?id=' + id,
             type: 'POST',
             data: {schedule_id: scheduleId},
             dataType: 'json',
@@ -81,6 +109,24 @@ Pjax::begin([
                     });
                 }
                 
+            }
+        });
+    });
+
+    body.delegate('#input-order-id', 'blur', function (e) {
+        e.preventDefault();
+        let id = $(this).val();
+        
+        $.ajax({
+            url: '/order/get-customer-sheet-options?id=' + id,
+            type: 'POST',
+            dataType: 'json',
+            success: function(data) {
+                let options = '<option>Выберите дату</option>';
+                $.each(data.dates, function(index, value) {
+                  options += '<option value="'+index+'">'+value+'</option>';
+                })
+                $('.select-block select').html(options);
             }
         });
     });

@@ -8,14 +8,12 @@ use app\models\Repository\Address;
 use app\models\Repository\Customer;
 use app\models\Repository\Dish;
 use app\models\Repository\Exception;
-use app\models\Repository\Franchise;
 use app\models\Repository\OrderException;
 use app\models\Repository\OrderSchedule;
 use app\models\Repository\OrderScheduleDish;
 use app\models\Repository\Subscription;
 use app\models\Search\Order;
 use app\models\Search\PaymentType;
-use app\models\User;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Url;
 use yii\web\NotFoundHttpException;
@@ -490,6 +488,7 @@ class OrderController extends BaseController
             'id',
             'date'
         );
+
         foreach ($dates as $id => $dateValue) {
             $dates[$id] = date('d.m.Y', strtotime($dateValue));
         }
@@ -531,6 +530,29 @@ class OrderController extends BaseController
         return [
             'success' => true,
             'url'     => $excel->getUrl(),
+        ];
+    }
+
+    /**
+     * @param int $id
+     * @return string|array
+     */
+    public function actionGetCustomerSheetOptions(int $id)
+    {
+        $dates   = ArrayHelper::map(
+            OrderSchedule::find()->where(['order_id' => $id])->asArray()->all(),
+            'id',
+            'date'
+        );
+
+        foreach ($dates as $id => $dateValue) {
+            $dates[$id] = date('d.m.Y', strtotime($dateValue));
+        }
+
+        \Yii::$app->response->format = Response::FORMAT_JSON;
+        return [
+            'success' => true,
+            'dates'   => $dates
         ];
     }
 

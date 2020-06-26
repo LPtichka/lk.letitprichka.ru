@@ -12,6 +12,7 @@ return [
     'Customers'                     => 'Покупатели',
     'Disabled'                      => 'Заблокированный',
     'Error'                         => 'Ошибка',
+    'Reports'                       => 'Отчеты',
     'Exceptions'                    => 'Исключения',
     'Franchise'                     => 'Франшизы',
     'Goods'                         => 'Товары',
