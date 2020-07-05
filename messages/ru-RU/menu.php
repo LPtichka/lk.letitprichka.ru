@@ -20,4 +20,6 @@ return [
     'No equipped'      => 'Не укомплектован',
     'Start day'        => 'Начальная дата',
     'Supper'           => 'Ужин',
+
+    'Menu was saved successfully' => 'Меню было успешно создано',
 ];

@@ -4,6 +4,7 @@ namespace app\models\Repository;
 
 use app\models\Queries\MenuQuery;
 use yii\behaviors\TimestampBehavior;
+use yii\helpers\ArrayHelper;
 
 /**
  * This is the model class for table "{{%menu}}".
@@ -20,6 +21,10 @@ class Menu extends \yii\db\ActiveRecord
 {
     /** @var int */
     public $dayCount = 1;
+    /** @var array */
+    private $ingestionCounts = [];
+    /** @var array */
+    private $ingestionAvailability = [];
 
     /**
      * @inheritdoc
@@ -232,9 +237,6 @@ class Menu extends \yii\db\ActiveRecord
         string $type = '',
         int $ingestionType = 0
     ): int{
-//        if ($ingestionType == 5) {
-//            $t = 3;
-//        }
         foreach ($this->dishes as $dish) {
             if ($dish->ingestion == $ingestionID && $dish->date == $date) {
                 if ($type == 'breakfast' && $dish->dish->is_breakfast) {
@@ -243,9 +245,19 @@ class Menu extends \yii\db\ActiveRecord
                 if ($type == 'lunch' && $dish->dish->is_lunch) {
                     return $dish->dish_id;
                 }
-                if ($type == 'dinner' && $dish->dish->is_dinner && $dish->ingestion_type == Dish::INGESTION_TYPE_DINNER && $ingestionType == $dish->dish->type) {
+                if ($type == 'dinner'
+                    && $dish->dish->is_dinner
+                    && $dish->ingestion_type == Dish::INGESTION_TYPE_DINNER
+                    && $ingestionType == $dish->dish->type
+                ) {
                     return $dish->dish_id;
                 }
+//                if ($type == 'garnish'
+//                    && $dish->ingestion_type == Dish::INGESTION_TYPE_DINNER
+//                    && $ingestionType == $dish->dish->type
+//                ) {
+//                    return $dish->dish_id;
+//                }
                 if ($type == 'supper' && $dish->dish->is_supper && $dish->ingestion_type == Dish::INGESTION_TYPE_SUPPER && $ingestionType == $dish->dish->type) {
                     return $dish->dish_id;
                 }
@@ -253,6 +265,51 @@ class Menu extends \yii\db\ActiveRecord
         }
 
         return 0;
+    }
+
+    /**
+     * @param string $type
+     * @return int
+     */
+    public function getIngestionCountForDay(string $type = ''): int
+    {
+        if (empty($this->ingestionCounts)) {
+            $rows = (new \yii\db\Query())
+                ->select(['ingestion_type', 'MAX(ingestion) + 1 as count'])
+                ->from('menu_dish')
+                ->where(['menu_id' => $this->id])
+                ->groupBy('ingestion_type')
+                ->all();
+
+            $this->ingestionCounts = ArrayHelper::map($rows, 'ingestion_type', 'count');
+        }
+
+        $ingestionId = (new Dish())->getIngestionTypeByName($type);
+        if (isset($this->ingestionCounts[$ingestionId])) {
+            return $this->ingestionCounts[$ingestionId];
+        }
+
+        return 0;
+    }
+
+    /**
+     * @param string $type
+     * @param int $ingestionId
+     * @return bool
+     */
+    public function hasIngestion(string $type = '', int $ingestionId = 0): bool
+    {
+        if (!isset($this->ingestionAvailability[$type][$ingestionId])) {
+            $ingestionType = (new Dish())->getIngestionTypeByName($type);
+            $rows = (new \yii\db\Query())
+                ->from('menu_dish')
+                ->where(['menu_id' => $this->id, 'ingestion' => $ingestionId, 'ingestion_type' => $ingestionType])
+                ->all();
+
+            $this->ingestionAvailability[$type][$ingestionId] = !empty($rows);
+        }
+
+        return $this->ingestionAvailability[$type][$ingestionId];
     }
 
     /**

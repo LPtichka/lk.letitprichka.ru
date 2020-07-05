@@ -4,7 +4,8 @@
 /* @var $menu \app\models\Repository\Menu */
 
 $dateObject = (new \app\models\Helper\Date($date));
-?>
+
+use app\widgets\Html; ?>
 <div><strong>Меню
         на <?php echo $dateObject->getWeekdayName(); ?> <?php echo $dateObject->getFormattedDate(); ?></strong></div>
 
@@ -20,19 +21,27 @@ $dateObject = (new \app\models\Helper\Date($date));
             <div class="clearfix"></div>
         </div>
         <div class="ingestion-wrapper">
-            <div class="ingestion" data-ingestion-id="<?php echo $i; ?>">
-                <?php echo \yii\helpers\Html::dropDownList(
-                    'dish[' . $date . '][breakfast][' . $i . ']',
-                    $menu->getDishIDByParams($i, $date, 'breakfast', $i),
-                    (new \app\models\Helper\Arrays($breakfasts))->getSelectOptions('Выберите блюдо на завтрак'),
-                    [
-                        'class' => 'form-control input-sm dish-for-menu',
-                        'data-ingestion-date' => $date,
-                        'data-ingestion-type' => 'breakfast',
-                        'data-ingestion-number' => $i,
-                    ]
-                ); ?>
-            </div>
+            <?php $count = $menu->id ? $menu->getIngestionCountForDay('breakfast') : 1; ?>
+            <?php for ($i = 0; $i < $count; $i++): ?>
+                <?php if ($menu->hasIngestion('breakfast', $i)): ?>
+                    <div class="ingestion" data-ingestion-id="<?php echo $i; ?>">
+                        <?= Html::a('<i class="material-icons">clear</i>', '#', [
+                            'class' => 'btn btn-sm btn-default delete-ingestion',
+                        ]); ?>
+                        <?php echo \yii\helpers\Html::dropDownList(
+                            'dish[' . $date . '][breakfast][' . $i . ']',
+                            $menu->getDishIDByParams($i, $date, 'breakfast', $i),
+                            (new \app\models\Helper\Arrays($breakfasts))->getSelectOptions('Выберите блюдо на завтрак'),
+                            [
+                                'class'                 => 'form-control input-sm dish-for-menu',
+                                'data-ingestion-date'   => $date,
+                                'data-ingestion-type'   => 'breakfast',
+                                'data-ingestion-number' => $i,
+                            ]
+                        ); ?>
+                    </div>
+                <?php endif; ?>
+            <?php endfor; ?>
         </div>
     </div>
     <div class="col-sm-3">
@@ -46,44 +55,52 @@ $dateObject = (new \app\models\Helper\Date($date));
             <div class="clearfix"></div>
         </div>
         <div class="ingestion-wrapper">
-            <div class="ingestion" data-ingestion-id="<?php echo $i; ?>">
-                <?php echo \yii\helpers\Html::dropDownList(
-                    'dish[' . $date . '][dinner][first][' . $i . ']',
-                    $menu->getDishIDByParams($i, $date, 'dinner', \app\models\Repository\Dish::TYPE_FIRST),
-                    (new \app\models\Helper\Arrays($firstDishesDinner))->getSelectOptions('Выберите блюдо на первое - обед'),
-                    [
-                        'class' => 'form-control input-sm dish-for-menu',
-                        'data-ingestion-date' => $date,
-                        'data-ingestion-type' => 'dinner',
-                        'data-ingestion-number' => $i,
-                    ]
-                ); ?>
-                <?php echo \yii\helpers\Html::dropDownList(
-                    'dish[' . $date . '][dinner][second][' . $i . ']',
-                    $menu->getDishIDByParams($i, $date, 'dinner', \app\models\Repository\Dish::TYPE_SECOND),
-                    (new \app\models\Helper\Arrays($secondDishesDinner))->getSelectOptions('Выберите блюдо на второе - обед'),
-                    [
-                        'class' => 'form-control input-sm dish-for-menu',
-                        'data-ingestion-date' => $date,
-                        'data-ingestion-type' => 'dinner',
-                        'data-ingestion-number' => $i,
-                    ]
-                ); ?>
+            <?php $count = $menu->id ? $menu->getIngestionCountForDay('dinner') : 1; ?>
+            <?php for ($i = 0; $i < $count; $i++): ?>
+                <?php if ($menu->hasIngestion('dinner', $i)): ?>
+                    <div class="ingestion" data-ingestion-id="<?php echo $i; ?>">
+                        <?= Html::a('<i class="material-icons">clear</i>', '#', [
+                            'class' => 'btn btn-sm btn-default delete-ingestion',
+                        ]); ?>
+                        <?php echo \yii\helpers\Html::dropDownList(
+                            'dish[' . $date . '][dinner][first][' . $i . ']',
+                            $menu->getDishIDByParams($i, $date, 'dinner', \app\models\Repository\Dish::TYPE_FIRST),
+                            (new \app\models\Helper\Arrays($firstDishesDinner))->getSelectOptions('Выберите блюдо на первое - обед'),
+                            [
+                                'class'                 => 'form-control input-sm dish-for-menu',
+                                'data-ingestion-date'   => $date,
+                                'data-ingestion-type'   => 'dinner',
+                                'data-ingestion-number' => $i,
+                            ]
+                        ); ?>
+                        <?php echo \yii\helpers\Html::dropDownList(
+                            'dish[' . $date . '][dinner][second][' . $i . ']',
+                            $menu->getDishIDByParams($i, $date, 'dinner', \app\models\Repository\Dish::TYPE_SECOND),
+                            (new \app\models\Helper\Arrays($secondDishesDinner))->getSelectOptions('Выберите блюдо на второе - обед'),
+                            [
+                                'class'                 => 'form-control input-sm dish-for-menu',
+                                'data-ingestion-date'   => $date,
+                                'data-ingestion-type'   => 'dinner',
+                                'data-ingestion-number' => $i,
+                            ]
+                        ); ?>
 
-                <?php if($menu->isGarnishNeeded($i, $date, 'dinner', \app\models\Repository\Dish::TYPE_SECOND)):?>
-                    <?php echo \yii\helpers\Html::dropDownList(
-                        'dish[' . $date . '][dinner][garnish][' . $i . ']',
-                        $menu->getDishIDByParams($i, $date, 'dinner', \app\models\Repository\Dish::TYPE_GARNISH),
-                        (new \app\models\Helper\Arrays($garnishDishes))->getSelectOptions('Выберите блюдо на гарнир'),
-                        [
-                            'class' => 'form-control input-sm dish-for-menu dish-garnish',
-                            'data-ingestion-date' => $date,
-                            'data-ingestion-type' => 'dinner',
-                            'data-ingestion-number' => $i,
-                        ]
-                    ); ?>
-                <?php endif;?>
-            </div>
+                        <?php if ($menu->isGarnishNeeded($i, $date, 'dinner', \app\models\Repository\Dish::TYPE_SECOND)): ?>
+                            <?php echo \yii\helpers\Html::dropDownList(
+                                'dish[' . $date . '][dinner][garnish][' . $i . ']',
+                                $menu->getDishIDByParams($i, $date, 'dinner', \app\models\Repository\Dish::TYPE_GARNISH),
+                                (new \app\models\Helper\Arrays($garnishDishes))->getSelectOptions('Выберите блюдо на гарнир'),
+                                [
+                                    'class'                 => 'form-control input-sm dish-for-menu dish-garnish',
+                                    'data-ingestion-date'   => $date,
+                                    'data-ingestion-type'   => 'dinner',
+                                    'data-ingestion-number' => $i,
+                                ]
+                            ); ?>
+                        <?php endif; ?>
+                    </div>
+                <?php endif; ?>
+            <?php endfor; ?>
         </div>
     </div>
     <div class="col-sm-3">
@@ -97,19 +114,27 @@ $dateObject = (new \app\models\Helper\Date($date));
             <div class="clearfix"></div>
         </div>
         <div class="ingestion-wrapper">
-            <div class="ingestion" id="ingestion_lunch_<?php echo $i; ?>">
-                <?php echo \yii\helpers\Html::dropDownList(
-                    'dish[' . $date . '][lunch][' . $i . ']',
-                    $menu->getDishIDByParams($i, $date, 'lunch', $i),
-                    (new \app\models\Helper\Arrays($lunches))->getSelectOptions('Выберите блюдо на ланч'),
-                    [
-                        'class' => 'form-control input-sm dish-for-menu',
-                        'data-ingestion-date' => $date,
-                        'data-ingestion-type' => 'lunch',
-                        'data-ingestion-number' => $i,
-                    ]
-                ); ?>
-            </div>
+            <?php $count = $menu->id ? $menu->getIngestionCountForDay('lunch') : 1; ?>
+            <?php for ($i = 0; $i < $count; $i++): ?>
+                <?php if ($menu->hasIngestion('lunch', $i)): ?>
+                    <div class="ingestion" id="ingestion_lunch_<?php echo $i; ?>">
+                        <?= Html::a('<i class="material-icons">clear</i>', '#', [
+                            'class' => 'btn btn-sm btn-default delete-ingestion',
+                        ]); ?>
+                        <?php echo \yii\helpers\Html::dropDownList(
+                            'dish[' . $date . '][lunch][' . $i . ']',
+                            $menu->getDishIDByParams($i, $date, 'lunch', $i),
+                            (new \app\models\Helper\Arrays($lunches))->getSelectOptions('Выберите блюдо на ланч'),
+                            [
+                                'class'                 => 'form-control input-sm dish-for-menu',
+                                'data-ingestion-date'   => $date,
+                                'data-ingestion-type'   => 'lunch',
+                                'data-ingestion-number' => $i,
+                            ]
+                        ); ?>
+                    </div>
+                <?php endif; ?>
+            <?php endfor; ?>
         </div>
     </div>
     <div class="col-sm-3">
@@ -123,32 +148,40 @@ $dateObject = (new \app\models\Helper\Date($date));
             <div class="clearfix"></div>
         </div>
         <div class="ingestion-wrapper">
-            <div class="ingestion" id="ingestion_supper_<?php echo $i; ?>">
-                <?php echo \yii\helpers\Html::dropDownList(
-                    'dish[' . $date . '][supper][second][' . $i . ']',
-                    $menu->getDishIDByParams($i, $date, 'supper', \app\models\Repository\Dish::TYPE_SECOND),
-                    (new \app\models\Helper\Arrays($suppers))->getSelectOptions('Выберите блюдо на второе - ужин'),
-                    [
-                        'class' => 'form-control input-sm dish-for-menu',
-                        'data-ingestion-date' => $date,
-                        'data-ingestion-type' => 'supper',
-                        'data-ingestion-number' => $i,
-                    ]
-                ); ?>
-                <?php if($menu->isGarnishNeeded($i, $date, 'supper', \app\models\Repository\Dish::TYPE_SECOND)):?>
-                    <?php echo \yii\helpers\Html::dropDownList(
-                        'dish[' . $date . '][supper][garnish][' . $i . ']',
-                        $menu->getDishIDByParams($i, $date, 'supper', \app\models\Repository\Dish::TYPE_GARNISH),
-                        (new \app\models\Helper\Arrays($garnishDishes))->getSelectOptions('Выберите блюдо на гарнир'),
-                        [
-                            'class' => 'form-control input-sm dish-for-menu dish-garnish',
-                            'data-ingestion-date' => $date,
-                            'data-ingestion-type' => 'supper',
-                            'data-ingestion-number' => $i,
-                        ]
-                    ); ?>
-                <?php endif;?>
-            </div>
+            <?php $count = $menu->id ? $menu->getIngestionCountForDay('supper') : 1; ?>
+            <?php for ($i = 0; $i < $count; $i++): ?>
+                <?php if ($menu->hasIngestion('supper', $i)): ?>
+                    <div class="ingestion" id="ingestion_supper_<?php echo $i; ?>">
+                        <?= Html::a('<i class="material-icons">clear</i>', '#', [
+                            'class' => 'btn btn-sm btn-default delete-ingestion',
+                        ]); ?>
+                        <?php echo \yii\helpers\Html::dropDownList(
+                            'dish[' . $date . '][supper][second][' . $i . ']',
+                            $menu->getDishIDByParams($i, $date, 'supper', \app\models\Repository\Dish::TYPE_SECOND),
+                            (new \app\models\Helper\Arrays($suppers))->getSelectOptions('Выберите блюдо на второе - ужин'),
+                            [
+                                'class'                 => 'form-control input-sm dish-for-menu',
+                                'data-ingestion-date'   => $date,
+                                'data-ingestion-type'   => 'supper',
+                                'data-ingestion-number' => $i,
+                            ]
+                        ); ?>
+                        <?php if ($menu->isGarnishNeeded($i, $date, 'supper', \app\models\Repository\Dish::TYPE_SECOND)): ?>
+                            <?php echo \yii\helpers\Html::dropDownList(
+                                'dish[' . $date . '][supper][garnish][' . $i . ']',
+                                $menu->getDishIDByParams($i, $date, 'supper', \app\models\Repository\Dish::TYPE_GARNISH),
+                                (new \app\models\Helper\Arrays($garnishDishes))->getSelectOptions('Выберите блюдо на гарнир'),
+                                [
+                                    'class'                 => 'form-control input-sm dish-for-menu dish-garnish',
+                                    'data-ingestion-date'   => $date,
+                                    'data-ingestion-type'   => 'supper',
+                                    'data-ingestion-number' => $i,
+                                ]
+                            ); ?>
+                        <?php endif; ?>
+                    </div>
+                <?php endif; ?>
+            <?php endfor; ?>
         </div>
     </div>
 </div>

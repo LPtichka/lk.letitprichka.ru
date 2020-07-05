@@ -197,6 +197,11 @@ body.delegate('.action-with-approve', 'click', function (e) {
     e.preventDefault();
 });
 
+body.delegate('.delete-ingestion', 'click', function (e) {
+    $(this).parent().remove();
+    e.preventDefault();
+});
+
 body.delegate('.action-with-request', 'click', function (e) {
     let title = $(this).data('title');
     let text = $(this).data('text');
@@ -256,10 +261,14 @@ body.delegate('.add-menu-ingestion', 'click', function (e) {
     let lastIngestionID = parseInt(lastIngestion.data('ingestion-id')) + 1;
     let ingestionClone = lastIngestion.clone();
 
+    console.log(lastIngestionID);
+    console.log('=====');
+
     ingestionClone.find('option:selected').prop('selected', false);
     ingestionClone.find('select').each(function () {
         let newName = $(this).prop('name').replace('[' + (lastIngestionID - 1) + ']', '[' + lastIngestionID + ']');
-        $(this).prop('name', newName)
+        $(this).prop('name', newName);
+        $(this).attr('data-ingestion-number', lastIngestionID.toString());
     });
 
     ingestionClone.attr('data-ingestion-id', lastIngestionID.toString());
