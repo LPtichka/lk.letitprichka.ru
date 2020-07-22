@@ -23,7 +23,7 @@ use app\widgets\Html; ?>
         <div class="ingestion-wrapper">
             <?php $count = $menu->id ? $menu->getIngestionCountForDay('breakfast') : 1; ?>
             <?php for ($i = 0; $i < $count; $i++): ?>
-                <?php if ($menu->hasIngestion('breakfast', $i)): ?>
+                <?php if ($menu->hasIngestion('breakfast', $i) || !$menu->id): ?>
                     <div class="ingestion" data-ingestion-id="<?php echo $i; ?>">
                         <?= Html::a('<i class="material-icons">clear</i>', '#', [
                             'class' => 'btn btn-sm btn-default delete-ingestion',
@@ -57,7 +57,7 @@ use app\widgets\Html; ?>
         <div class="ingestion-wrapper">
             <?php $count = $menu->id ? $menu->getIngestionCountForDay('dinner') : 1; ?>
             <?php for ($i = 0; $i < $count; $i++): ?>
-                <?php if ($menu->hasIngestion('dinner', $i)): ?>
+                <?php if ($menu->hasIngestion('dinner', $i) || !$menu->id): ?>
                     <div class="ingestion" data-ingestion-id="<?php echo $i; ?>">
                         <?= Html::a('<i class="material-icons">clear</i>', '#', [
                             'class' => 'btn btn-sm btn-default delete-ingestion',
@@ -116,7 +116,7 @@ use app\widgets\Html; ?>
         <div class="ingestion-wrapper">
             <?php $count = $menu->id ? $menu->getIngestionCountForDay('lunch') : 1; ?>
             <?php for ($i = 0; $i < $count; $i++): ?>
-                <?php if ($menu->hasIngestion('lunch', $i)): ?>
+                <?php if ($menu->hasIngestion('lunch', $i) || !$menu->id): ?>
                     <div class="ingestion" id="ingestion_lunch_<?php echo $i; ?>">
                         <?= Html::a('<i class="material-icons">clear</i>', '#', [
                             'class' => 'btn btn-sm btn-default delete-ingestion',
@@ -150,7 +150,7 @@ use app\widgets\Html; ?>
         <div class="ingestion-wrapper">
             <?php $count = $menu->id ? $menu->getIngestionCountForDay('supper') : 1; ?>
             <?php for ($i = 0; $i < $count; $i++): ?>
-                <?php if ($menu->hasIngestion('supper', $i)): ?>
+                <?php if ($menu->hasIngestion('supper', $i) || !$menu->id): ?>
                     <div class="ingestion" id="ingestion_supper_<?php echo $i; ?>">
                         <?= Html::a('<i class="material-icons">clear</i>', '#', [
                             'class' => 'btn btn-sm btn-default delete-ingestion',
