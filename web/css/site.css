@@ -507,6 +507,10 @@ label input[type="checkbox"] {
     margin-bottom: 10px;
 }
 
+.order-menu-block-body .row.error a {
+    color: darkred;
+}
+
 .breadcrumb {
     padding: 3px 15px;
     margin-bottom: 0;

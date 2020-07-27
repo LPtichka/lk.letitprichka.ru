@@ -22,7 +22,7 @@ use yii\helpers\Url;
     <hr/>
     <?php foreach ($order->schedules as $schedule): ?>
         <?php $isScheduleDisabled =  time() > strtotime($schedule->date);?>
-        <div class="row <?php echo $schedule->getStatusKey(); ?> ">
+        <div class="row <?php echo $schedule->getStatusKey(); ?> <?php echo $order->isNotEquipped($schedule->date) ? 'error' : '';?>">
             <div class="col-sm-2">
                 <?php echo DatePicker::widget([
                     'name'          => 'date_' . $schedule->id,
@@ -70,7 +70,7 @@ use yii\helpers\Url;
                 ) ?>
             </div>
             <div class="col-sm-2">
-                <?= Html::a(\Yii::t('order', 'Get order enventory'), '#', [
+                <?= Html::a(\Yii::t('order', $order->isNotEquipped($schedule->date) ? 'Add order enventory' : 'Get order enventory'), '#', [
                     'data-href'   => Url::to(['order/get-date-inventory', 'id' => $order->id, 'date' => $schedule->date]),
                     'data-toggle' => 'modal',
                     'data-target' => '#modal',

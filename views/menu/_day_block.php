@@ -6,10 +6,13 @@
 $dateObject = (new \app\models\Helper\Date($date));
 
 use app\widgets\Html; ?>
-<div><strong>Меню
-        на <?php echo $dateObject->getWeekdayName(); ?> <?php echo $dateObject->getFormattedDate(); ?></strong></div>
 
 <div class="row menu-row">
+    <div class="col-sm-12">
+        <strong>Меню
+            на <?php echo $dateObject->getWeekdayName(); ?> <?php echo $dateObject->getFormattedDate(); ?></strong>
+    </div>
+    <hr class="col-sm-12" />
     <div class="col-sm-3">
         <div class="ingestion-header">
             <div class="pull-right">

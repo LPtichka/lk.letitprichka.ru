@@ -50,12 +50,20 @@ $this->params['breadcrumbs'][] = $this->title;
         </div>
     </div>
     <?php Pjax::begin(); ?>
-    <?= GridView::widget([
+    <?php echo GridView::widget([
         'tableOptions' => [
             'data-resizable-columns-id' => 'order',
             'class'                     => 'table'
         ],
         'dataProvider' => $dataProvider,
+        'rowOptions'   => function ($model, $key, $index, $grid){
+            $class = $model->isNotEquipped() ? 'error' : 'success';
+            return [
+                'key'   => $key,
+                'index' => $index,
+                'class' => $class
+            ];
+        },
         'filterModel'  => $searchModel,
         'columns'      => (new \app\models\Search\Order())->getSearchColumns($searchModel),
     ]);

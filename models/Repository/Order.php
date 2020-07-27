@@ -250,7 +250,7 @@ class Order extends \yii\db\ActiveRecord
 
         // TODO переделать
         /** @var \app\models\User $user */
-        $user = \Yii::$app->user->identity;
+        $user               = \Yii::$app->user->identity;
         $this->franchise_id = $user->franchise_id ?? 1;
         if (!empty($this->subscription_id) && $this->subscription_id != Subscription::NO_SUBSCRIPTION_ID) {
             $subscriptionDiscount = SubscriptionDiscount::find()
@@ -274,6 +274,9 @@ class Order extends \yii\db\ActiveRecord
             $this->setCustomer($customer);
             $customer->scenario = Customer::SCENARIO_NEW_CUSTOMER;
         } else {
+            if (empty($this->customer_id) && !empty($data['Order']['customer_id'])) {
+                $this->customer_id = (int) $data['Order']['customer_id'];
+            }
             $this->setCustomer(Customer::findOne($this->customer_id));
         }
 
@@ -335,18 +338,18 @@ class Order extends \yii\db\ActiveRecord
                     $time = $firstDateTime;
                     for ($i = 0; $i < $data['Order']['count']; $i++) {
                         $orderSchedule = new OrderSchedule();
-                        $price = $subscriptionDiscount->price ?? $subscription->price;
+                        $price         = $subscriptionDiscount->price ?? $subscription->price;
 
                         $orderSchedule->address_id = $schedule->address_id;
-                        $orderSchedule->order_id = $schedule->order_id;
-                        $orderSchedule->interval = $schedule->interval;
+                        $orderSchedule->order_id   = $schedule->order_id;
+                        $orderSchedule->interval   = $schedule->interval;
 
                         if (date('N', $firstDateTime) == 7) {
                             $time += 86400;
                         }
-                        $orderSchedule->date       = date('Y-m-d', $time);
+                        $orderSchedule->date = date('Y-m-d', $time);
                         $orderSchedule->cost = $price / $data['Order']['count'];
-                        $schedules[]    = $orderSchedule;
+                        $schedules[]         = $orderSchedule;
 
                         if (date('N', $time + 86400) == 7) {
                             $time += 2 * 86400;
@@ -496,7 +499,7 @@ class Order extends \yii\db\ActiveRecord
         }
         $this->customer_id = $this->customer->id;
         if (!empty($this->customer->addresses[0]->id)) {
-            $this->address_id  = $this->customer->addresses[0]->id;
+            $this->address_id = $this->customer->addresses[0]->id;
         }
 
         if (!$this->isUpdated && !$this->validate()) {
@@ -516,7 +519,7 @@ class Order extends \yii\db\ActiveRecord
             $oException               = new OrderException();
             $oException->order_id     = $this->id;
             $oException->exception_id = $exception->id;
-            $oException->comment = $exception->comment;
+            $oException->comment      = $exception->comment;
             if (!$oException->validate() || !$oException->save()) {
                 $transaction->rollBack();
                 return false;
@@ -612,19 +615,6 @@ class Order extends \yii\db\ActiveRecord
             OrderException::find()->where(['order_id' => $this->id])->asArray()->all(), 'exception_id'
         );
     }
-    /**
-     * @return array
-     */
-    public function getExceptionNames(): array
-    {
-        $result = [];
-        if (!empty($this->exceptions)) {
-            foreach ($this->exceptions as $exception) {
-                $result[] = $exception->name;
-            }
-        }
-        return $result;
-    }
 
     /**
      * @param string $date
@@ -700,7 +690,7 @@ class Order extends \yii\db\ActiveRecord
                 return [];
             }
 
-            $dishes = [];
+            $dishes         = [];
             $manufacturedAt = 0;
             foreach ($daySchedule->dishes as $scheduleDish) {
                 $dishes[] = $scheduleDish->dish;
@@ -736,6 +726,20 @@ class Order extends \yii\db\ActiveRecord
             $result[] = $customerSheet;
         }
 
+        return $result;
+    }
+
+    /**
+     * @return array
+     */
+    public function getExceptionNames(): array
+    {
+        $result = [];
+        if (!empty($this->exceptions)) {
+            foreach ($this->exceptions as $exception) {
+                $result[] = $exception->name;
+            }
+        }
         return $result;
     }
 
@@ -803,5 +807,30 @@ class Order extends \yii\db\ActiveRecord
         }
 
         return [];
+    }
+
+    /**
+     * @param string|null $date
+     * @return bool
+     */
+    public function isNotEquipped(?string $date = null): bool
+    {
+        $sql = 'SELECT COUNT(*) as `count` FROM `order_schedule` AS os 
+                      LEFT JOIN `order_schedule_dish` AS osd
+                        ON os.id = osd.order_schedule_id
+                      WHERE os.order_id = "' . $this->id . '" 
+                            AND (osd.dish_id IS NULL OR (osd.with_garnish = 1 AND osd.garnish_id is NULL))';
+
+        if ($date) {
+            $sql .= ' AND os.date = "' . $date . '"';
+        }
+
+        try {
+            $result = \Yii::$app->db->createCommand($sql)->queryOne();
+        } catch (\yii\db\Exception $e) {
+            return false;
+        }
+
+        return (bool) $result['count'];
     }
 }
