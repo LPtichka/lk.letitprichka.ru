@@ -36,8 +36,10 @@ class Menu extends Repository
         $query        = Repository::find();
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
-            'sort'  => ['defaultOrder' => ['id' => SORT_ASC]],
+            'sort'  => ['defaultOrder' => ['created_at' => SORT_DESC]],
         ]);
+
+        $query->andFilterWhere(['status' => \app\models\Repository\Menu::STATUS_ACTIVE]);
 
         $this->load($params);
         if (!empty($params['is_equipped'])) {
@@ -70,6 +72,14 @@ class Menu extends Repository
                 'width'                    => '40px',
                 'data-resizable-column-id' => 'checker'
             ],
+        ];
+
+        $result['created_at'] = [
+            'attribute' => 'created_at',
+            'label'     => \Yii::t('menu', 'Created at'),
+            'content'   => function ($model){
+                return date('d.m.Y \в H:i', $model->created_at);
+            }
         ];
 
         $result['id'] = [
@@ -116,13 +126,7 @@ class Menu extends Repository
             ),
         ];
 
-        $result['created_at'] = [
-            'attribute' => 'created_at',
-            'label'     => \Yii::t('menu', 'Created at'),
-            'content'   => function ($model){
-                return date('d.m.Y \в H:i', $model->created_at);
-            }
-        ];
+
         return $result;
     }
 }

@@ -3,7 +3,10 @@ namespace app\controllers;
 
 use app\models\Helper\Excel;
 use app\models\Repository\Dish;
+use app\models\Repository\DishProduct;
+use app\models\Repository\OrderSchedule;
 use app\models\Search\Menu;
+use yii\db\IntegrityException;
 use yii\helpers\ArrayHelper;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
@@ -201,5 +204,68 @@ class MenuController extends BaseController
                 'url' => $excel->getUrl()
             ];
         }
+    }
+
+    /**
+     * Удаление меню
+     */
+    public function actionDelete()
+    {
+        $menuIds = \Yii::$app->request->post('selection');
+
+        \Yii::$app->response->format = Response::FORMAT_JSON;
+
+        $this->log('menu-delete', $menuIds);
+        $transaction = \Yii::$app->db->beginTransaction();
+        foreach ($menuIds as $id) {
+
+            $menu = \app\models\Repository\Menu::findOne($id);
+            if ($menu->menu_start_date < date('Y-m-d', time())) {
+                return [
+                    'status' => false,
+                    'title'  => \Yii::t('menu', 'Old menu can not be deleted')
+                ];
+            }
+
+            $orderSchedules = OrderSchedule::find()
+                ->where(['>=', 'date', $menu->menu_start_date])
+                ->andWhere(['<=', 'date', $menu->menu_end_date])
+                ->all();
+            $isSuccess = true;
+            foreach ($orderSchedules as $schedule) {
+                if (!empty($schedule->dishes)) {
+                    foreach ($schedule->dishes as $dish) {
+                        $dish->dish_id = null;
+                        $dish->name = null;
+                        $dish->with_garnish = null;
+                        $dish->garnish_id = null;
+
+                        if (!$dish->validate()) {
+                            $isSuccess = false;
+                        }
+
+                        if (!$dish->save()) {
+                            $isSuccess = false;
+                        }
+                    }
+                }
+            }
+
+            if (!$isSuccess) {
+                return [
+                    'status' => false,
+                    'title'  => \Yii::t('menu', 'An error occurred in the cleaning time')
+                ];
+            }
+
+            Menu::updateAll(['status' => \app\models\Repository\Menu::STATUS_DELETED], ['id' => $id]);
+        }
+
+        $transaction->commit();
+        $this->log('menu-delete-success', $menuIds);
+        return [
+            'status' => true,
+            'title'  => \Yii::t('dish', 'Menu was successful deleted')
+        ];
     }
 }

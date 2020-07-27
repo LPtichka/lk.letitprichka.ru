@@ -25,7 +25,7 @@ use app\widgets\Html; ?>
             <?php for ($i = 0; $i < $count; $i++): ?>
                 <?php if ($menu->hasIngestion('breakfast', $i) || !$menu->id): ?>
                     <div class="ingestion" data-ingestion-id="<?php echo $i; ?>">
-                        <?= Html::a('<i class="material-icons">clear</i>', '#', [
+                        <?= Html::a('<i class="material-icons">delete_forever</i>', '#', [
                             'class' => 'btn btn-sm btn-default delete-ingestion',
                         ]); ?>
                         <?php echo \yii\helpers\Html::dropDownList(
@@ -59,7 +59,7 @@ use app\widgets\Html; ?>
             <?php for ($i = 0; $i < $count; $i++): ?>
                 <?php if ($menu->hasIngestion('dinner', $i) || !$menu->id): ?>
                     <div class="ingestion" data-ingestion-id="<?php echo $i; ?>">
-                        <?= Html::a('<i class="material-icons">clear</i>', '#', [
+                        <?= Html::a('<i class="material-icons">delete_forever</i>', '#', [
                             'class' => 'btn btn-sm btn-default delete-ingestion',
                         ]); ?>
                         <?php echo \yii\helpers\Html::dropDownList(
@@ -118,13 +118,13 @@ use app\widgets\Html; ?>
             <?php for ($i = 0; $i < $count; $i++): ?>
                 <?php if ($menu->hasIngestion('lunch', $i) || !$menu->id): ?>
                     <div class="ingestion" id="ingestion_lunch_<?php echo $i; ?>">
-                        <?= Html::a('<i class="material-icons">clear</i>', '#', [
+                        <?= Html::a('<i class="material-icons">delete_forever</i>', '#', [
                             'class' => 'btn btn-sm btn-default delete-ingestion',
                         ]); ?>
                         <?php echo \yii\helpers\Html::dropDownList(
                             'dish[' . $date . '][lunch][' . $i . ']',
                             $menu->getDishIDByParams($i, $date, 'lunch', $i),
-                            (new \app\models\Helper\Arrays($lunches))->getSelectOptions('Выберите блюдо на ланч'),
+                            (new \app\models\Helper\Arrays($lunches))->getSelectOptions('Выберите блюдо на перекус'),
                             [
                                 'class'                 => 'form-control input-sm dish-for-menu',
                                 'data-ingestion-date'   => $date,
@@ -152,7 +152,7 @@ use app\widgets\Html; ?>
             <?php for ($i = 0; $i < $count; $i++): ?>
                 <?php if ($menu->hasIngestion('supper', $i) || !$menu->id): ?>
                     <div class="ingestion" id="ingestion_supper_<?php echo $i; ?>">
-                        <?= Html::a('<i class="material-icons">clear</i>', '#', [
+                        <?= Html::a('<i class="material-icons">delete_forever</i>', '#', [
                             'class' => 'btn btn-sm btn-default delete-ingestion',
                         ]); ?>
                         <?php echo \yii\helpers\Html::dropDownList(

@@ -37,7 +37,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'class'     => 'btn btn-sm btn-default export',
                 'data-href' => Url::to(['product/export']),
             ]) ?>
-            <?= Html::submitButton('<i class="material-icons">clear</i>', [
+            <?= Html::submitButton('<i class="material-icons">delete_forever</i>', [
                 'class'      => 'btn btn-sm btn-danger delete',
                 'data-title' => \Yii::t('order', 'Do you really want to delete selected products?'),
                 'data-href'  => Url::to(['product/delete']),

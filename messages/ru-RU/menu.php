@@ -21,5 +21,8 @@ return [
     'Start day'        => 'Начальная дата',
     'Supper'           => 'Ужин',
 
-    'Menu was saved successfully' => 'Меню было успешно создано',
+    'Menu was saved successfully'                          => 'Меню было успешно создано',
+    'Do you really want to delete selected subscriptions?' => 'Вы действительно хотите удалить меню? Все назначенные блюда заказам будут очищены.',
+    'Old menu can not be deleted'                          => 'Нельзя удалить меню которое уже применено, к нему могут быть закреплены заказы.',
+    'An error occurred in the cleaning time'               => 'Произошла ошибка во время очистки блюд заказов.',
 ];

@@ -33,7 +33,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         'data-toggle' => 'modal',
                         'data-target' => '#modal',
                     ]) ?>
-                <?= Html::submitButton('<i class="material-icons">clear</i>', [
+                <?= Html::submitButton('<i class="material-icons">delete_forever</i>', [
                     'class'      => 'btn btn-sm btn-danger delete',
                     'data-title' => \Yii::t('menu', 'Do you really want to delete selected subscriptions?'),
                     'data-href'  => Url::to(['menu/delete']),

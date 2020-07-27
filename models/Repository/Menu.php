@@ -10,6 +10,7 @@ use yii\helpers\ArrayHelper;
  * This is the model class for table "{{%menu}}".
  *
  * @property int $id
+ * @property int $status
  * @property string $menu_start_date
  * @property string $menu_end_date
  * @property int $created_at
@@ -19,6 +20,9 @@ use yii\helpers\ArrayHelper;
  */
 class Menu extends \yii\db\ActiveRecord
 {
+    const STATUS_ACTIVE = 10;
+    const STATUS_DELETED = 0;
+
     /** @var int */
     public $dayCount = 1;
     /** @var array */
@@ -51,6 +55,7 @@ class Menu extends \yii\db\ActiveRecord
     {
         return [
             [['menu_start_date', 'menu_end_date'], 'string'],
+            [['status'], 'integer'],
         ];
     }
 
