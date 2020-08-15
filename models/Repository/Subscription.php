@@ -25,7 +25,7 @@ class Subscription extends \yii\db\ActiveRecord
     const STATUS_ACTIVE = 10;
     const STATUS_DELETED = 0;
 
-    const NO_SUBSCRIPTION_ID = 8;
+    const NO_SUBSCRIPTION_ID = 6;
 
     /** @var boolean */
     public $isTest;
