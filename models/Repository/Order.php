@@ -4,6 +4,7 @@ namespace app\models\Repository;
 
 use app\models\Common\CustomerSheet;
 use app\models\Common\Route;
+use app\models\Helper\Helper;
 use app\models\Helper\Status;
 use app\models\Queries\OrderQuery;
 use yii\behaviors\TimestampBehavior;
@@ -524,14 +525,14 @@ class Order extends \yii\db\ActiveRecord
         $event       = new \app\events\OrderCreated();
         $transaction = \Yii::$app->db->beginTransaction();
         if (!$this->customer->validate() || !$this->customer->save()) {
-            \Yii::error("Что то пошло не так с сохранением customer");
+            \Yii::error(Helper::DEVIDER . json_encode($this->customer->getFirstErrors()));
             $transaction->rollBack();
             return false;
         }
         foreach ($this->customer->addresses as $address) {
             $address->customer_id = $this->customer->id;
             if (!$address->validate() || !$address->save()) {
-                \Yii::error("Что то пошло не так с сохранением address");
+                \Yii::error(Helper::DEVIDER . json_encode($this->address->getFirstErrors()));
                 $transaction->rollBack();
                 return false;
             }
@@ -542,12 +543,12 @@ class Order extends \yii\db\ActiveRecord
         }
 
         if (!$this->isUpdated && !$this->validate()) {
-            \Yii::error("Что то пошло не так с валидацией order");
+            \Yii::error(Helper::DEVIDER . json_encode($this->getFirstErrors()));
             $transaction->rollBack();
             return false;
         }
         if (!$this->save(!$this->isUpdated)) {
-            \Yii::error("Что то пошло не так с сохранением order");
+            \Yii::error(Helper::DEVIDER . json_encode($this->getFirstErrors()));
             $transaction->rollBack();
             return false;
         }
@@ -562,7 +563,7 @@ class Order extends \yii\db\ActiveRecord
             $oException->exception_id = $exception->id;
             $oException->comment      = $exception->comment;
             if (!$oException->validate() || !$oException->save()) {
-                \Yii::error("Что то пошло не так с сохранением orderException");
+                \Yii::error(Helper::DEVIDER . json_encode($oException->getFirstErrors()));
                 $transaction->rollBack();
                 return false;
             }
@@ -570,7 +571,7 @@ class Order extends \yii\db\ActiveRecord
             $cException->customer_id  = $this->customer_id;
             $cException->exception_id = $exception->id;
             if (!$cException->validate() || !$cException->save()) {
-                \Yii::error("Что то пошло не так с сохранением excpetion");
+                \Yii::error(Helper::DEVIDER . json_encode($cException->getFirstErrors()));
                 $transaction->rollBack();
                 return false;
             }
@@ -588,7 +589,7 @@ class Order extends \yii\db\ActiveRecord
                     foreach ($schedule->dishes as $dish) {
                         $dish->order_schedule_id = $schedule->id;
                         if (!$dish->validate() || !$dish->save()) {
-                            \Yii::error("Что то пошло не так с сохранением dish");
+                            \Yii::error(Helper::DEVIDER . json_encode($dish->getFirstErrors()));
                             $transaction->rollBack();
                             return false;
                         }
@@ -604,7 +605,7 @@ class Order extends \yii\db\ActiveRecord
                             $orderScheduleDish->dish_id           = null;
 
                             if (!$orderScheduleDish->validate() || !$orderScheduleDish->save()) {
-                                \Yii::error("Что то пошло не так с сохранением orderScheduleDish 1");
+                                \Yii::error(Helper::DEVIDER . json_encode($orderScheduleDish->getFirstErrors()));
                                 $transaction->rollBack();
                                 return false;
                             }
@@ -621,7 +622,7 @@ class Order extends \yii\db\ActiveRecord
                                 $orderScheduleDish->type              = $iType;
 
                                 if (!$orderScheduleDish->validate() || !$orderScheduleDish->save()) {
-                                    \Yii::error("Что то пошло не так с сохранением orderScheduleDish 2");
+                                    \Yii::error(Helper::DEVIDER . json_encode($orderScheduleDish->getFirstErrors()));
                                     $transaction->rollBack();
                                     return false;
                                 }
