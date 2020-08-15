@@ -44,4 +44,5 @@ return [
     'Weight'                                                                     => 'Вес (гр.)',
     'With garnish'                                                               => 'С гарниром',
     'The type of dish cannot be a side dish and have an option with a side dish' => 'Тип блюда не может быть гарниром и иметь опцию с гарниром',
+    'Dish type was saved successfully'                                           => 'Блюдо было успешно сохранено',
 ];

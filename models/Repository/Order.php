@@ -472,7 +472,27 @@ class Order extends \yii\db\ActiveRecord
             $schedule->order_id   = $this->id;
             $schedule->interval   = $data['schedule']['interval'] ?? null;
             if ($this->subscription_id == Subscription::NO_SUBSCRIPTION_ID) {
-                // TODO добавить сохранение с продуктами
+
+                $dishes        = [];
+                $scheduleTotal = 0;
+                foreach ($data['schedule']['dishes'] as $dishData) {
+                    if (empty($dishData['dish_id'])) {
+                        continue;
+                    }
+                    $dish          = new OrderScheduleDish();
+                    $dish->count   = (int) $dishData['count'];
+                    $dish->price   = (int) $dishData['price'];
+                    $dish->dish_id = (int) $dishData['dish_id'];
+
+                    $scheduleTotal += $dish->price * $dish->count;
+                    $dishes[]      = $dish;
+                }
+
+                $schedule->cost = $scheduleTotal;
+                $this->count    = 1;
+                $this->total    = $scheduleTotal;
+                $schedule->setDishes($dishes);
+                $schedules[] = $schedule;
             } else {
                 $time = $firstDateTime;
                 for ($i = 0; $i < $data['schedule']['count']; $i++) {
