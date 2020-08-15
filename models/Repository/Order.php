@@ -524,12 +524,14 @@ class Order extends \yii\db\ActiveRecord
         $event       = new \app\events\OrderCreated();
         $transaction = \Yii::$app->db->beginTransaction();
         if (!$this->customer->validate() || !$this->customer->save()) {
+            \Yii::error("Что то пошло не так с сохранением customer");
             $transaction->rollBack();
             return false;
         }
         foreach ($this->customer->addresses as $address) {
             $address->customer_id = $this->customer->id;
             if (!$address->validate() || !$address->save()) {
+                \Yii::error("Что то пошло не так с сохранением address");
                 $transaction->rollBack();
                 return false;
             }
@@ -540,10 +542,12 @@ class Order extends \yii\db\ActiveRecord
         }
 
         if (!$this->isUpdated && !$this->validate()) {
+            \Yii::error("Что то пошло не так с валидацией order");
             $transaction->rollBack();
             return false;
         }
         if (!$this->save(!$this->isUpdated)) {
+            \Yii::error("Что то пошло не так с сохранением order");
             $transaction->rollBack();
             return false;
         }
@@ -558,6 +562,7 @@ class Order extends \yii\db\ActiveRecord
             $oException->exception_id = $exception->id;
             $oException->comment      = $exception->comment;
             if (!$oException->validate() || !$oException->save()) {
+                \Yii::error("Что то пошло не так с сохранением orderException");
                 $transaction->rollBack();
                 return false;
             }
@@ -565,6 +570,7 @@ class Order extends \yii\db\ActiveRecord
             $cException->customer_id  = $this->customer_id;
             $cException->exception_id = $exception->id;
             if (!$cException->validate() || !$cException->save()) {
+                \Yii::error("Что то пошло не так с сохранением excpetion");
                 $transaction->rollBack();
                 return false;
             }
@@ -582,6 +588,7 @@ class Order extends \yii\db\ActiveRecord
                     foreach ($schedule->dishes as $dish) {
                         $dish->order_schedule_id = $schedule->id;
                         if (!$dish->validate() || !$dish->save()) {
+                            \Yii::error("Что то пошло не так с сохранением dish");
                             $transaction->rollBack();
                             return false;
                         }
@@ -597,6 +604,7 @@ class Order extends \yii\db\ActiveRecord
                             $orderScheduleDish->dish_id           = null;
 
                             if (!$orderScheduleDish->validate() || !$orderScheduleDish->save()) {
+                                \Yii::error("Что то пошло не так с сохранением orderScheduleDish 1");
                                 $transaction->rollBack();
                                 return false;
                             }
@@ -613,6 +621,7 @@ class Order extends \yii\db\ActiveRecord
                                 $orderScheduleDish->type              = $iType;
 
                                 if (!$orderScheduleDish->validate() || !$orderScheduleDish->save()) {
+                                    \Yii::error("Что то пошло не так с сохранением orderScheduleDish 2");
                                     $transaction->rollBack();
                                     return false;
                                 }
