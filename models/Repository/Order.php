@@ -532,7 +532,7 @@ class Order extends \yii\db\ActiveRecord
         foreach ($this->customer->addresses as $address) {
             $address->customer_id = $this->customer->id;
             if (!$address->validate() || !$address->save()) {
-                \Yii::error(Helper::DEVIDER . json_encode($this->address->getFirstErrors()));
+                \Yii::error(Helper::DEVIDER . json_encode($address->getFirstErrors()));
                 $transaction->rollBack();
                 return false;
             }
