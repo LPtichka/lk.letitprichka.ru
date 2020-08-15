@@ -6,5 +6,5 @@ return [
     'senderName'   => 'Example.com mailer',
     'supportEmail' => 'support@letitptichka.ru',
 
-    'dadata.token' => 'ca15055d1b23387d362a2ba1cb5f190eb682da30',
+    'dadata.token' => '182d90397a6e73d39d831c87503d5e813347fb39',
 ];
