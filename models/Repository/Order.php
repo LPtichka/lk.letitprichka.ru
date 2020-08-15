@@ -40,6 +40,8 @@ use yii\helpers\ArrayHelper;
  */
 class Order extends \yii\db\ActiveRecord
 {
+    const SCENARIO_DESKTOP = 'desktop';
+
     const STATUS_NEW = 1;
     const STATUS_PROCESSED = 2;
     const STATUS_CANCELED = 3;
@@ -128,7 +130,8 @@ class Order extends \yii\db\ActiveRecord
     {
         return [
             [['status_id', 'payment_type', 'cutlery', 'count', 'total', 'address_id', 'franchise_id'], 'integer'],
-            [['count', 'franchise_id', 'payment_type', 'subscription_id', 'scheduleFirstDate', 'scheduleInterval'], 'required'],
+            [['count', 'franchise_id', 'payment_type', 'subscription_id'], 'required'],
+            [['scheduleFirstDate', 'scheduleInterval'], 'required', 'on' => self::SCENARIO_DESKTOP],
             [['status_id'], 'in', 'range' => self::STATUSES],
             [['cutlery'], 'default', 'value' => 1],
             [['cash_machine', 'without_soup'], 'boolean'],
@@ -247,6 +250,8 @@ class Order extends \yii\db\ActiveRecord
         } else {
             $this->load($data);
         }
+
+        $this->scenario = self::SCENARIO_DESKTOP;
 
         // TODO переделать
         /** @var \app\models\User $user */
@@ -451,16 +456,48 @@ class Order extends \yii\db\ActiveRecord
         }
         $this->setExceptions($exceptions);
 
-        $scheduleFirstDate = !empty($data['schedule']['start_date']) ? strtotime($data['schedule']['start_date']) : null;
-        $schedules         = [];
+        $scheduleFirstDate = !empty($data['schedule']['start_date'])
+            ? strtotime($data['schedule']['start_date'])
+            : null;
+
+        $schedules = [];
+
         if ($scheduleFirstDate !== null) {
-            for ($i = 0; $i < $data['schedule']['count']; $i++) {
-                $schedule       = new OrderSchedule();
-                $schedule->date = date('Y-m-d', $scheduleFirstDate + $i * 86400);
-                $schedule->cost = $data['total'] / $data['schedule']['count'];
-                $schedules[]    = $schedule;
+            $firstDateTime        = strtotime($scheduleFirstDate);
+            $schedule             = new OrderSchedule();
+            $i                    = 0;
+            $schedule->date       = date('Y-m-d', $firstDateTime + $i * 86400);
+            $schedule->address_id = $address->id ?? null;
+            $schedule->order_id   = $this->id;
+            $schedule->interval   = $data['schedule']['interval'] ?? null;
+            if ($this->subscription_id == Subscription::NO_SUBSCRIPTION_ID) {
+                // TODO добавить сохранение с продуктами
+            } else {
+                $time = $firstDateTime;
+                for ($i = 0; $i < $data['schedule']['count']; $i++) {
+                    $orderSchedule = new OrderSchedule();
+                    $price         = $data['total'];
+
+                    $orderSchedule->address_id = $schedule->address_id;
+                    $orderSchedule->order_id   = $schedule->order_id;
+                    $orderSchedule->interval   = $schedule->interval;
+
+                    if (date('N', $firstDateTime) == 7) {
+                        $time += 86400;
+                    }
+                    $orderSchedule->date = date('Y-m-d', $time);
+                    $orderSchedule->cost = $price / $data['schedule']['count'];
+                    $schedules[]         = $orderSchedule;
+
+                    if (date('N', $time + 86400) == 7) {
+                        $time += 2 * 86400;
+                    } else {
+                        $time += 86400;
+                    }
+                }
             }
         }
+
         $this->setSchedules($schedules);
 
         return true;
