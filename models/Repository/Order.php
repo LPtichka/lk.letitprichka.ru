@@ -458,7 +458,7 @@ class Order extends \yii\db\ActiveRecord
         $this->setExceptions($exceptions);
 
         $scheduleFirstDate = !empty($data['schedule']['start_date'])
-            ? strtotime($data['schedule']['start_date'])
+            ? $data['schedule']['start_date']
             : null;
 
         $schedules = [];
