@@ -88,5 +88,14 @@ return [
             'maxFileSize' => 102400,
             'maxLogFiles' => 10,
         ],
+        [
+            'class'       => 'yii\log\FileTarget',
+            'logFile'     => '@runtime/logs/debug.log',
+            'levels'      => ['info'],
+            'categories'  => ['debug-*'],
+            'logVars'     => [],
+            'maxFileSize' => 102400,
+            'maxLogFiles' => 10,
+        ],
     ],
 ];

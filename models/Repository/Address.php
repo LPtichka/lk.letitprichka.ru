@@ -127,6 +127,8 @@ class Address extends \yii\db\ActiveRecord
             return $address;
         }
 
+        \Yii::info($suggestions['suggestions'], 'debug-address');
+
         $suggest = (new Suggestions())->setSuggestions($suggestions['suggestions'] ?? [])->build();
         if (isset($suggest[0])) {
             /** @var Suggestion $data */
