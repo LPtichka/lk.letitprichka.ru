@@ -196,7 +196,7 @@ class MenuController extends BaseController
             $excel = new Excel();
             $excel->loadFromTemplate('files/templates/base.xlsx');
             $excel->prepare($ingestions, Excel::MODEL_MARRIAGE_SHEET, \Yii::$app->request->post());
-            $excel->save('marriage_sheet.xlsx', 'temp');
+            $excel->save('quality_report.xlsx', 'temp');
 
             \Yii::$app->response->format = Response::FORMAT_JSON;
 

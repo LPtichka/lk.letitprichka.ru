@@ -12,7 +12,7 @@ $this->params['breadcrumbs'][] = $this->title;
 ?>
 
 <div class="row">
-    <div class="col-sm-2">
+    <div class="col-lg-3 col-md-4 col-sm-4">
         <div class="report-item text-center">
 
             <div class="text-center">
@@ -32,14 +32,14 @@ $this->params['breadcrumbs'][] = $this->title;
                 ]) ?>
         </div>
     </div>
-    <div class="col-sm-2">
+    <div class="col-lg-3 col-md-4 col-sm-4">
         <div class="report-item text-center">
 
             <div class="text-center">
                 <img src="/images/svg/route.svg" style="margin: 10px 0;" height="60px;" />
             </div>
             <br />
-            <p>Список адресов для заказов с доставкой на дату</p>
+            <p>Список адресов для заказов<br /> с доставкой на дату</p>
             <br />
                 <?= Html::a('<span>Маршрутный лист</span>',
                     ['order/get-route-sheet'],
@@ -51,14 +51,14 @@ $this->params['breadcrumbs'][] = $this->title;
                     ]); ?>
         </div>
     </div>
-    <div class="col-sm-2">
+    <div class="col-lg-3 col-md-4 col-sm-4">
         <div class="report-item text-center">
 
             <div class="text-center">
                 <img src="/images/svg/notepad-1.svg"  style="margin: 10px 0;" height="60px;" />
             </div>
             <br />
-            <p>Меню для покупателя на конкретную дату</p>
+            <p>Меню для покупателя<br /> на конкретную дату</p>
             <br />
             <?php echo \yii\helpers\Html::a(
                 '<span>' . \Yii::t('menu', 'Customer sheet') . '</span>',

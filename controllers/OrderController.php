@@ -457,7 +457,7 @@ class OrderController extends BaseController
             $excel = new Excel();
             $excel->loadFromTemplate('files/templates/base.xlsx');
             $excel->prepare($orderRoutes, Excel::MODEL_ROUTE_SHEET, \Yii::$app->request->post());
-            $excel->save('route_sheet.xlsx', 'temp');
+            $excel->save('delivery_report.xlsx', 'temp');
 
             \Yii::$app->response->format = Response::FORMAT_JSON;
 
@@ -521,7 +521,7 @@ class OrderController extends BaseController
             $excel = new Excel();
             $excel->loadFromTemplate('files/templates/base.xlsx');
             $excel->prepare($customerSheet, Excel::MODEL_CUSTOMER_SHEET, \Yii::$app->request->post());
-            $excel->save('customer_sheet.xlsx', 'temp');
+            $excel->save('client_report.xlsx', 'temp');
         } catch (\Exception $e) {
             \Yii::error($e->getMessage());
             return ['success' => false];
