@@ -1,9 +1,10 @@
-<?php declare(strict_types=1);
+<?php declare(strict_types = 1);
 namespace app\models\Common;
 
 use app\models\Helper\Phone;
 use app\models\Repository\Dish;
 use app\models\Repository\Franchise;
+use app\models\Repository\OrderSchedule;
 use yii\base\Model;
 
 /**
@@ -427,6 +428,53 @@ class CustomerSheet extends Model
 
         foreach ($this->dishes as $dish) {
             $result += $dish->carbohydrates;
+        }
+
+        return $result;
+    }
+
+    /**
+     * @param OrderSchedule[] $orderSchedules
+     * @return array
+     */
+    public function getAllCustomerSheets(array $orderSchedules): array
+    {
+        foreach ($orderSchedules as $orderSchedule) {
+            $order = $orderSchedule->order;
+            $dishes         = [];
+            $manufacturedAt = 0;
+            foreach ($orderSchedule->dishes as $scheduleDish) {
+                $dishes[] = $scheduleDish->dish;
+                if ($scheduleDish->manufactured_at > $manufacturedAt) {
+                    $manufacturedAt = $scheduleDish->manufactured_at;
+                }
+            }
+
+            $dayBalance = OrderSchedule::find()
+                ->where(['status' => OrderSchedule::EDITABLE_STATUSES])
+                ->andWhere(['order_id' => $order->id])
+                ->count();
+
+            $customerSheet = (new CustomerSheet())
+                ->setFio($order->customer->fio)
+                ->setPhone($order->customer->phone)
+                ->setAddress($order->address->full_address)
+                ->setFranchise($order->franchise)
+                ->setManufacturedAt($manufacturedAt)
+                ->setCutlery($order->cutlery)
+                ->setSubscriptionId($order->subscription_id)
+                ->setSubscriptionName($order->subscription->name)
+                ->setSubscriptionDayCount($order->count)
+                ->setSubscriptionDayBalance($dayBalance - 1)
+                ->setExceptions($order->getExceptionNames())
+                ->setDeliveryTime($orderSchedule->interval)
+                ->setDishes($dishes)
+                ->setHasBreakfast((bool) $order->subscription->has_breakfast)
+                ->setHasDinner((bool) $order->subscription->has_dinner)
+                ->setHasLunch((bool) $order->subscription->has_lunch)
+                ->setHasSupper((bool) $order->subscription->has_supper);
+
+            $result[] = $customerSheet;
         }
 
         return $result;

@@ -1,5 +1,6 @@
 <?php
 
+use kartik\date\DatePicker;
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 use yii\widgets\Pjax;
@@ -27,19 +28,17 @@ Pjax::begin([
 
         <?php else: ?>
             <div class="row">
-                <div class="col-sm-6">
-                    <label><?= \Yii::t('order', 'Choose order id'); ?></label>
-                    <?php echo Html::textInput('order_id', '', [
-                        'id'    => 'input-order-id',
-                        'class' => 'form-control input-sm'
-                    ]); ?>
-                </div>
-                <div class="col-sm-6">
+                <div class="col-sm-12">
                     <div class="select-block">
                         <div class="form-group">
                             <label><?= \Yii::t('order', 'Choose date'); ?></label>
-                            <?php echo Html::dropDownList('schedule_id', '', $dates ?? [], [
-                                'class' => 'form-control input-sm'
+                            <?php echo DatePicker::widget([
+                                'name'          => 'date',
+                                'removeButton'  => false,
+                                'pluginOptions' => [
+                                    'autoclose' => true,
+                                    'format'    => 'dd.mm.yyyy'
+                                ]
                             ]); ?>
                         </div>
                     </div>
@@ -78,6 +77,7 @@ Pjax::begin([
     body.delegate('.get-customer-sheet', 'click', function (e) {
         e.preventDefault();
         let scheduleId = $('[name="schedule_id"]').val();
+        let date = $('[name="date"]').val();
         let button = $(this);
         let id = '$id';
         if ($('#input-order-id').length > 0) {
@@ -87,7 +87,7 @@ Pjax::begin([
         $.ajax({
             url: '/order/get-customer-sheet?id=' + id,
             type: 'POST',
-            data: {schedule_id: scheduleId},
+            data: {date: date},
             dataType: 'json',
             beforeSend: function() {
                 button.addClass('loading');

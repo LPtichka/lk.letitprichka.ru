@@ -2,6 +2,7 @@
 namespace app\controllers;
 
 use app\events\OrderCompleted;
+use app\models\Common\CustomerSheet;
 use app\models\Common\Ingestion;
 use app\models\Helper\Excel;
 use app\models\Repository\Address;
@@ -471,9 +472,10 @@ class OrderController extends BaseController
      * @param int $id
      * @return string|array
      */
-    public function actionGetCustomerSheet(int $id)
+    public function actionGetCustomerSheet()
     {
         $userSheet = [];
+        $id = \Yii::$app->request->get('id', null);
         if ($post = \Yii::$app->request->post()) {
             \Yii::$app->response->format = Response::FORMAT_JSON;
             return $this->generateCustomerSheetFile($post);
@@ -507,20 +509,20 @@ class OrderController extends BaseController
      */
     private function generateCustomerSheetFile(array $post): array
     {
-        $date = OrderSchedule::find()
-            ->where(['id' => $post['schedule_id']])
-            ->one();
+        $dates = OrderSchedule::find()
+            ->where(['date' => date('Y-m-d', strtotime($post['date']))])
+            ->all();
 
-        if (!$date) {
+        if (!$dates) {
             return ['success' => false];
         }
 
-        $customerSheet = $date->order->getCustomerSheetsByDate([$date->date]);
+        $customerSheets = (new CustomerSheet())->getAllCustomerSheets($dates);
 
         try {
             $excel = new Excel();
             $excel->loadFromTemplate('files/templates/base.xlsx');
-            $excel->prepare($customerSheet, Excel::MODEL_CUSTOMER_SHEET, \Yii::$app->request->post());
+            $excel->prepare($customerSheets, Excel::MODEL_CUSTOMER_SHEET, \Yii::$app->request->post());
             $excel->save('client_report.xlsx', 'temp');
         } catch (\Exception $e) {
             \Yii::error($e->getMessage());

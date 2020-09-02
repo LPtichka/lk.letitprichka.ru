@@ -316,9 +316,11 @@ class Order extends \yii\db\ActiveRecord
                 $schedule             = new OrderSchedule();
                 $i                    = 0;
                 $schedule->date       = date('Y-m-d', $firstDateTime + $i * 86400);
+                $this->scheduleFirstDate = $schedule->date;
                 $schedule->address_id = $address->id ?? null;
                 $schedule->order_id   = $this->id;
                 $schedule->interval   = $data['Order']['scheduleInterval'] ?? null;
+                $this->scheduleInterval = $schedule->interval;
                 if ($this->subscription_id == Subscription::NO_SUBSCRIPTION_ID) {
                     $dishes        = [];
                     $scheduleTotal = 0;
