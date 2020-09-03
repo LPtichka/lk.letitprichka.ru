@@ -20,9 +20,9 @@ class m200902_062832_add_settings_table extends Migration
 
         $this->createTable('{{%settings}}', [
             'id' => $this->primaryKey(),
-            'name' => $this->integer()->notNull(),
-            'value' => $this->integer()->notNull(),
-            'franchise_id' => $this->integer()->notNull(),
+            'name' => $this->string(255)->notNull(),
+            'value' => $this->text()->notNull(),
+            'franchise_id' => $this->integer()->null(),
             'created_at' => $this->integer()->notNull(),
             'updated_at' => $this->integer()->notNull(),
         ], $tableOptions);

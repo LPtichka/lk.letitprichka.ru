@@ -17,6 +17,7 @@ return [
     'Franchise'                     => 'Франшизы',
     'Goods'                         => 'Товары',
     'ID'                            => '#',
+    'Settings'                            => 'Настройки',
     'Menu'                          => 'Меню',
     'Orders'                        => 'Заказы',
     'Products'                      => 'Продукты',

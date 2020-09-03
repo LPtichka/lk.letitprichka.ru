@@ -5,9 +5,11 @@ use app\models\Common\CustomerSheet;
 use app\models\Common\MarriageDish;
 use app\models\Common\Route;
 use app\models\Repository\Dish;
+use app\models\Repository\Settings;
 use app\models\Repository\Subscription;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
+use yii\helpers\ArrayHelper;
 
 class Excel
 {
@@ -561,9 +563,11 @@ class Excel
             $objWorksheet->getCellByColumnAndRow(2, 10)->setValue(date('H:i', $sheet->getManufacturedAt()));
             $objWorksheet->getCellByColumnAndRow(3, 10)->setValue(date('d.m.Y', $sheet->getManufacturedAt()));
 
+            $settings = ArrayHelper::map(Settings::find()->asArray()->all(), 'name', 'value');
+
             $objWorksheet->getCellByColumnAndRow(1, 11)->setValue('Условия хранения:');
-            $objWorksheet->getCellByColumnAndRow(2, 11)->setValue('-');
-            $objWorksheet->getCellByColumnAndRow(3, 11)->setValue($sheet->getFranchise()->sertificat_info);
+            $objWorksheet->getCellByColumnAndRow(2, 11)->setValue($settings['storage_conditions']);
+            $objWorksheet->getCellByColumnAndRow(3, 11)->setValue($sheet->getFranchise()->sertificat_info ?? $settings['certificate']);
 
             $objWorksheet->mergeCells('A13:D13');
 
