@@ -125,6 +125,8 @@ class Menu extends \yii\db\ActiveRecord
                                 $menuDish->date           = $date;
 
                                 $dishList[] = $menuDish;
+                            } else {
+                                $this->addError('dishes', \Yii::t('menu', 'Empty dish id for ' . $ingestionType));
                             }
                         }
                     }
@@ -140,6 +142,8 @@ class Menu extends \yii\db\ActiveRecord
                             $menuDish->date           = $date;
 
                             $dishList[] = $menuDish;
+                        } else {
+                            $this->addError('dishes', \Yii::t('menu', 'Empty dish id for ' . $ingestionType));
                         }
                     }
                 }
@@ -211,15 +215,17 @@ class Menu extends \yii\db\ActiveRecord
      * @param string $date
      * @param string $type
      * @param int $ingestionType
-     * @return int
+     * @param array $data
+     * @return bool
      */
     public function isGarnishNeeded(
         int $ingestionID = 0,
         string $date = '',
         string $type = '',
-        int $ingestionType = 0
+        int $ingestionType = 0,
+        array $data = []
     ): bool{
-        $dishId = $this->getDishIDByParams($ingestionID, $date, $type, $ingestionType);
+        $dishId = $this->getDishIDByParams($ingestionID, $date, $type, $ingestionType, $data);
 
         $dish = Dish::findOne($dishId);
         if (!$dish) {
@@ -234,13 +240,15 @@ class Menu extends \yii\db\ActiveRecord
      * @param string $date
      * @param string $type
      * @param int $ingestionType
+     * @param array $chosenDishes
      * @return int
      */
     public function getDishIDByParams(
         int $ingestionID = 0,
         string $date = '',
         string $type = '',
-        int $ingestionType = 0
+        int $ingestionType = 0,
+        array $chosenDishes = []
     ): int{
         foreach ($this->dishes as $dish) {
             if ($dish->ingestion == $ingestionID && $dish->date == $date) {
@@ -268,6 +276,24 @@ class Menu extends \yii\db\ActiveRecord
                 }
             }
         }
+
+        if ($type == 'dinner' || $type == 'supper') {
+            if ($ingestionType == Dish::TYPE_SECOND) {
+                $type = 'second';
+            } elseif ($ingestionType == Dish::TYPE_GARNISH) {
+                $type = 'garnish';
+            } else {
+                $type = 'first';
+            }
+            if (!empty($chosenDishes[$type][$ingestionID])) {
+                return $chosenDishes[$type][$ingestionID];
+            }
+        } else {
+            if (!empty($chosenDishes[$ingestionID])) {
+                return $chosenDishes[$ingestionID];
+            }
+        }
+
 
         return 0;
     }

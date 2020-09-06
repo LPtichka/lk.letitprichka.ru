@@ -525,8 +525,23 @@ class OrderController extends BaseController
             $excel->prepare($customerSheets, Excel::MODEL_CUSTOMER_SHEET, \Yii::$app->request->post());
             $excel->save('client_report.xlsx', 'temp');
         } catch (\Exception $e) {
+
+            $schedules = OrderSchedule::find()
+                ->leftJoin('order_schedule_dish', 'order_schedule.id = order_schedule_dish.order_schedule_id')
+                ->where(['order_schedule.date' => date('Y-m-d', strtotime($post['date']))])
+                ->andWhere(['order_schedule_dish.dish_id' => null])
+                ->all();
+
+            $order_ids = [];
+            foreach ($schedules as $schedule) {
+                $order_ids[] = $schedule->order_id;
+            }
+
             \Yii::error($e->getMessage());
-            return ['success' => false];
+            return [
+                'success' => false,
+                'orders' => $order_ids
+            ];
         }
 
         return [

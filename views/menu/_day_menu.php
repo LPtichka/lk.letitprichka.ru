@@ -9,6 +9,7 @@
             'i'                  => $key,
             'date'               => $date,
             'menu'               => $menu,
+            'chosenDishes'       => $chosenDishes[$date] ?? [],
             'breakfasts'         => $breakfasts,
             'lunches'            => $lunches,
             'suppers'            => $suppers,

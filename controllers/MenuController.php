@@ -3,10 +3,8 @@ namespace app\controllers;
 
 use app\models\Helper\Excel;
 use app\models\Repository\Dish;
-use app\models\Repository\DishProduct;
 use app\models\Repository\OrderSchedule;
 use app\models\Search\Menu;
-use yii\db\IntegrityException;
 use yii\helpers\ArrayHelper;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
@@ -39,20 +37,24 @@ class MenuController extends BaseController
             $this->log('menu-create', []);
             $menu = $menu->build(\Yii::$app->request->post());
 
-            if ($menu->saveAll()) {
-                \Yii::$app->session->addFlash('success', \Yii::t('menu', 'Menu was saved successfully'));
-                $this->log('menu-create-success', [
-                    'start' => $menu->menu_start_date,
-                    'end'   => $menu->menu_end_date,
-                    'id'    => $menu->id,
-                ]);
-                return $this->redirect(['menu/index']);
+            if (!$menu->hasErrors()) {
+                if ($menu->saveAll()) {
+                    \Yii::$app->session->addFlash('success', \Yii::t('menu', 'Menu was saved successfully'));
+                    $this->log('menu-create-success', [
+                        'start' => $menu->menu_start_date,
+                        'end'   => $menu->menu_end_date,
+                        'id'    => $menu->id,
+                    ]);
+                    return $this->redirect(['menu/view', 'id' => $menu->id]);
+                } else {
+                    $this->log('menu-create-fail', [
+                        'start'  => $menu->menu_start_date,
+                        'end'    => $menu->menu_end_date,
+                        'errors' => json_encode($menu->getFirstErrors()),
+                    ]);
+                }
             } else {
-                $this->log('menu-create-fail', [
-                    'start'  => $menu->menu_start_date,
-                    'end'    => $menu->menu_end_date,
-                    'errors' => json_encode($menu->getFirstErrors()),
-                ]);
+                \Yii::$app->session->addFlash('danger', implode('<br />', $menu->getFirstErrors()));
             }
         }
         return $this->render('/menu/create', [
@@ -112,6 +114,9 @@ class MenuController extends BaseController
         $startDay = \Yii::$app->request->post('menuStartDate');
         $endDay   = \Yii::$app->request->post('menuEndDate');
         $menuID   = \Yii::$app->request->post('menuID');
+        if ($data = \Yii::$app->request->post('data', null)) {
+            $chosenDishes = json_decode($data, true);
+        }
 
         $dates          = [];
         $startTimestamp = strtotime($startDay);
@@ -131,6 +136,7 @@ class MenuController extends BaseController
         return $this->renderAjax('/menu/_day_menu', [
             'dates'              => $dates,
             'menu'               => $menu,
+            'chosenDishes'       => $chosenDishes['dish'] ?? [],
             'breakfasts'         => ArrayHelper::map(Dish::find()->where(['is_breakfast' => true])->asArray()->all(), 'id', 'name'),
             'lunches'            => ArrayHelper::map(Dish::find()->where(['is_lunch' => true])->asArray()->all(), 'id', 'name'),
             'suppers'            => ArrayHelper::map(Dish::find()->where(['type' => Dish::TYPE_SECOND, 'is_supper' => true])->asArray()->all(), 'id', 'name'),
@@ -231,14 +237,14 @@ class MenuController extends BaseController
                 ->where(['>=', 'date', $menu->menu_start_date])
                 ->andWhere(['<=', 'date', $menu->menu_end_date])
                 ->all();
-            $isSuccess = true;
+            $isSuccess      = true;
             foreach ($orderSchedules as $schedule) {
                 if (!empty($schedule->dishes)) {
                     foreach ($schedule->dishes as $dish) {
-                        $dish->dish_id = null;
-                        $dish->name = null;
+                        $dish->dish_id      = null;
+                        $dish->name         = null;
                         $dish->with_garnish = null;
-                        $dish->garnish_id = null;
+                        $dish->garnish_id   = null;
 
                         if (!$dish->validate()) {
                             $isSuccess = false;

@@ -520,6 +520,20 @@ window.getMenuBlocks = function (menuID = 0) {
     });
 };
 
+window.getMenuBlocksForCreate = function (post = '') {
+    let startDate = $('[name="menu_start_date"]').val();
+    let endDate = $('[name="menu_end_date"]').val();
+
+    $.ajax({
+        url: '/menu/get-day-blocks',
+        data: {menuStartDate: startDate, menuEndDate: endDate, data: post},
+        type: 'POST',
+        success: function (html) {
+            $('#menu-composition').html(html);
+        }
+    });
+};
+
 $(document).on('pjax:beforeSend', function () {
     if ($('.modal.in').length > 0) {
         $('.modal.in').find('.modal-content').addClass('pjax-loading');

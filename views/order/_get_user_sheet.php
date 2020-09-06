@@ -100,10 +100,19 @@ Pjax::begin([
                     button.removeClass('loading');
                     window.location.href = '/' + data.url;
                 } else {
+                    let orderText = '';
+                    
+                    if (data.orders) {
+                        for(let i = 0; i < data.orders.length; i++) {
+                            orderText += '<a href="/order/'+data.orders[i]+'/view">Заказ номер №'+data.orders[i]+'</a><br />';
+                        }
+                    }
+                    
                     swal({
                         title: "Ошибка",
-                        text: 'Возможно не все блюда назначены заказу в выбранный вами день. Попробуйте проверить содержание дня доставки для заказа.',
+                        text: 'Возможно не все блюда назначены заказу в выбранный вами день. Попробуйте проверить содержание следующих заказов.<br />' + orderText,
                         type: 'error',
+                        html: true,
                         showCancelButton: true,
                         closeOnConfirm: false,
                     });

@@ -78,6 +78,15 @@ if ($model->id) {
 JS
     );
 }
+$post = \Yii::$app->request->post();
+if (!$model->id && $post) {
+    $post = json_encode($post);
+    \Yii::$app->view->registerJs(<<<JS
+        // alert("sdadad");
+        window.getMenuBlocksForCreate('$post');
+JS
+    );
+}
 
 
 
