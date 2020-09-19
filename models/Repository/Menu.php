@@ -286,11 +286,11 @@ class Menu extends \yii\db\ActiveRecord
                 $type = 'first';
             }
             if (!empty($chosenDishes[$type][$ingestionID])) {
-                return $chosenDishes[$type][$ingestionID];
+                return (int) $chosenDishes[$type][$ingestionID];
             }
         } else {
             if (!empty($chosenDishes[$ingestionID])) {
-                return $chosenDishes[$ingestionID];
+                return (int) $chosenDishes[$ingestionID];
             }
         }
 
