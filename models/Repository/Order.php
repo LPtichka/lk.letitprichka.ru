@@ -442,6 +442,9 @@ class Order extends \yii\db\ActiveRecord
         !empty($data['address']['city']) && $address->city = $data['address']['city'];
         !empty($data['address']['full_address']) && $address->full_address = $data['address']['full_address'];
         !empty($data['address']['description']) && $address->description = $data['address']['description'];
+        !empty($data['address']['flat']) && $address->flat = $data['address']['flat'];
+        !empty($data['address']['floor']) && $address->floor = $data['address']['floor'];
+        !empty($data['address']['porch']) && $address->porch = $data['address']['porch'];
         $address->prepareAddress($address, $data['address']['full_address']);
 
         $addressByParams = (new Address())->getByFullAddress($address->full_address, $customer->id);
