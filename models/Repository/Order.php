@@ -452,6 +452,16 @@ class Order extends \yii\db\ActiveRecord
             $address = $addressByParams;
         }
 
+        if (!empty($data['address']['porch']) && $data['address']['porch'] != $address->porch) {
+            $address->porch = $data['address']['porch'];
+        }
+        if (!empty($data['address']['floor']) && $data['address']['floor'] != $address->floor) {
+            $address->floor = $data['address']['floor'];
+        }
+        if (!empty($data['address']['flat']) && $data['address']['flat'] != $address->flat) {
+            $address->flat = $data['address']['flat'];
+        }
+
         $customer->setAddresses([$address]);
         $this->setCustomer($customer);
 
