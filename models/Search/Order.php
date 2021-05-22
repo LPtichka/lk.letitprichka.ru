@@ -114,6 +114,7 @@ class Order extends Repository
         $result['phone'] = [
             'attribute' => 'phone',
             'label'     => \Yii::t('order', 'Phone'),
+            'contentOptions' => ['style' => 'width:125px; min-width:125px'],
             'content'   => function ($model){
                 return !empty($model->customer->phone) ? (new Phone($model->customer->phone))->getHumanView() : '---';
             }
