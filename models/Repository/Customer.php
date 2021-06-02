@@ -67,7 +67,7 @@ class Customer extends \yii\db\ActiveRecord
             [['fio', 'email', 'phone', 'comment'], 'string'],
             [['type'], 'default', 'value' => 1],
             [['status'], 'default', 'value' => 10],
-            [['fio', 'email', 'phone'], 'required', 'on' => self::SCENARIO_NEW_CUSTOMER],
+            [['fio', 'phone'], 'required', 'on' => self::SCENARIO_NEW_CUSTOMER],
         ];
     }
 

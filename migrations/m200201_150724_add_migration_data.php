@@ -10,7 +10,7 @@ class m200201_150724_add_migration_data extends Migration
     /**
      * {@inheritdoc}
      */
-    public function safeUp()
+    public function up()
     {
         $this->execute('SET FOREIGN_KEY_CHECKS=0');
         $this->execute(file_get_contents(__DIR__ . '/lk.letitptichka.ru_2020-02-01.sql'));
@@ -20,7 +20,7 @@ class m200201_150724_add_migration_data extends Migration
     /**
      * {@inheritdoc}
      */
-    public function safeDown()
+    public function down()
     {
         echo "m200201_150724_add_migration_data cannot be reverted.\n";
 

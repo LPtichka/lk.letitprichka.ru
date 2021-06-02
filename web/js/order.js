@@ -144,6 +144,28 @@ body.delegate('.request-dish-to-inventory', 'click', function (e) {
     });
 });
 
+body.delegate('#order-subscriptioncount', 'change', function (e) {
+    e.preventDefault();
+
+    if ($(this).val() === '999') {
+        $('#count-block-wrapper').removeClass('hidden');
+        $('#order-count').val('');
+    } else {
+        $('#count-block-wrapper').addClass('hidden');
+        $('#order-count').val($(this).val());
+    }
+});
+
+body.delegate('#order-individual_menu', 'change', function (e) {
+    e.preventDefault();
+
+    if ($(this).is(':checked')) {
+        $('#comment-block').removeClass('hidden');
+    } else {
+        $('#comment-block').addClass('hidden');
+    }
+});
+
 body.delegate('.reload-dish', 'click', function (e) {
     e.preventDefault();
     let ration = $(this).data('ration');

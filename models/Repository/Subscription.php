@@ -183,6 +183,7 @@ class Subscription extends \yii\db\ActiveRecord
             5 => \Yii::t('Subscription', '5 day'),
             10 => \Yii::t('Subscription', '10 day'),
             20 => \Yii::t('Subscription', '20 day'),
+            999 => \Yii::t('Subscription', 'Unique'),
         ];
     }
 }
