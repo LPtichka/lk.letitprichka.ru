@@ -417,6 +417,18 @@ class Order extends \yii\db\ActiveRecord
     }
 
     /**
+     * Собрать заказ из массива POST
+     *
+     * @param array $data
+     * @return bool
+     */
+    public function reBuildFromParams(array $data): bool
+    {
+
+        return true;
+    }
+
+    /**
      * @param Customer $customer
      */
     public function setCustomer(Customer $customer): void

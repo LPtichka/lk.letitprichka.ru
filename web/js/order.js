@@ -166,6 +166,47 @@ body.delegate('#order-individual_menu', 'change', function (e) {
     }
 });
 
+body.delegate('#edit-order-primary-params', 'click', function (e) {
+    e.preventDefault();
+
+    $.get('get-edit-primary-block?orderId=' + orderId, function (block) {
+        $('.order-info').addClass('hidden-order-info').removeClass('order-info').addClass('hidden');
+        $('#ordering-info').append('<div class="box-body order-info">' + block + '</div>');
+    });
+});
+
+body.delegate('#cancel-primary-order-params', 'click', function (e) {
+    e.preventDefault();
+
+    $('#ordering-info .order-info').remove();
+    $('.hidden-order-info').addClass('order-info').removeClass('.hidden-order-info').removeClass('hidden');
+});
+
+body.delegate('#save-primary-order-params', 'click', function (e) {
+    e.preventDefault();
+
+    $.ajax({
+        url: 'edit-primary-block?orderId=' + orderId,
+        method: 'post',
+        data: {
+            subscription_id: $('[name="subscription_id"]').val(),
+            comment: $('[name="comment"]').val(),
+            scheduleFirstDate: $('[name="scheduleFirstDate"]').val(),
+            count: $('[name="count"]').val(),
+            without_soup: $('[name="without_soup"]').is(':checked'),
+            individual_menu: $('[name="individual_menu"]').is(':checked'),
+            cutlery: $('[name="cutlery"]').is(':checked'),
+        },
+        success: function (html) {
+            $('#ordering-info .order-info').remove();
+            $('.hidden-order-info').addClass('order-info').removeClass('.hidden-order-info').removeClass('hidden');
+            $('.order-info').html(html);
+        }
+    });
+
+    $('#ordering-info .order-info').remove();
+});
+
 body.delegate('.reload-dish', 'click', function (e) {
     e.preventDefault();
     let ration = $(this).data('ration');

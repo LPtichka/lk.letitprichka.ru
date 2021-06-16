@@ -1,4 +1,5 @@
 <?php
+
 namespace app\controllers;
 
 use app\events\OrderCompleted;
@@ -31,13 +32,16 @@ class OrderController extends BaseController
         $event->prepareEvent();
         \Yii::$app->trigger(\app\events\OrderCompleted::EVENT_ORDER_COMPLETED, $event);
 
-        $searchModel  = new Order();
+        $searchModel = new Order();
         $dataProvider = $searchModel->search(\Yii::$app->request->queryParams);
 
-        return $this->render('/order/index', [
-            'searchModel'  => $searchModel,
-            'dataProvider' => $dataProvider,
-        ]);
+        return $this->render(
+            '/order/index',
+            [
+                'searchModel'  => $searchModel,
+                'dataProvider' => $dataProvider,
+            ]
+        );
     }
 
     /**
@@ -52,17 +56,23 @@ class OrderController extends BaseController
             $this->log('order-create', []);
             if ($order->build(\Yii::$app->request->post()) && $order->saveAll()) {
                 \Yii::$app->session->addFlash('success', \Yii::t('order', 'Order was saved successfully'));
-                $this->log('order-create-success', [
-                    'name' => $order->id,
-                    'id'   => $order->id,
-                ]);
+                $this->log(
+                    'order-create-success',
+                    [
+                        'name' => $order->id,
+                        'id'   => $order->id,
+                    ]
+                );
                 return $this->redirect(['order/index']);
             } else {
                 \Yii::$app->session->addFlash('danger', \Yii::t('order', 'Order was not saved successfully'));
-                $this->log('order-create-fail', [
-                    'name'   => $order->id,
-                    'errors' => json_encode($order->getFirstErrors()),
-                ]);
+                $this->log(
+                    'order-create-fail',
+                    [
+                        'name'   => $order->id,
+                        'errors' => json_encode($order->getFirstErrors()),
+                    ]
+                );
             }
         }
 
@@ -90,7 +100,8 @@ class OrderController extends BaseController
 
 
         $paymentTypes = ArrayHelper::map(
-            PaymentType::find()->select(['id', 'name'])->where(['status' => PaymentType::STATUS_ACTIVE])->asArray()->all(),
+            PaymentType::find()->select(['id', 'name'])->where(['status' => PaymentType::STATUS_ACTIVE])->asArray(
+            )->all(),
             'id',
             'name'
         );
@@ -102,26 +113,30 @@ class OrderController extends BaseController
         );
 
         $subscriptions = ArrayHelper::map(
-            Subscription::find()->select(['id', 'name'])->where(['status' => Subscription::STATUS_ACTIVE])->asArray()->all(),
+            Subscription::find()->select(['id', 'name'])->where(['status' => Subscription::STATUS_ACTIVE])->asArray(
+            )->all(),
             'id',
             'name'
         );
 
         $subscriptionCounts = (new Subscription())->getCounts();
 
-        return $this->render('/order/create', [
-            'model'              => $order,
-            'payments'           => $paymentTypes,
-            'addresses'          => [
-                '' => \Yii::t('order', 'New address'),
-            ],
-            'exceptions'         => $exceptions,
-            'subscriptions'      => $subscriptions,
-            'intervals'          => (new OrderSchedule())->getIntervals(),
-            'customers'          => ArrayHelper::map(Customer::find()->asArray()->all(), 'id', 'fio'),
-            'subscriptionCounts' => $subscriptionCounts,
-            'title'              => \Yii::t('order', 'Order create'),
-        ]);
+        return $this->render(
+            '/order/create',
+            [
+                'model'              => $order,
+                'payments'           => $paymentTypes,
+                'addresses'          => [
+                    '' => \Yii::t('order', 'New address'),
+                ],
+                'exceptions'         => $exceptions,
+                'subscriptions'      => $subscriptions,
+                'intervals'          => (new OrderSchedule())->getIntervals(),
+                'customers'          => ArrayHelper::map(Customer::find()->asArray()->all(), 'id', 'fio'),
+                'subscriptionCounts' => $subscriptionCounts,
+                'title'              => \Yii::t('order', 'Order create'),
+            ]
+        );
     }
 
     /**
@@ -137,16 +152,22 @@ class OrderController extends BaseController
             $this->log('order-update', []);
             if ($order->build(\Yii::$app->request->post()) && $order->saveAll()) {
                 \Yii::$app->session->addFlash('success', \Yii::t('order', 'Order was saved successfully'));
-                $this->log('order-update-success', [
-                    'name' => $order->id,
-                    'id'   => $order->id,
-                ]);
+                $this->log(
+                    'order-update-success',
+                    [
+                        'name' => $order->id,
+                        'id'   => $order->id,
+                    ]
+                );
                 return $this->redirect(['order/view', 'id' => $order->id]);
             } else {
-                $this->log('order-update-fail', [
-                    'name'   => $order->id,
-                    'errors' => json_encode($order->getFirstErrors()),
-                ]);
+                $this->log(
+                    'order-update-fail',
+                    [
+                        'name'   => $order->id,
+                        'errors' => json_encode($order->getFirstErrors()),
+                    ]
+                );
             }
         }
 
@@ -164,7 +185,8 @@ class OrderController extends BaseController
 
 
         $paymentTypes = ArrayHelper::map(
-            PaymentType::find()->select(['id', 'name'])->where(['status' => PaymentType::STATUS_ACTIVE])->asArray()->all(),
+            PaymentType::find()->select(['id', 'name'])->where(['status' => PaymentType::STATUS_ACTIVE])->asArray(
+            )->all(),
             'id',
             'name'
         );
@@ -176,28 +198,32 @@ class OrderController extends BaseController
         );
 
         $subscriptions = ArrayHelper::map(
-            Subscription::find()->select(['id', 'name'])->where(['status' => Subscription::STATUS_ACTIVE])->asArray()->all(),
+            Subscription::find()->select(['id', 'name'])->where(['status' => Subscription::STATUS_ACTIVE])->asArray(
+            )->all(),
             'id',
             'name'
         );
 
         $subscriptionCounts = (new Subscription())->getCounts();
 
-        return $this->render('/order/create', [
-            'model'              => $order,
-            'addresses'          => ArrayHelper::map(
-                Address::find()->where(['customer_id' => $order->customer_id])->asArray()->all(),
-                'id',
-                'full_address'
-            ),
-            'payments'           => $paymentTypes,
-            'exceptions'         => $exceptions,
-            'subscriptions'      => $subscriptions,
-            'customers'          => ArrayHelper::map(Customer::find()->asArray()->all(), 'id', 'fio'),
-            'intervals'          => (new OrderSchedule())->getIntervals(),
-            'subscriptionCounts' => $subscriptionCounts,
-            'title'              => \Yii::t('order', 'Order №') . $order->id,
-        ]);
+        return $this->render(
+            '/order/create',
+            [
+                'model'              => $order,
+                'addresses'          => ArrayHelper::map(
+                    Address::find()->where(['customer_id' => $order->customer_id])->asArray()->all(),
+                    'id',
+                    'full_address'
+                ),
+                'payments'           => $paymentTypes,
+                'exceptions'         => $exceptions,
+                'subscriptions'      => $subscriptions,
+                'customers'          => ArrayHelper::map(Customer::find()->asArray()->all(), 'id', 'fio'),
+                'intervals'          => (new OrderSchedule())->getIntervals(),
+                'subscriptionCounts' => $subscriptionCounts,
+                'title'              => \Yii::t('order', 'Order №') . $order->id,
+            ]
+        );
     }
 
     /**
@@ -207,17 +233,21 @@ class OrderController extends BaseController
     public function actionAddException(int $counter)
     {
         $exceptions = ArrayHelper::map(
-            Exception::find()->select(['id', 'name'])->where(['status' => PaymentType::STATUS_ACTIVE])->asArray()->all(),
+            Exception::find()->select(['id', 'name'])->where(['status' => PaymentType::STATUS_ACTIVE])->asArray()->all(
+            ),
             'id',
             'name'
         );
 
-        return $this->renderAjax('/order/_order_exception', [
-            'exception'  => new OrderException(),
-            'exceptions' => $exceptions,
-            'disabled'   => false,
-            'i'          => ++$counter,
-        ]);
+        return $this->renderAjax(
+            '/order/_order_exception',
+            [
+                'exception'  => new OrderException(),
+                'exceptions' => $exceptions,
+                'disabled'   => false,
+                'i'          => ++$counter,
+            ]
+        );
     }
 
     /**
@@ -231,15 +261,17 @@ class OrderController extends BaseController
         $customer = Customer::findOne($customerId);
         if ($customer) {
             $addresses = Address::find()
-                ->where([
-                    'customer_id' => $customerId,
-                    'status'      => Address::STATUS_ACTIVE
-                ])
-                ->asArray()
-                ->all();
+                                ->where(
+                                    [
+                                        'customer_id' => $customerId,
+                                        'status'      => Address::STATUS_ACTIVE
+                                    ]
+                                )
+                                ->asArray()
+                                ->all();
             foreach ($addresses as $address) {
                 $address['selected'] = $customer->default_address_id == $address['id'];
-                $addressList[]       = $address;
+                $addressList[] = $address;
             }
         }
 
@@ -268,30 +300,37 @@ class OrderController extends BaseController
     public function actionGetException(int $customerId = 0)
     {
         $exceptionList = '';
-        $exceptions    = ArrayHelper::map(
-            Exception::find()->select(['id', 'name'])->where(['status' => PaymentType::STATUS_ACTIVE])->asArray()->all(),
+        $exceptions = ArrayHelper::map(
+            Exception::find()->select(['id', 'name'])->where(['status' => PaymentType::STATUS_ACTIVE])->asArray()->all(
+            ),
             'id',
             'name'
         );
-        $customer      = Customer::findOne($customerId);
+        $customer = Customer::findOne($customerId);
         if ($customer) {
             foreach ($customer->exceptions as $key => $exception) {
-                $exceptionList .= $this->renderPartial('/order/_order_exception', [
-                    'exception'  => $exception,
-                    'exceptions' => $exceptions,
-                    'disabled'   => false,
-                    'i'          => $key,
-                ]);
+                $exceptionList .= $this->renderPartial(
+                    '/order/_order_exception',
+                    [
+                        'exception'  => $exception,
+                        'exceptions' => $exceptions,
+                        'disabled'   => false,
+                        'i'          => $key,
+                    ]
+                );
             }
         }
 
         if (empty($exceptionList)) {
-            $exceptionList = $this->renderPartial('/order/_order_exception', [
-                'exception'  => new Exception(),
-                'exceptions' => $exceptions,
-                'disabled'   => false,
-                'i'          => 1,
-            ]);
+            $exceptionList = $this->renderPartial(
+                '/order/_order_exception',
+                [
+                    'exception'  => new Exception(),
+                    'exceptions' => $exceptions,
+                    'disabled'   => false,
+                    'i'          => 1,
+                ]
+            );
         }
 
         return $exceptionList;
@@ -303,18 +342,21 @@ class OrderController extends BaseController
      */
     public function actionGetMenu(int $orderId = 0)
     {
-        $order     = Order::findOne($orderId);
+        $order = Order::findOne($orderId);
         $intervals = (new OrderSchedule())->getIntervals();
         $addresses = Address::find()
-            ->where(['customer_id' => $order->customer_id, 'status' => Address::STATUS_ACTIVE])
-            ->asArray()
-            ->all();
+                            ->where(['customer_id' => $order->customer_id, 'status' => Address::STATUS_ACTIVE])
+                            ->asArray()
+                            ->all();
 
-        return $this->renderAjax('/order/_menu', [
-            'order'     => $order,
-            'intervals' => $intervals,
-            'addresses' => ArrayHelper::map($addresses, 'id', 'full_address'),
-        ]);
+        return $this->renderAjax(
+            '/order/_menu',
+            [
+                'order'     => $order,
+                'intervals' => $intervals,
+                'addresses' => ArrayHelper::map($addresses, 'id', 'full_address'),
+            ]
+        );
     }
 
     /**
@@ -348,24 +390,27 @@ class OrderController extends BaseController
         $order = Order::findOne($orderID);
 
         $schedules = OrderSchedule::find()
-            ->where(['order_id' => $order->id])
-            ->andWhere(['>=', 'date', date('Y-m-d', time())])
-            ->asArray()->all();
+                                  ->where(['order_id' => $order->id])
+                                  ->andWhere(['>=', 'date', date('Y-m-d', time())])
+                                  ->asArray()->all();
 
         $dates = ArrayHelper::map(
             $schedules,
-            function ($schedule){
+            function ($schedule) {
                 return date('d.m.Y', strtotime($schedule['date']));
             },
-            function ($schedule){
+            function ($schedule) {
                 return date('d.m.Y', strtotime($schedule['date']));
             }
         );
 
-        return $this->renderAjax('/order/_request_deffer', [
-            'order' => $order,
-            'dates' => $dates,
-        ]);
+        return $this->renderAjax(
+            '/order/_request_deffer',
+            [
+                'order' => $order,
+                'dates' => $dates,
+            ]
+        );
     }
 
     /**
@@ -388,12 +433,12 @@ class OrderController extends BaseController
             ];
         }
 
-        $transaction    = \Yii::$app->db->beginTransaction();
+        $transaction = \Yii::$app->db->beginTransaction();
         $orderSchedules = OrderSchedule::find()
-            ->where(['order_id' => $id])
-            ->andWhere(['>=', 'date', date('Y-m-d', strtotime($oldDateFrom))])
-            ->orderBy(['date' => SORT_ASC])
-            ->all();
+                                       ->where(['order_id' => $id])
+                                       ->andWhere(['>=', 'date', date('Y-m-d', strtotime($oldDateFrom))])
+                                       ->orderBy(['date' => SORT_ASC])
+                                       ->all();
 
         $newDateTimestamp = strtotime($newDateFrom);
         foreach ($orderSchedules as $key => $orderSchedule) {
@@ -433,15 +478,18 @@ class OrderController extends BaseController
         $orderRoutes = [];
 
         if (\Yii::$app->request->post()) {
-            $date        = \Yii::$app->request->post('date');
+            $date = \Yii::$app->request->post('date');
             $orderRoutes = (new \app\models\Repository\Order())->getRoutesForDate($date);
         }
 
-        return $this->renderAjax('/order/_get_route_sheet', [
-            'routes' => $orderRoutes,
-            'date'   => $date ?? '',
-            'title'  => \Yii::t('order', 'Order sheet'),
-        ]);
+        return $this->renderAjax(
+            '/order/_get_route_sheet',
+            [
+                'routes' => $orderRoutes,
+                'date'   => $date ?? '',
+                'title'  => \Yii::t('order', 'Order sheet'),
+            ]
+        );
     }
 
     /**
@@ -452,7 +500,7 @@ class OrderController extends BaseController
         $orderRoutes = [];
 
         if (\Yii::$app->request->post()) {
-            $date        = \Yii::$app->request->post('date');
+            $date = \Yii::$app->request->post('date');
             $orderRoutes = (new \app\models\Repository\Order())->getRoutesForDate($date);
 
             $excel = new Excel();
@@ -485,7 +533,7 @@ class OrderController extends BaseController
             OrderSchedule::find()->where(['order_id' => $id])->asArray()->one(),
             'order_id'
         );
-        $dates   = ArrayHelper::map(
+        $dates = ArrayHelper::map(
             OrderSchedule::find()->where(['order_id' => $id])->asArray()->all(),
             'id',
             'date'
@@ -495,12 +543,15 @@ class OrderController extends BaseController
             $dates[$id] = date('d.m.Y', strtotime($dateValue));
         }
 
-        return $this->renderAjax('/order/_get_user_sheet', [
-            'routes' => $userSheet,
-            'dates'  => $dates,
-            'id'     => $orderId,
-            'title'  => \Yii::t('order', 'Customer sheet'),
-        ]);
+        return $this->renderAjax(
+            '/order/_get_user_sheet',
+            [
+                'routes' => $userSheet,
+                'dates'  => $dates,
+                'id'     => $orderId,
+                'title'  => \Yii::t('order', 'Customer sheet'),
+            ]
+        );
     }
 
     /**
@@ -510,8 +561,8 @@ class OrderController extends BaseController
     private function generateCustomerSheetFile(array $post): array
     {
         $dates = OrderSchedule::find()
-            ->where(['date' => date('Y-m-d', strtotime($post['date']))])
-            ->all();
+                              ->where(['date' => date('Y-m-d', strtotime($post['date']))])
+                              ->all();
 
         if (!$dates) {
             return ['success' => false];
@@ -525,12 +576,14 @@ class OrderController extends BaseController
             $excel->prepare($customerSheets, Excel::MODEL_CUSTOMER_SHEET, \Yii::$app->request->post());
             $excel->save('client_report.xlsx', 'temp');
         } catch (\Exception $e) {
-
             $schedules = OrderSchedule::find()
-                ->leftJoin('order_schedule_dish', 'order_schedule.id = order_schedule_dish.order_schedule_id')
-                ->where(['order_schedule.date' => date('Y-m-d', strtotime($post['date']))])
-                ->andWhere(['order_schedule_dish.dish_id' => null])
-                ->all();
+                                      ->leftJoin(
+                                          'order_schedule_dish',
+                                          'order_schedule.id = order_schedule_dish.order_schedule_id'
+                                      )
+                                      ->where(['order_schedule.date' => date('Y-m-d', strtotime($post['date']))])
+                                      ->andWhere(['order_schedule_dish.dish_id' => null])
+                                      ->all();
 
             $order_ids = [];
             foreach ($schedules as $schedule) {
@@ -540,7 +593,7 @@ class OrderController extends BaseController
             \Yii::error($e->getMessage());
             return [
                 'success' => false,
-                'orders' => $order_ids
+                'orders'  => $order_ids
             ];
         }
 
@@ -556,7 +609,7 @@ class OrderController extends BaseController
      */
     public function actionGetCustomerSheetOptions(int $id)
     {
-        $dates   = ArrayHelper::map(
+        $dates = ArrayHelper::map(
             OrderSchedule::find()->where(['order_id' => $id])->asArray()->all(),
             'id',
             'date'
@@ -581,7 +634,7 @@ class OrderController extends BaseController
         $orderRoutes = [];
 
         if (\Yii::$app->request->post()) {
-            $date        = \Yii::$app->request->post('date');
+            $date = \Yii::$app->request->post('date');
             $orderRoutes = (new \app\models\Repository\Order())->getRoutesForDate($date);
 
             $excel = new Excel();
@@ -610,12 +663,12 @@ class OrderController extends BaseController
             throw new NotFoundHttpException('Заказ не найден');
         }
 
-        $dishes     = [];
+        $dishes = [];
         $scheduleId = 0;
         foreach ($order->schedules as $schedule) {
             if ($schedule->date == $date) {
                 $scheduleId = $schedule->id;
-                $dishes     = $schedule->dishes;
+                $dishes = $schedule->dishes;
             }
         }
 
@@ -631,13 +684,16 @@ class OrderController extends BaseController
             }
         }
 
-        return $this->renderAjax('/order/_inventory', [
-            'date'           => $date,
-            'types'          => $types,
-            'scheduleId'     => $scheduleId,
-            'isSubscription' => $order->subscription_id !== Subscription::NO_SUBSCRIPTION_ID,
-            'dishes'         => $dishes,
-        ]);
+        return $this->renderAjax(
+            '/order/_inventory',
+            [
+                'date'           => $date,
+                'types'          => $types,
+                'scheduleId'     => $scheduleId,
+                'isSubscription' => $order->subscription_id !== Subscription::NO_SUBSCRIPTION_ID,
+                'dishes'         => $dishes,
+            ]
+        );
     }
 
     /**
@@ -669,20 +725,53 @@ class OrderController extends BaseController
         ];
     }
 
+    public function actionGetEditPrimaryBlock(int $orderId)
+    {
+        $subscriptions = ArrayHelper::map(
+            Subscription::find()->select(['id', 'name'])->where(['status' => Subscription::STATUS_ACTIVE])->asArray(
+            )->all(),
+            'id',
+            'name'
+        );
+
+        $subscriptionCounts = (new Subscription())->getCounts();
+
+        return $this->renderAjax(
+            '/order/_primary_block',
+            [
+                'model' => \app\models\Repository\Order::findOne($orderId),
+                'subscriptions' => $subscriptions,
+                'subscriptionCounts' => $subscriptionCounts,
+            ]
+        );
+    }
+
+    public function actionEditPrimaryBlock(int $orderId)
+    {
+        $order = \app\models\Repository\Order::findOne($orderId);
+
+        return $this->renderAjax(
+            '/order/_order_info_block',
+            [
+                'model' => \app\models\Repository\Order::findOne($orderId),
+            ]
+        );
+    }
+
     /**
      * @return array
      */
     public function actionAddDishForInventory()
     {
         \Yii::$app->response->format = Response::FORMAT_JSON;
-        $post                        = \Yii::$app->request->post();
+        $post = \Yii::$app->request->post();
         if (!$post) {
             return [];
         }
 
-        $dishId     = $post['dish_id'];
+        $dishId = $post['dish_id'];
         $scheduleId = $post['schedule_id'];
-        $ration     = $post['ration'];
+        $ration = $post['ration'];
 
         $dish = Dish::findOne($dishId);
         if (!$dish) {
@@ -692,17 +781,17 @@ class OrderController extends BaseController
         $scheduleDish = new OrderScheduleDish();
         if (!empty($post['old_dish_id'])) {
             $scheduleDish = OrderScheduleDish::find()
-                ->where(['order_schedule_id' => $scheduleId])
-                ->andWhere(['dish_id' => $post['old_dish_id']])
-                ->one();
+                                             ->where(['order_schedule_id' => $scheduleId])
+                                             ->andWhere(['dish_id' => $post['old_dish_id']])
+                                             ->one();
         }
 
-        $scheduleDish->dish_id           = $dish->id;
+        $scheduleDish->dish_id = $dish->id;
         $scheduleDish->order_schedule_id = $scheduleId;
-        $scheduleDish->name              = $dish->name;
-        $scheduleDish->count             = 1;
-        $scheduleDish->type              = $dish->type;
-        $scheduleDish->ingestion_type    = $ration;
+        $scheduleDish->name = $dish->name;
+        $scheduleDish->count = 1;
+        $scheduleDish->type = $dish->type;
+        $scheduleDish->ingestion_type = $ration;
 
         if ($scheduleDish->validate() && $scheduleDish->save()) {
             return [

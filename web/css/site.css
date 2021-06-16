@@ -820,3 +820,18 @@ select.form-control.input-sm {
     right: -12px;
     top: -12px;
 }
+
+.box-body.order-info > div > span {
+    display: block;
+    float: right;
+    width: 50%;
+    text-align: right;
+}
+
+.box-body.order-info > div > span.select-block .form-group {
+    margin-bottom: 0;
+}
+
+.box-body.order-info > div > span.select-block .form-group:after {
+    top: 15px;
+}
