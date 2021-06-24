@@ -424,6 +424,93 @@ class Order extends \yii\db\ActiveRecord
      */
     public function reBuildFromParams(array $data): bool
     {
+        $settings = ArrayHelper::map(Settings::find()->asArray()->all(), 'name', 'value');
+
+        $this->isUpdated = true;
+        $this->subscription_id = $data['subscription_id'];
+        $this->comment = $data['comment'];
+        $this->count = $data['count'];
+
+        $this->cutlery = $data['cutlery'] == 'true';
+        $this->without_soup = $data['without_soup'] == 'true';
+        $this->individual_menu = $data['individual_menu'] == 'true';
+
+
+        if (!empty($data['subscription_id']) && $data['subscription_id'] != Subscription::NO_SUBSCRIPTION_ID) {
+            $subscriptionDiscount = SubscriptionDiscount::find()
+                                                        ->where(['subscription_id' => $this->subscription_id])
+                                                        ->andWhere(['count' => $this->count])
+                                                        ->orderBy(['count' => SORT_DESC])
+                                                        ->limit(1)
+                                                        ->one();
+
+            $subscription = Subscription::findOne($this->subscription_id);
+            if ($this->count == 1) {
+                $this->total = $subscription->price;
+            } else {
+                if ($subscriptionDiscount) {
+                    $this->total = $subscriptionDiscount->price;
+                } else {
+                    $this->total = $subscription->price * $this->count;
+                }
+            }
+
+            if ($this->individual_menu) {
+                $this->total = $this->total + $settings['individual_menu_price'] * $this->count;
+            }
+        }
+
+        if (!empty($data['scheduleFirstDate'])) {
+            $scheduleFirstDate = $data['scheduleFirstDate'];
+            $firstDateTime = strtotime($scheduleFirstDate);
+            $schedule = new OrderSchedule();
+            $i = 0;
+            $schedule->date = date('Y-m-d', $firstDateTime + $i * 86400);
+            $this->scheduleFirstDate = $schedule->date;
+            $schedule->address_id = $this->address->id ?? null;
+            $schedule->order_id = $this->id;
+            $schedule->interval = $data['scheduleInterval'];
+            $this->scheduleInterval = $schedule->interval;
+            if ($this->subscription_id == Subscription::NO_SUBSCRIPTION_ID) {
+                $dishes = [];
+                $scheduleTotal = 0;
+                $schedule->cost = $scheduleTotal;
+                $this->count = 1;
+                $this->total = $scheduleTotal;
+                $schedule->setDishes($dishes);
+                $schedules[] = $schedule;
+            } else {
+                $time = $firstDateTime;
+                for ($i = 0; $i < $this->count; $i++) {
+                    $orderSchedule = new OrderSchedule();
+                    $price = $subscriptionDiscount->price ?? $subscription->price;
+
+                    $orderSchedule->address_id = $schedule->address_id;
+                    $orderSchedule->order_id = $schedule->order_id;
+                    $orderSchedule->interval = $schedule->interval;
+
+                    if (date('N', $firstDateTime) == 7) {
+                        $time += 86400;
+                    }
+                    $orderSchedule->date = date('Y-m-d', $time);
+                    $orderSchedule->cost = $price / $this->count;
+                    if ($this->individual_menu) {
+                        $orderSchedule->cost = $orderSchedule->cost + $settings['individual_menu_price'];
+                    }
+
+
+                    $schedules[] = $orderSchedule;
+
+                    if (date('N', $time + 86400) == 7) {
+                        $time += 2 * 86400;
+                    } else {
+                        $time += 86400;
+                    }
+                }
+            }
+        }
+
+        $this->setSchedules($schedules);
 
         return true;
     }
@@ -658,55 +745,61 @@ class Order extends \yii\db\ActiveRecord
             }
         }
 
-        if (!$this->isUpdated) {
-            foreach ($this->schedules as $schedule) {
-                $schedule->order_id = $this->id;
-                empty($schedule->address_id) && $schedule->address_id = $this->address_id;
-                if (!$schedule->validate() || !$schedule->save()) {
-                    $transaction->rollBack();
-                    return false;
+        if ($this->isUpdated) {
+            $orderSchedules = OrderSchedule::find()->where(['order_id' => $this->id])->asArray()->all();
+            foreach ($orderSchedules as $scheduleItem) {
+                OrderScheduleDish::deleteAll(['order_schedule_id' => $scheduleItem['id']]);
+                OrderSchedule::deleteAll(['id' => $scheduleItem['id']]);
+            }
+        }
+
+        foreach ($this->schedules as $schedule) {
+            $schedule->order_id = $this->id;
+            empty($schedule->address_id) && $schedule->address_id = $this->address_id;
+            if (!$schedule->validate() || !$schedule->save()) {
+                $transaction->rollBack();
+                return false;
+            }
+            if ($this->subscription_id == Subscription::NO_SUBSCRIPTION_ID && !empty($schedule->dishes)) {
+                foreach ($schedule->dishes as $dish) {
+                    $dish->order_schedule_id = $schedule->id;
+                    if (!$dish->validate() || !$dish->save()) {
+                        \Yii::error(Helper::DEVIDER . json_encode($dish->getFirstErrors()));
+                        $transaction->rollBack();
+                        return false;
+                    }
                 }
-                if ($this->subscription_id == Subscription::NO_SUBSCRIPTION_ID && !empty($schedule->dishes)) {
-                    foreach ($schedule->dishes as $dish) {
-                        $dish->order_schedule_id = $schedule->id;
-                        if (!$dish->validate() || !$dish->save()) {
-                            \Yii::error(Helper::DEVIDER . json_encode($dish->getFirstErrors()));
+            } else {
+                // TODO тут нужно сохранить сразу ORDER_SCHEDULE_DISH
+                foreach (OrderSchedule::INGESTION_CONTENT as $key => $ingestion) {
+                    if (empty($ingestion)) {
+                        $orderScheduleDish = new OrderScheduleDish();
+
+                        $orderScheduleDish->order_schedule_id = $schedule->id;
+                        $orderScheduleDish->ingestion_type = $key;
+                        $orderScheduleDish->dish_id = null;
+
+                        if (!$orderScheduleDish->validate() || !$orderScheduleDish->save()) {
+                            \Yii::error(Helper::DEVIDER . json_encode($orderScheduleDish->getFirstErrors()));
                             $transaction->rollBack();
                             return false;
                         }
-                    }
-                } else {
-                    // TODO тут нужно сохранить сразу ORDER_SCHEDULE_DISH
-                    foreach (OrderSchedule::INGESTION_CONTENT as $key => $ingestion) {
-                        if (empty($ingestion)) {
-                            $orderScheduleDish = new OrderScheduleDish();
+                    } else {
+                        foreach ($ingestion as $iType) {
+                            if ($this->without_soup && $iType == Dish::TYPE_FIRST) {
+                                continue;
+                            }
 
+                            $orderScheduleDish = new OrderScheduleDish();
                             $orderScheduleDish->order_schedule_id = $schedule->id;
                             $orderScheduleDish->ingestion_type = $key;
                             $orderScheduleDish->dish_id = null;
+                            $orderScheduleDish->type = $iType;
 
                             if (!$orderScheduleDish->validate() || !$orderScheduleDish->save()) {
                                 \Yii::error(Helper::DEVIDER . json_encode($orderScheduleDish->getFirstErrors()));
                                 $transaction->rollBack();
                                 return false;
-                            }
-                        } else {
-                            foreach ($ingestion as $iType) {
-                                if ($this->without_soup && $iType == Dish::TYPE_FIRST) {
-                                    continue;
-                                }
-
-                                $orderScheduleDish = new OrderScheduleDish();
-                                $orderScheduleDish->order_schedule_id = $schedule->id;
-                                $orderScheduleDish->ingestion_type = $key;
-                                $orderScheduleDish->dish_id = null;
-                                $orderScheduleDish->type = $iType;
-
-                                if (!$orderScheduleDish->validate() || !$orderScheduleDish->save()) {
-                                    \Yii::error(Helper::DEVIDER . json_encode($orderScheduleDish->getFirstErrors()));
-                                    $transaction->rollBack();
-                                    return false;
-                                }
                             }
                         }
                     }
@@ -870,6 +963,19 @@ class Order extends \yii\db\ActiveRecord
             }
         }
         return $result;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getScheduleInterval(): ?string
+    {
+        if (!empty($this->schedules)) {
+            foreach ($this->schedules as $schedule) {
+                return $schedule->interval;
+            }
+        }
+        return null;
     }
 
     /**

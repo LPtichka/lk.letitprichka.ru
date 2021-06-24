@@ -98,6 +98,20 @@ $subscription_id = Html::getInputId($model, "subscription_id");
     </span>
 </div>
 <br/>
+<div><?= \Yii::t('order', 'Schedule interval'); ?>
+    <span>
+        <?= Html::dropDownList(
+            'scheduleInterval',
+            $model->getScheduleInterval(),
+            ['' => \Yii::t('app', 'Choose')] + $intervals,
+            [
+                'class' => 'subscription-schedule-interval-select form-control input-sm',
+                'id'    => 'order-scheduleinterval',
+            ]
+        ); ?>
+    </span>
+</div>
+<br/>
 <div>
     <?= \Yii::t('order', 'Subscription count'); ?>
     <span class="select-block">
@@ -123,7 +137,8 @@ $subscription_id = Html::getInputId($model, "subscription_id");
         $model->count,
         [
             'class' => 'form-control input-sm',
-            'style' => 'width: 100%;'
+            'style' => 'width: 100%;',
+            'id' => 'order-count',
         ]
     ); ?>
     </span>

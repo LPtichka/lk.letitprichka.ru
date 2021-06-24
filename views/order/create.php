@@ -294,8 +294,7 @@ if ($model->id) {
                             if (empty($model->exceptions)): ?>
                                 <p class="empty-text"><?php
                                     echo \Yii::t('order', 'No exceptions'); ?></p>
-                            <?php
-                            else: ?>
+                            <?php else: ?>
                                 <?php
                                 foreach ($model->orderExceptions as $i => $exception): ?>
                                     <?= $this->render(

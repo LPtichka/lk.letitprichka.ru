@@ -192,6 +192,7 @@ body.delegate('#save-primary-order-params', 'click', function (e) {
             subscription_id: $('[name="subscription_id"]').val(),
             comment: $('[name="comment"]').val(),
             scheduleFirstDate: $('[name="scheduleFirstDate"]').val(),
+            scheduleInterval: $('[name="scheduleInterval"]').val(),
             count: $('[name="count"]').val(),
             without_soup: $('[name="without_soup"]').is(':checked'),
             individual_menu: $('[name="individual_menu"]').is(':checked'),
@@ -201,6 +202,16 @@ body.delegate('#save-primary-order-params', 'click', function (e) {
             $('#ordering-info .order-info').remove();
             $('.hidden-order-info').addClass('order-info').removeClass('.hidden-order-info').removeClass('hidden');
             $('.order-info').html(html);
+
+            swal({
+                title: 'Внимание.',
+                html: true,
+                text: 'Через 5 секунд страница будет перезагружена. Либо вы можете обновить страницу прямо сейчас.'
+            });
+
+            setTimeout(function () {
+                window.location.reload();
+            }, 5000);
         }
     });
 

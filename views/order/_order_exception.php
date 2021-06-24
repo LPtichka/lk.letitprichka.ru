@@ -26,7 +26,7 @@ use app\widgets\Html;
                 ) ?>
             </div>
 
-            <div class="comment-exception form-group <?php if (!$exception->exception || !$exception->exception->with_comment): ?> hidden <?php endif; ?>">
+            <div class="comment-exception form-group <?php if (!empty($exception) && (!$exception->exception || !$exception->exception->with_comment)): ?> hidden <?php endif; ?>">
                 <?= Html::textarea(
                     "OrderException[$i][comment]",
                     $exception->comment ?? '',

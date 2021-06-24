@@ -309,10 +309,14 @@ class OrderController extends BaseController
         $customer = Customer::findOne($customerId);
         if ($customer) {
             foreach ($customer->exceptions as $key => $exception) {
+
+                $excp = new OrderException();
+                $excp->exception_id = $exception->id;
+
                 $exceptionList .= $this->renderPartial(
                     '/order/_order_exception',
                     [
-                        'exception'  => $exception,
+                        'exception'  => $excp,
                         'exceptions' => $exceptions,
                         'disabled'   => false,
                         'i'          => $key,
@@ -325,7 +329,7 @@ class OrderController extends BaseController
             $exceptionList = $this->renderPartial(
                 '/order/_order_exception',
                 [
-                    'exception'  => new Exception(),
+                    'exception'  => new OrderException(),
                     'exceptions' => $exceptions,
                     'disabled'   => false,
                     'i'          => 1,
@@ -739,23 +743,42 @@ class OrderController extends BaseController
         return $this->renderAjax(
             '/order/_primary_block',
             [
-                'model' => \app\models\Repository\Order::findOne($orderId),
-                'subscriptions' => $subscriptions,
+                'model'              => \app\models\Repository\Order::findOne($orderId),
+                'subscriptions'      => $subscriptions,
                 'subscriptionCounts' => $subscriptionCounts,
+                'intervals'          => (new OrderSchedule())->getIntervals(),
             ]
         );
     }
 
+    /**
+     * @param int $orderId
+     * @return string
+     * @throws \yii\db\Exception
+     */
     public function actionEditPrimaryBlock(int $orderId)
     {
         $order = \app\models\Repository\Order::findOne($orderId);
 
-        return $this->renderAjax(
-            '/order/_order_info_block',
-            [
-                'model' => \app\models\Repository\Order::findOne($orderId),
-            ]
-        );
+        if ($order->reBuildFromParams(\Yii::$app->request->post()) && $order->saveAll()) {
+            return $this->renderAjax(
+                '/order/_order_info_block',
+                [
+                    'model'   => $order,
+                    'isError' => false,
+                ]
+            );
+        } else {
+//            print_r($order->getFirstErrors());
+//            die("---");
+            return $this->renderAjax(
+                '/order/_order_info_block',
+                [
+                    'model' => $order,
+                    'isError' => true,
+                ]
+            );
+        }
     }
 
     /**

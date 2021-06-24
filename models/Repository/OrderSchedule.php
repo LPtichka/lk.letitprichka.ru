@@ -15,6 +15,7 @@ use yii\behaviors\TimestampBehavior;
  * @property float $cost
  * @property int $address_id
  * @property string $date
+ * @property string $pickup_date
  * @property string $comment
  * @property int $created_at
  * @property int $updated_at
@@ -106,7 +107,7 @@ class OrderSchedule extends \yii\db\ActiveRecord
         return [
             [['order_id', 'status', 'address_id'], 'integer'],
             [['cost'], 'number'],
-            [['interval', 'date', 'comment'], 'string'],
+            [['interval', 'date', 'pickup_date', 'comment'], 'string'],
             [['address_id'], 'exist', 'targetClass' => Address::class, 'targetAttribute' => 'id', 'message' => 'Указан не существующий адрес'],
             [['status'], 'in', 'range' => self::STATUSES],
             [['status'], 'default', 'value' => self::STATUS_NEW],
