@@ -5,6 +5,7 @@ namespace app\controllers;
 use app\events\OrderCompleted;
 use app\models\Common\CustomerSheet;
 use app\models\Common\Ingestion;
+use app\models\Helper\Date;
 use app\models\Helper\Excel;
 use app\models\Repository\Address;
 use app\models\Repository\Customer;
@@ -444,9 +445,10 @@ class OrderController extends BaseController
                                        ->orderBy(['date' => SORT_ASC])
                                        ->all();
 
+        $dateObject = new Date($newDateFrom);
         $newDateTimestamp = strtotime($newDateFrom);
         foreach ($orderSchedules as $key => $orderSchedule) {
-            $orderSchedule->date = date('Y-m-d', $newDateTimestamp + ($key * 86400));
+            $orderSchedule->date = date('Y-m-d', $newDateTimestamp);
             if (!$orderSchedule->save(false)) {
                 $transaction->rollBack();
                 \Yii::$app->session->addFlash('danger', \Yii::t('order', 'Error schedule saving'));
@@ -455,6 +457,7 @@ class OrderController extends BaseController
                     'title'   => \Yii::t('order', 'Error schedule saving'),
                 ];
             }
+            $newDateTimestamp = $dateObject->getNextWorkDateTime($newDateTimestamp);
         }
 
         try {

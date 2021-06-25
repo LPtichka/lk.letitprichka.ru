@@ -2,8 +2,8 @@
 
 namespace app\models\Repository;
 
-use app\models\Queries\OrderDishQuery;
-use app\models\Queries\OrderScheduleQuery;
+use app\models\Queries\SettingsQuery;
+use app\models\Queries\SubscriptionQuery;
 use yii\behaviors\TimestampBehavior;
 
 /**
@@ -12,6 +12,7 @@ use yii\behaviors\TimestampBehavior;
  * @property int $id
  * @property string $name
  * @property string $value
+ * @property int $status
  * @property int $franchise_id
  * @property int $created_at
  * @property int $updated_at
@@ -36,12 +37,22 @@ class Settings extends \yii\db\ActiveRecord
 
     /**
      * @inheritdoc
+     * @return SettingsQuery the active query used by this AR class.
+     */
+    public static function find()
+    {
+        return new SettingsQuery(get_called_class());
+    }
+
+    /**
+     * @inheritdoc
      */
     public function rules()
     {
         return [
             [['name', 'value'], 'string'],
-            [['name', 'value'], 'required'],
+            [['status'], 'integer'],
+            [['name', 'value', 'status'], 'required'],
         ];
     }
 
@@ -53,5 +64,22 @@ class Settings extends \yii\db\ActiveRecord
         return [
             TimestampBehavior::class,
         ];
+    }
+
+    /**
+     * @return array
+     */
+    public function getWorkDays(): array
+    {
+        $wd = Settings::find()->where(['name' => 'work_days'])->one();
+        $workDays = explode(';', $wd->value);
+        $result = [];
+
+        foreach ($workDays as $day) {
+            $item = explode(':', $day);
+            $result[$item[0]] = $item[1];
+        }
+
+        return $result;
     }
 }

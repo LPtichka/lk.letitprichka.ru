@@ -15,6 +15,7 @@ use yii\behaviors\TimestampBehavior;
  * @property int $count
  * @property int $ingestion_type
  * @property int $type
+ * @property int $price
  * @property int $with_garnish
  * @property int $garnish_id
  * @property int $manufactured_at

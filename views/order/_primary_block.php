@@ -84,7 +84,7 @@ $subscription_id = Html::getInputId($model, "subscription_id");
         <?= DatePicker::widget(
             [
                 'name'          => 'scheduleFirstDate',
-                'value'         => $model->scheduleFirstDate,
+                'value'         => date('d.m.Y', strtotime($model->getScheduleFirstDate())),
                 'options'       => [
                     'placeholder' => \Yii::t('order', 'Choose date'),
                     'class'       => 'form-control input-sm',

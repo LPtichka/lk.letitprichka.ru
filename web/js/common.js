@@ -94,6 +94,22 @@ body.delegate('.delete-address', 'click', function () {
     }
 });
 
+body.delegate('.work-days', 'change', function () {
+    let value = '';
+
+    $('.work-days').each(function () {
+        if ($(this).is(':checked')) {
+            value += $(this).attr('name') + ':1;'
+        } else {
+            value += $(this).attr('name') + ':0;'
+        }
+    });
+
+    value = value.substring(0, value.length - 1)
+
+    $('#settings-work_days-value').val(value);
+});
+
 body.delegate('.delete', 'click', function (e) {
     e.preventDefault();
 

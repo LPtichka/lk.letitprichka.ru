@@ -4,6 +4,7 @@ namespace app\models\Repository;
 
 use app\models\Common\CustomerSheet;
 use app\models\Common\Route;
+use app\models\Helper\Date;
 use app\models\Helper\Helper;
 use app\models\Helper\Status;
 use app\models\Queries\OrderQuery;
@@ -381,8 +382,9 @@ class Order extends \yii\db\ActiveRecord
                         $orderSchedule->order_id = $schedule->order_id;
                         $orderSchedule->interval = $schedule->interval;
 
-                        if (date('N', $firstDateTime) == 7) {
-                            $time += 86400;
+                        $dateObject = new Date($scheduleFirstDate);
+                        if (!$dateObject->isWorkDay($time)) {
+                            $time = $dateObject->getNextWorkDateTime($time);
                         }
                         $orderSchedule->date = date('Y-m-d', $time);
                         $orderSchedule->cost = $price / $data['Order']['count'];
@@ -390,14 +392,8 @@ class Order extends \yii\db\ActiveRecord
                             $orderSchedule->cost = $orderSchedule->cost + $settings['individual_menu_price'];
                         }
 
-
                         $schedules[] = $orderSchedule;
-
-                        if (date('N', $time + 86400) == 7) {
-                            $time += 2 * 86400;
-                        } else {
-                            $time += 86400;
-                        }
+                        $time = $dateObject->getNextWorkDateTime($time);
                     }
                 }
             }
@@ -489,8 +485,9 @@ class Order extends \yii\db\ActiveRecord
                     $orderSchedule->order_id = $schedule->order_id;
                     $orderSchedule->interval = $schedule->interval;
 
-                    if (date('N', $firstDateTime) == 7) {
-                        $time += 86400;
+                    $dateObject = new Date($scheduleFirstDate);
+                    if (!$dateObject->isWorkDay($time)) {
+                        $time = $dateObject->getNextWorkDateTime($time);
                     }
                     $orderSchedule->date = date('Y-m-d', $time);
                     $orderSchedule->cost = $price / $this->count;
@@ -498,14 +495,8 @@ class Order extends \yii\db\ActiveRecord
                         $orderSchedule->cost = $orderSchedule->cost + $settings['individual_menu_price'];
                     }
 
-
                     $schedules[] = $orderSchedule;
-
-                    if (date('N', $time + 86400) == 7) {
-                        $time += 2 * 86400;
-                    } else {
-                        $time += 86400;
-                    }
+                    $time = $dateObject->getNextWorkDateTime($time);
                 }
             }
         }
@@ -606,10 +597,7 @@ class Order extends \yii\db\ActiveRecord
         }
         $this->setExceptions($exceptions);
 
-        $scheduleFirstDate = !empty($data['schedule']['start_date'])
-            ? $data['schedule']['start_date']
-            : null;
-
+        $scheduleFirstDate = !empty($data['schedule']['start_date']) ? $data['schedule']['start_date'] : null;
         $schedules = [];
 
         if ($scheduleFirstDate !== null) {
@@ -651,18 +639,16 @@ class Order extends \yii\db\ActiveRecord
                     $orderSchedule->order_id = $schedule->order_id;
                     $orderSchedule->interval = $schedule->interval;
 
-                    if (date('N', $firstDateTime) == 7) {
-                        $time += 86400;
+                    $dateObject = new Date($scheduleFirstDate);
+                    if (!$dateObject->isWorkDay($time)) {
+                        $time = $dateObject->getNextWorkDateTime($time);
                     }
+
                     $orderSchedule->date = date('Y-m-d', $time);
                     $orderSchedule->cost = $price / $data['schedule']['count'];
                     $schedules[] = $orderSchedule;
 
-                    if (date('N', $time + 86400) == 7) {
-                        $time += 2 * 86400;
-                    } else {
-                        $time += 86400;
-                    }
+                    $time = $dateObject->getNextWorkDateTime($time);
                 }
             }
         }
@@ -680,6 +666,15 @@ class Order extends \yii\db\ActiveRecord
     public function validateAll(): bool
     {
         return false;
+    }
+
+    public function getScheduleFirstDate(): ?string
+    {
+        foreach ($this->schedules as $schedule) {
+            return $schedule->date;
+        }
+
+        return null;
     }
 
     /**

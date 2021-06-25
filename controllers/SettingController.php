@@ -30,8 +30,10 @@ class SettingController extends BaseController
             }
             \Yii::$app->session->addFlash('success', \Yii::t('settings', 'Settings was saved successfully'));
         }
+
         return $this->render('/setting/index', [
-            'settings' => Settings::find()->orderBy(['id' => SORT_ASC])->all()
+            'settings' => Settings::find()->orderBy(['id' => SORT_ASC])->all(),
+            'workDays' => (new Settings())->getWorkDays(),
         ]);
     }
 }
