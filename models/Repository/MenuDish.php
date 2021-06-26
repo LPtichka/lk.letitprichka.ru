@@ -106,6 +106,7 @@ class MenuDish extends \yii\db\ActiveRecord
             $marriageDish->setResult('проба снята, разрешено к выдаче');
             $result[] = $marriageDish;
         }
+
         return $result;
     }
 }

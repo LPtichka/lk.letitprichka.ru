@@ -71,6 +71,26 @@ $this->params['breadcrumbs'][] = $this->title;
                 ]) ?>
         </div>
     </div>
+    <div class="col-lg-3 col-md-4 col-sm-4">
+        <div class="report-item text-center">
+
+            <div class="text-center">
+                <img src="/images/svg/notebook-2.svg"  style="margin: 10px 0;" height="60px;" />
+            </div>
+            <br />
+            <p>Лист закупок<br /> для меню</p>
+            <br />
+            <?php echo \yii\helpers\Html::a(
+                '<span>' . \Yii::t('product', 'Procurement sheet') . '</span>',
+                ['product/get-procurement-sheet'],
+                [
+                    'class'       => 'btn btn-sm btn-default',
+                    'data-href'   => Url::to(['product/get-procurement-sheet']),
+                    'data-toggle' => 'modal',
+                    'data-target' => '#modal',
+                ]) ?>
+        </div>
+    </div>
 </div>
 
 

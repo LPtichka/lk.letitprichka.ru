@@ -175,7 +175,7 @@ class MenuController extends BaseController
      */
     public function actionGetMarriageSheet()
     {
-        $ingestions = [];
+        $ingestions = null;
 
         if (\Yii::$app->request->post()) {
             $date       = \Yii::$app->request->post('date');

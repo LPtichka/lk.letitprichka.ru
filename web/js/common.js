@@ -577,7 +577,7 @@ body.on('click', 'tr a[data-toggle=modal], a[data-toggle=modal]', function (e) {
 
     $.get(link.data('href'), function (data) {
         let page = $(data),
-            header = page.find('h1').text(),
+            header = page.find('title').text(),
             title = page.find('title').text();
 
         page.find('h1').remove();

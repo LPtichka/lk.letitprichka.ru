@@ -1,4 +1,5 @@
 <?php
+
 return [
     'Add'              => 'Добавить',
     'Base information' => 'Основная информация',
@@ -25,9 +26,10 @@ return [
     'Do you really want to delete selected subscriptions?' => 'Вы действительно хотите удалить меню? Все назначенные блюда заказам будут очищены.',
     'Old menu can not be deleted'                          => 'Нельзя удалить меню которое уже применено, к нему могут быть закреплены заказы.',
     'An error occurred in the cleaning time'               => 'Произошла ошибка во время очистки блюд заказов.',
+    'You have not made a menu for this day'                => 'На эту дату меню не составленно.',
 
-    'Empty dish id for dinner'                             => 'Не выбранно блюдо для обеда, проверьте форму.',
-    'Empty dish id for supper'                             => 'Не выбранно блюдо для ужина, проверьте форму.',
-    'Empty dish id for lunch'                              => 'Не выбранно блюдо для перекуса, проверьте форму.',
-    'Empty dish id for breakfast'                          => 'Не выбранно блюдо для завтрака, проверьте форму.',
+    'Empty dish id for dinner'    => 'Не выбранно блюдо для обеда, проверьте форму.',
+    'Empty dish id for supper'    => 'Не выбранно блюдо для ужина, проверьте форму.',
+    'Empty dish id for lunch'     => 'Не выбранно блюдо для перекуса, проверьте форму.',
+    'Empty dish id for breakfast' => 'Не выбранно блюдо для завтрака, проверьте форму.',
 ];

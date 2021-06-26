@@ -6,33 +6,51 @@ use yii\widgets\ActiveForm;
 use yii\widgets\Pjax;
 
 /** @var \app\models\Common\MarriageDish[] $ingestions */
-Pjax::begin([
-    'id'              => 'ingestion-form',
-    'formSelector'    => '#ingestion-form form',
-    'enablePushState' => false,
-]); ?>
-<?php if (empty($ingestions)): ?>
+/** @var string $title */
+
+Pjax::begin(
+    [
+        'id'              => 'ingestion-form',
+        'formSelector'    => '#ingestion-form form',
+        'enablePushState' => false,
+    ]
+);?>
+<title><?php echo $title; ?></title>
+<?php if ($ingestions === null || empty($ingestions)): ?>
     <div class="route-row">
-        <h1><?= $title; ?></h1>
-        <title><?= $title; ?></title>
-        <?php $form = ActiveForm::begin(); ?>
+        <?php if ($ingestions !== null):?>
+            <div class="alert-danger alert fade in">
+                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                <i class="icon fa fa-warning"></i><?= \Yii::t('menu', 'You have not made a menu for this day'); ?>
+            </div>
+        <br />
+        <?php endif;?>
+        <?php
+        $form = ActiveForm::begin(); ?>
         <div class="row">
             <div class="col-sm-9">
                 <label><?= \Yii::t('menu', 'Choose date'); ?></label>
-                <?php echo DatePicker::widget([
-                    'name'          => 'date',
-                    'removeButton'  => false,
-                    'pluginOptions' => [
-                        'autoclose' => true,
-                        'format'    => 'dd.mm.yyyy'
+                <?php
+                echo DatePicker::widget(
+                    [
+                        'name'          => 'date',
+                        'removeButton'  => false,
+                        'pluginOptions' => [
+                            'autoclose' => true,
+                            'format'    => 'dd.mm.yyyy'
+                        ]
                     ]
-                ]); ?>
+                ); ?>
             </div>
             <div class="col-sm-3">
                 <label><?= \Yii::t('menu', 'Choose time'); ?></label>
-                <?= Html::textInput('time', date('H:i', time()), [
-                    'class' => 'form-control'
-                ]) ?>
+                <?= Html::textInput(
+                    'time',
+                    date('H:i', time()),
+                    [
+                        'class' => 'form-control'
+                    ]
+                ) ?>
             </div>
         </div>
         <div class="row modal-buttons">
@@ -57,9 +75,11 @@ Pjax::begin([
                 </div>
             </div>
         </div>
-        <?php ActiveForm::end(); ?>
+        <?php
+        ActiveForm::end(); ?>
     </div>
-<?php else: ?>
+<?php
+else: ?>
     <div class="route-row">
         <div class="row header-table">
             <div class="col-sm-2">дата приготовления блюда и время бракеража</div>
@@ -80,16 +100,25 @@ Pjax::begin([
                 <?= $date . " " . $time; ?>
             </div>
             <div class="col-sm-10">
-                <?php foreach ($ingestions as $ingestion): ?>
+                <?php
+                foreach ($ingestions as $ingestion): ?>
                     <div class="row list-element">
-                        <div class="col-sm-3"><?php echo $ingestion->getDishName(); ?></div>
-                        <div class="col-sm-1"><?php echo $ingestion->getWeight(); ?>&nbsp;г.</div>
-                        <div class="col-sm-2"><?php echo $ingestion->getRating(); ?></div>
-                        <div class="col-sm-2"><?php echo $ingestion->getResult(); ?></div>
-                        <div class="col-sm-2"><?php echo $ingestion->getQuality(); ?></div>
-                        <div class="col-sm-2"><?php echo $ingestion->getSignature(); ?></div>
+                        <div class="col-sm-3"><?php
+                            echo $ingestion->getDishName(); ?></div>
+                        <div class="col-sm-1"><?php
+                            echo $ingestion->getWeight(); ?>&nbsp;г.
+                        </div>
+                        <div class="col-sm-2"><?php
+                            echo $ingestion->getRating(); ?></div>
+                        <div class="col-sm-2"><?php
+                            echo $ingestion->getResult(); ?></div>
+                        <div class="col-sm-2"><?php
+                            echo $ingestion->getQuality(); ?></div>
+                        <div class="col-sm-2"><?php
+                            echo $ingestion->getSignature(); ?></div>
                     </div>
-                <?php endforeach; ?>
+                <?php
+                endforeach; ?>
             </div>
         </div>
 
@@ -122,10 +151,13 @@ Pjax::begin([
             </div>
         </div>
     </div>
-<?php endif; ?>
-<?php Pjax::end(); ?>
 <?php
-\Yii::$app->view->registerJs(<<<JS
+endif; ?>
+<?php
+Pjax::end(); ?>
+<?php
+\Yii::$app->view->registerJs(
+    <<<JS
     body.delegate('.save-marriage-sheet', 'click', function (e) {
         e.preventDefault();
         let button = $(this);
