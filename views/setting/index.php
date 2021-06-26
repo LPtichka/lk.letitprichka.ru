@@ -11,9 +11,24 @@ $this->params['breadcrumbs'][] = ['label' => \Yii::t('app', 'Settings'), 'url' =
 ?>
 
 <div class="row">
+    <?php
+    $form = ActiveForm::begin(); ?>
     <div class="col-md-12">
-        <?php
-        $form = ActiveForm::begin(); ?>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <?= Html::submitButton(
+                        '<i class="material-icons">done</i> ' . \Yii::t('app', 'Save'),
+                        ['class' => 'btn btn-sm btn-warning']
+                    ) ?>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group text-right">
+                    <?= Html::a(\Yii::t('app', 'Cancel'), ['site/index'], ['class' => 'btn btn-sm btn-default']) ?>
+                </div>
+            </div>
+        </div>
         <div class="box box-primary">
             <div class="box-header with-border">
                 <h3 class="box-title"><?php
@@ -56,8 +71,9 @@ $this->params['breadcrumbs'][] = ['label' => \Yii::t('app', 'Settings'), 'url' =
                             echo \Yii::t('settings', 'Monday'); ?>
                             <?= Html::checkbox(
                                 "monday",
-                                (bool)$workDays['monday'], [
-                                        'class' => 'work-days'
+                                (bool)$workDays['monday'],
+                                [
+                                    'class' => 'work-days'
                                 ]
                             ) ?>
                         </span>
@@ -67,7 +83,8 @@ $this->params['breadcrumbs'][] = ['label' => \Yii::t('app', 'Settings'), 'url' =
                             echo \Yii::t('settings', 'Tuesday'); ?>
                             <?= Html::checkbox(
                                 "tuesday",
-                                (bool)$workDays['tuesday'], [
+                                (bool)$workDays['tuesday'],
+                                [
                                     'class' => 'work-days'
                                 ]
                             ) ?>
@@ -78,7 +95,8 @@ $this->params['breadcrumbs'][] = ['label' => \Yii::t('app', 'Settings'), 'url' =
                             echo \Yii::t('settings', 'Wednesday'); ?>
                             <?= Html::checkbox(
                                 "wednesday",
-                                (bool)$workDays['wednesday'], [
+                                (bool)$workDays['wednesday'],
+                                [
                                     'class' => 'work-days'
                                 ]
                             ) ?>
@@ -89,7 +107,8 @@ $this->params['breadcrumbs'][] = ['label' => \Yii::t('app', 'Settings'), 'url' =
                             echo \Yii::t('settings', 'Thursday'); ?>
                             <?= Html::checkbox(
                                 "thursday",
-                                (bool)$workDays['thursday'], [
+                                (bool)$workDays['thursday'],
+                                [
                                     'class' => 'work-days'
                                 ]
                             ) ?>
@@ -100,7 +119,8 @@ $this->params['breadcrumbs'][] = ['label' => \Yii::t('app', 'Settings'), 'url' =
                             echo \Yii::t('settings', 'Friday'); ?>
                             <?= Html::checkbox(
                                 "friday",
-                                (bool)$workDays['friday'], [
+                                (bool)$workDays['friday'],
+                                [
                                     'class' => 'work-days'
                                 ]
                             ) ?>
@@ -111,7 +131,8 @@ $this->params['breadcrumbs'][] = ['label' => \Yii::t('app', 'Settings'), 'url' =
                             echo \Yii::t('settings', 'Saturday'); ?>
                             <?= Html::checkbox(
                                 "saturday",
-                                (bool)$workDays['saturday'], [
+                                (bool)$workDays['saturday'],
+                                [
                                     'class' => 'work-days'
                                 ]
                             ) ?>
@@ -122,7 +143,8 @@ $this->params['breadcrumbs'][] = ['label' => \Yii::t('app', 'Settings'), 'url' =
                             echo \Yii::t('settings', 'Sunday'); ?>
                             <?= Html::checkbox(
                                 "sunday",
-                                (bool)$workDays['sunday'], [
+                                (bool)$workDays['sunday'],
+                                [
                                     'class' => 'work-days'
                                 ]
                             ) ?>
@@ -134,24 +156,10 @@ $this->params['breadcrumbs'][] = ['label' => \Yii::t('app', 'Settings'), 'url' =
                 </div>
             </div>
         </div>
-        <div class="row">
-            <div class="col-md-6">
-                <div class="form-group">
-                    <?= Html::submitButton(
-                        '<i class="material-icons">done</i> ' . \Yii::t('app', 'Save'),
-                        ['class' => 'btn btn-sm btn-warning']
-                    ) ?>
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="form-group text-right">
-                    <?= Html::a(\Yii::t('app', 'Cancel'), ['site/index'], ['class' => 'btn btn-sm btn-default']) ?>
-                </div>
-            </div>
-        </div>
-        <?php
-        ActiveForm::end(); ?>
+
     </div>
+    <?php
+    ActiveForm::end(); ?>
 </div>
 
 

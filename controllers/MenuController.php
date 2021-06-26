@@ -1,10 +1,14 @@
 <?php
+
 namespace app\controllers;
 
 use app\models\Helper\Excel;
 use app\models\Repository\Dish;
+use app\models\Repository\Order as Repository;
 use app\models\Repository\OrderSchedule;
 use app\models\Search\Menu;
+use app\models\Search\Order;
+use yii\data\ActiveDataProvider;
 use yii\helpers\ArrayHelper;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
@@ -16,13 +20,16 @@ class MenuController extends BaseController
      */
     public function actionIndex()
     {
-        $searchModel  = new Menu();
+        $searchModel = new Menu();
         $dataProvider = $searchModel->search(\Yii::$app->request->queryParams);
 
-        return $this->render('/menu/index', [
-            'searchModel'  => $searchModel,
-            'dataProvider' => $dataProvider,
-        ]);
+        return $this->render(
+            '/menu/index',
+            [
+                'searchModel'  => $searchModel,
+                'dataProvider' => $dataProvider,
+            ]
+        );
     }
 
     /**
@@ -30,7 +37,7 @@ class MenuController extends BaseController
      */
     public function actionCreate()
     {
-        $menu         = new \app\models\Repository\Menu();
+        $menu = new \app\models\Repository\Menu();
         $disabledDays = $menu->getDisabledDays();
 
         if (\Yii::$app->request->post()) {
@@ -40,28 +47,37 @@ class MenuController extends BaseController
             if (!$menu->hasErrors()) {
                 if ($menu->saveAll()) {
                     \Yii::$app->session->addFlash('success', \Yii::t('menu', 'Menu was saved successfully'));
-                    $this->log('menu-create-success', [
-                        'start' => $menu->menu_start_date,
-                        'end'   => $menu->menu_end_date,
-                        'id'    => $menu->id,
-                    ]);
+                    $this->log(
+                        'menu-create-success',
+                        [
+                            'start' => $menu->menu_start_date,
+                            'end'   => $menu->menu_end_date,
+                            'id'    => $menu->id,
+                        ]
+                    );
                     return $this->redirect(['menu/view', 'id' => $menu->id]);
                 } else {
-                    $this->log('menu-create-fail', [
-                        'start'  => $menu->menu_start_date,
-                        'end'    => $menu->menu_end_date,
-                        'errors' => json_encode($menu->getFirstErrors()),
-                    ]);
+                    $this->log(
+                        'menu-create-fail',
+                        [
+                            'start'  => $menu->menu_start_date,
+                            'end'    => $menu->menu_end_date,
+                            'errors' => json_encode($menu->getFirstErrors()),
+                        ]
+                    );
                 }
             } else {
                 \Yii::$app->session->addFlash('danger', implode('<br />', $menu->getFirstErrors()));
             }
         }
-        return $this->render('/menu/create', [
-            'model'        => $menu,
-            'disabledDays' => $disabledDays,
-            'title'        => \Yii::t('product', 'Menu create'),
-        ]);
+        return $this->render(
+            '/menu/create',
+            [
+                'model'        => $menu,
+                'disabledDays' => $disabledDays,
+                'title'        => \Yii::t('product', 'Menu create'),
+            ]
+        );
     }
 
     /**
@@ -71,7 +87,7 @@ class MenuController extends BaseController
      */
     public function actionView(int $id)
     {
-        $menu         = \app\models\Repository\Menu::findOne($id);
+        $menu = \app\models\Repository\Menu::findOne($id);
         $disabledDays = $menu->getDisabledDays();
 
         if (!$menu) {
@@ -84,26 +100,35 @@ class MenuController extends BaseController
 
             if ($menu->saveAll()) {
                 \Yii::$app->session->addFlash('success', \Yii::t('menu', 'Menu was saved successfully'));
-                $this->log('menu-create-success', [
-                    'start' => $menu->menu_start_date,
-                    'end'   => $menu->menu_end_date,
-                    'id'    => $menu->id,
-                ]);
+                $this->log(
+                    'menu-create-success',
+                    [
+                        'start' => $menu->menu_start_date,
+                        'end'   => $menu->menu_end_date,
+                        'id'    => $menu->id,
+                    ]
+                );
                 return $this->redirect(['menu/index']);
             } else {
-                $this->log('menu-create-fail', [
-                    'start'  => $menu->menu_start_date,
-                    'end'    => $menu->menu_end_date,
-                    'errors' => json_encode($menu->getFirstErrors()),
-                ]);
+                $this->log(
+                    'menu-create-fail',
+                    [
+                        'start'  => $menu->menu_start_date,
+                        'end'    => $menu->menu_end_date,
+                        'errors' => json_encode($menu->getFirstErrors()),
+                    ]
+                );
             }
         }
 
-        return $this->render('/menu/create', [
-            'model'        => $menu,
-            'disabledDays' => $disabledDays,
-            'title'        => \Yii::t('menu', 'Menu update'),
-        ]);
+        return $this->render(
+            '/menu/create',
+            [
+                'model'        => $menu,
+                'disabledDays' => $disabledDays,
+                'title'        => \Yii::t('menu', 'Menu update'),
+            ]
+        );
     }
 
     /**
@@ -112,15 +137,15 @@ class MenuController extends BaseController
     public function actionGetDayBlocks()
     {
         $startDay = \Yii::$app->request->post('menuStartDate');
-        $endDay   = \Yii::$app->request->post('menuEndDate');
-        $menuID   = \Yii::$app->request->post('menuID');
+        $endDay = \Yii::$app->request->post('menuEndDate');
+        $menuID = \Yii::$app->request->post('menuID');
         if ($data = \Yii::$app->request->post('data', null)) {
             $chosenDishes = json_decode($data, true);
         }
 
-        $dates          = [];
+        $dates = [];
         $startTimestamp = strtotime($startDay);
-        $i              = 0;
+        $i = 0;
         do {
             $date = date('Y-m-d', $startTimestamp + $i * 86400);;
             $dates[] = $date;
@@ -133,17 +158,81 @@ class MenuController extends BaseController
             $menu = new \app\models\Repository\Menu();
         }
 
-        return $this->renderAjax('/menu/_day_menu', [
-            'dates'              => $dates,
-            'menu'               => $menu,
-            'chosenDishes'       => $chosenDishes['dish'] ?? [],
-            'breakfasts'         => ArrayHelper::map(Dish::find()->where(['is_breakfast' => true])->asArray()->all(), 'id', 'name'),
-            'lunches'            => ArrayHelper::map(Dish::find()->where(['is_lunch' => true])->asArray()->all(), 'id', 'name'),
-            'suppers'            => ArrayHelper::map(Dish::find()->where(['type' => Dish::TYPE_SECOND, 'is_supper' => true])->asArray()->all(), 'id', 'name'),
-            'firstDishesDinner'  => ArrayHelper::map(Dish::find()->where(['type' => Dish::TYPE_FIRST, 'is_dinner' => true])->asArray()->all(), 'id', 'name'),
-            'secondDishesDinner' => ArrayHelper::map(Dish::find()->where(['type' => Dish::TYPE_SECOND, 'is_dinner' => true])->asArray()->all(), 'id', 'name'),
-            'garnishDishes'      => ArrayHelper::map(Dish::find()->where(['type' => Dish::TYPE_GARNISH])->asArray()->all(), 'id', 'name'),
-        ]);
+        return $this->renderAjax(
+            '/menu/_day_menu',
+            [
+                'dates'              => $dates,
+                'menu'               => $menu,
+                'chosenDishes'       => $chosenDishes['dish'] ?? [],
+                'breakfasts'         => ArrayHelper::map(
+                    Dish::find()->where(['is_breakfast' => true])->asArray()->all(),
+                    'id',
+                    'name'
+                ),
+                'lunches'            => ArrayHelper::map(
+                    Dish::find()->where(['is_lunch' => true])->asArray()->all(),
+                    'id',
+                    'name'
+                ),
+                'suppers'            => ArrayHelper::map(
+                    Dish::find()->where(['type' => Dish::TYPE_SECOND, 'is_supper' => true])->asArray()->all(),
+                    'id',
+                    'name'
+                ),
+                'firstDishesDinner'  => ArrayHelper::map(
+                    Dish::find()->where(['type' => Dish::TYPE_FIRST, 'is_dinner' => true])->asArray()->all(),
+                    'id',
+                    'name'
+                ),
+                'secondDishesDinner' => ArrayHelper::map(
+                    Dish::find()->where(['type' => Dish::TYPE_SECOND, 'is_dinner' => true])->asArray()->all(),
+                    'id',
+                    'name'
+                ),
+                'garnishDishes'      => ArrayHelper::map(
+                    Dish::find()->where(['type' => Dish::TYPE_GARNISH])->asArray()->all(),
+                    'id',
+                    'name'
+                ),
+            ]
+        );
+    }
+
+    /**
+     * @return string
+     */
+    public function actionGetOrders()
+    {
+        $startDay = \Yii::$app->request->post('menuStartDate');
+        $endDay = \Yii::$app->request->post('menuEndDate');
+        $menuID = \Yii::$app->request->post('menuID');
+
+        $searchModel = new Order();
+        $query = Repository::find();
+        $dataProvider = new ActiveDataProvider(
+            [
+                'query' => $query,
+                'sort'  => ['defaultOrder' => ['id' => SORT_DESC]],
+            ]
+        );
+
+        /** @var \app\models\User $user */
+        $user = \Yii::$app->user->identity;
+        if (!empty($user->franchise_id)) {
+            $query->andWhere(['franchise_id' => $user->franchise_id]);
+        }
+
+        $query->leftJoin(['order_schedule'], 'order.id = order_schedule.order_id');
+        $query->andWhere(['>=', 'order_schedule.date', $startDay]);
+        $query->andWhere(['<=', 'order_schedule.date', $endDay]);
+
+        return $this->renderAjax(
+            '/menu/_orders',
+            [
+                'searchModel'  => $searchModel,
+                'dataProvider' => $dataProvider,
+            ]
+        );
     }
 
     /**
@@ -178,25 +267,31 @@ class MenuController extends BaseController
         $ingestions = null;
 
         if (\Yii::$app->request->post()) {
-            $date       = \Yii::$app->request->post('date');
+            $date = \Yii::$app->request->post('date');
             $ingestions = (new \app\models\Repository\MenuDish())->getMarriageForDate($date);
         }
 
-        return $this->renderAjax('/menu/_get_marriage_sheet', [
-            'ingestions' => $ingestions,
-            'date'       => $date ?? '',
-            'time'       => \Yii::$app->request->post('time', date('H:i', time())),
-            'title'      => \Yii::t('menu', 'Marriage sheet'),
-        ]);
+        return $this->renderAjax(
+            '/menu/_get_marriage_sheet',
+            [
+                'ingestions' => $ingestions,
+                'date'       => $date ?? '',
+                'time'       => \Yii::$app->request->post('time', date('H:i', time())),
+                'title'      => \Yii::t('menu', 'Marriage sheet'),
+            ]
+        );
     }
 
     /**
      * @return array
+     * @throws \PhpOffice\PhpSpreadsheet\Exception
+     * @throws \PhpOffice\PhpSpreadsheet\Reader\Exception
+     * @throws \PhpOffice\PhpSpreadsheet\Writer\Exception
      */
     public function actionSaveMarriageSheet()
     {
         if (\Yii::$app->request->post()) {
-            $date       = \Yii::$app->request->post('date') . " " . \Yii::$app->request->post('time', date("H:i", time()));
+            $date = \Yii::$app->request->post('date') . " " . \Yii::$app->request->post('time', date("H:i", time()));
             $ingestions = (new \app\models\Repository\MenuDish())->getMarriageForDate($date);
 
             $excel = new Excel();
@@ -224,7 +319,6 @@ class MenuController extends BaseController
         $this->log('menu-delete', $menuIds);
         $transaction = \Yii::$app->db->beginTransaction();
         foreach ($menuIds as $id) {
-
             $menu = \app\models\Repository\Menu::findOne($id);
             if ($menu->menu_start_date < date('Y-m-d', time())) {
                 return [
@@ -234,17 +328,17 @@ class MenuController extends BaseController
             }
 
             $orderSchedules = OrderSchedule::find()
-                ->where(['>=', 'date', $menu->menu_start_date])
-                ->andWhere(['<=', 'date', $menu->menu_end_date])
-                ->all();
-            $isSuccess      = true;
+                                           ->where(['>=', 'date', $menu->menu_start_date])
+                                           ->andWhere(['<=', 'date', $menu->menu_end_date])
+                                           ->all();
+            $isSuccess = true;
             foreach ($orderSchedules as $schedule) {
                 if (!empty($schedule->dishes)) {
                     foreach ($schedule->dishes as $dish) {
-                        $dish->dish_id      = null;
-                        $dish->name         = null;
+                        $dish->dish_id = null;
+                        $dish->name = null;
                         $dish->with_garnish = null;
-                        $dish->garnish_id   = null;
+                        $dish->garnish_id = null;
 
                         if (!$dish->validate()) {
                             $isSuccess = false;

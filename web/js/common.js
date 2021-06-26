@@ -536,6 +536,20 @@ window.getMenuBlocks = function (menuID = 0) {
     });
 };
 
+window.getMenuOrders = function (menuID = 0) {
+    let startDate = $('[name="menu_start_date"]').val();
+    let endDate = $('[name="menu_end_date"]').val();
+
+    $.ajax({
+        url: '/menu/get-orders',
+        data: {menuStartDate: startDate, menuEndDate: endDate, menuID: menuID},
+        type: 'POST',
+        success: function (html) {
+            $('#menu-orders').html(html);
+        }
+    });
+};
+
 window.getMenuBlocksForCreate = function (post = '') {
     let startDate = $('[name="menu_start_date"]').val();
     let endDate = $('[name="menu_end_date"]').val();

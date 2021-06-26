@@ -835,3 +835,19 @@ select.form-control.input-sm {
 .box-body.order-info > div > span.select-block .form-group:after {
     top: 15px;
 }
+
+#menu-orders .box-footer {
+    display: none;
+}
+
+#menu-orders .box-body {
+    padding: 0;
+}
+
+#menu-composition h4 {
+    padding-left: 10px;
+}
+
+#menu-orders .box-body .table thead {
+    display: none;
+}

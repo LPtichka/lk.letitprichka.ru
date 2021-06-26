@@ -9,8 +9,8 @@ use app\widgets\Html; ?>
 
 <div class="row menu-row">
     <div class="col-sm-12">
-        <strong>Меню
-            на <?php echo $dateObject->getWeekdayName(); ?> <?php echo $dateObject->getFormattedDate(); ?></strong>
+        <h4>Меню
+            на <?php echo $dateObject->getWeekdayName(); ?> <?php echo $dateObject->getFormattedDate(); ?></h4>
     </div>
     <hr class="col-sm-12" />
     <div class="col-sm-3">
