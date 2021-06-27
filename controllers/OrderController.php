@@ -810,6 +810,15 @@ class OrderController extends BaseController
                                              ->where(['order_schedule_id' => $scheduleId])
                                              ->andWhere(['dish_id' => $post['old_dish_id']])
                                              ->one();
+        } else {
+            $oldScheduleDish = OrderScheduleDish::find()
+                                                ->where(['order_schedule_id' => $scheduleId])
+                                                ->andWhere(['dish_id' => null])
+                                                ->andWhere(['ingestion_type' => $ration])
+                                                ->one();
+            if ($oldScheduleDish) {
+                $scheduleDish = $oldScheduleDish;
+            }
         }
 
         $scheduleDish->dish_id = $dish->id;

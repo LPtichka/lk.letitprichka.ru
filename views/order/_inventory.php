@@ -57,6 +57,12 @@ $this->title = \Yii::t('order', 'Order inventory');
                                                 <p><?php echo implode(', ', $dish->garnish->getComposition()) . ', ' . $dish->garnish->weight . 'г.'; ?></p>
                                             <?php else: ?>
                                                 <p>Еще не назначено</p>
+                                                <a href="#"
+                                                   class="reload-dish"
+                                                   data-ration="<?= $key; ?>"
+                                                   data-dish-id="<?= $dish->dish_id; ?>"
+                                                   data-schedule-id="<?= $scheduleId; ?>"
+                                                ><i class="material-icons">cached</i></a>
                                             <?php endif; ?>
                                         </div>
                                     <?php else: ?>
@@ -77,6 +83,12 @@ $this->title = \Yii::t('order', 'Order inventory');
                                 <?php else: ?>
                                     <div class="col-sm-10 ingestion-content">
                                         <?php echo \Yii::t('order', 'Not equipped'); ?>
+                                        <a href="#"
+                                           class="reload-dish"
+                                           data-ration="<?= $key; ?>"
+                                           data-dish-id="<?= $dish->dish_id; ?>"
+                                           data-schedule-id="<?= $scheduleId; ?>"
+                                        ><i class="material-icons">cached</i></a>
                                     </div>
                                 <?php endif; ?>
                             </div>
