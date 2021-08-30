@@ -731,6 +731,18 @@ select.form-control.input-sm {
     display: inline-block;
 }
 
+.delete-dish {
+    width: 10px;
+    height: 20px;
+    display: none;
+    background: #FFF;
+    color: darkred;
+}
+
+.inventory-row .ingestion-content:hover .delete-dish {
+    display: inline-block;
+}
+
 .ingestion-row {
     position: relative;
     border-bottom: 1px solid #F2F2F2;

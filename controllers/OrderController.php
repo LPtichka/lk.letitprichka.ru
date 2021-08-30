@@ -772,8 +772,6 @@ class OrderController extends BaseController
                 ]
             );
         } else {
-//            print_r($order->getFirstErrors());
-//            die("---");
             return $this->renderAjax(
                 '/order/_order_info_block',
                 [
@@ -841,6 +839,49 @@ class OrderController extends BaseController
 
         return [
             'success' => false
+        ];
+    }
+
+    /**
+     * @return array
+     */
+    public function actionDeleteDishForInventory()
+    {
+        \Yii::$app->response->format = Response::FORMAT_JSON;
+        $post = \Yii::$app->request->post();
+        if (!$post) {
+            return [];
+        }
+
+        $scheduleId = $post['schedule_id'];
+        $ration = $post['ration'];
+
+        $scheduleDish = OrderScheduleDish::find()
+                                         ->where(['order_schedule_id' => $scheduleId])
+                                         ->andWhere(['ingestion_type' => $ration])
+                                         ->one();
+
+        if (empty($scheduleDish)) {
+            return [
+                'message' => "Не удалось найти рацион и блюдо",
+                'success' => false,
+            ];
+        }
+
+        $scheduleDish->dish_id = null;
+        $scheduleDish->name = null;
+        $scheduleDish->garnish_id = null;
+        $scheduleDish->with_garnish = 0;
+
+        if ($scheduleDish->validate() && $scheduleDish->save()) {
+            return [
+                'success' => true,
+            ];
+        }
+
+        return [
+            'message' => "Ошибка",
+            'success' => false,
         ];
     }
 }

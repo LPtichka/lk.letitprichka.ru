@@ -34,12 +34,17 @@ $this->title = \Yii::t('order', 'Order inventory');
                                         <div class="col-sm-5 ingestion-content">
                                             <p>
                                                 <?php echo Html::a($dish->dish->name, ['dish/view', 'id' => $dish->dish_id]); ?>
-                                                <a href="#"
+                                                &nbsp;<a href="#"
                                                    class="reload-dish"
                                                    data-ration="<?= $key; ?>"
                                                    data-dish-id="<?= $dish->dish_id; ?>"
                                                    data-schedule-id="<?= $scheduleId; ?>"
-                                                ><i class="material-icons">cached</i></a>
+                                                ><i class="material-icons">cached</i></a><a href="#"
+                                                   class="delete-dish"
+                                                   data-ration="<?= $key; ?>"
+                                                   data-dish-id="<?= $dish->dish_id; ?>"
+                                                   data-schedule-id="<?= $scheduleId; ?>"
+                                                ><i class="material-icons">delete</i></a>
                                             </p>
                                             <p><?php echo implode(', ', $dish->dish->getComposition()) . ', ' . $dish->dish->weight . 'г.'; ?></p>
                                         </div>
@@ -47,12 +52,17 @@ $this->title = \Yii::t('order', 'Order inventory');
                                             <?php if ($dish->garnish_id): ?>
                                                 <p>
                                                     <?php echo Html::a($dish->garnish->name, ['dish/view', 'id' => $dish->garnish_id]); ?>
-                                                    <a href="#"
+                                                    &nbsp;<a href="#"
                                                        class="reload-dish"
                                                        data-ration="<?= $key; ?>"
                                                        data-dish-id="<?= $dish->garnish_id; ?>"
                                                        data-schedule-id="<?= $scheduleId; ?>"
-                                                    ><i class="material-icons">cached</i></a>
+                                                    ><i class="material-icons">cached</i></a><a href="#"
+                                                       class="delete-dish"
+                                                       data-ration="<?= $key; ?>"
+                                                       data-dish-id="<?= $dish->garnish_id; ?>"
+                                                       data-schedule-id="<?= $scheduleId; ?>"
+                                                    ><i class="material-icons">delete</i></a>
                                                 </p>
                                                 <p><?php echo implode(', ', $dish->garnish->getComposition()) . ', ' . $dish->garnish->weight . 'г.'; ?></p>
                                             <?php else: ?>
@@ -69,12 +79,17 @@ $this->title = \Yii::t('order', 'Order inventory');
                                         <div class="col-sm-10 ingestion-content">
                                             <p>
                                                 <?php echo Html::a($dish->dish->name, ['dish/view', 'id' => $dish->dish_id]); ?>
-                                                <a href="#"
+                                                &nbsp;<a href="#"
                                                    class="reload-dish"
                                                    data-ration="<?= $key; ?>"
                                                    data-dish-id="<?= $dish->dish_id; ?>"
                                                    data-schedule-id="<?= $scheduleId; ?>"
-                                                ><i class="material-icons">cached</i></a>
+                                                ><i class="material-icons">cached</i></a><a href="#"
+                                                   class="delete-dish"
+                                                   data-ration="<?= $key; ?>"
+                                                   data-dish-id="<?= $dish->dish_id; ?>"
+                                                   data-schedule-id="<?= $scheduleId; ?>"
+                                                ><i class="material-icons">delete</i></a>
                                             </p>
                                             <p><?php echo implode(', ', $dish->dish->getComposition()) . ', ' . $dish->dish->weight . 'г.'; ?></p>
                                         </div>

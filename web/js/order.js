@@ -247,6 +247,25 @@ body.delegate('.reload-dish', 'click', function (e) {
     });
 });
 
+body.delegate('.delete-dish', 'click', function (e) {
+    e.preventDefault();
+    let ration = $(this).data('ration');
+    let scheduleId = $(this).data('schedule-id');
+    let block = $(this);
+    $.ajax({
+        url: '/order/delete-dish-for-inventory',
+        method: 'post',
+        dataType: 'json',
+        data: {ration: ration, schedule_id: scheduleId},
+        success: function (data) {
+            let dish_request_block = '<div class="col-sm-10 ingestion-content">' +
+                'Еще не назначено  ' +
+                '</div>';
+            block.parents('.ingestion-row').html(dish_request_block);
+        }
+    });
+});
+
 body.delegate('.exception-row select', 'change', function (e) {
     e.preventDefault();
 
