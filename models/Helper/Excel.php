@@ -538,7 +538,7 @@ class Excel
             $objWorksheet->getCellByColumnAndRow(2, 2)->setValue($sheet->getSubscriptionName());
 
             $objWorksheet->getCellByColumnAndRow(1, 3)->setValue('Исключения:');
-            $objWorksheet->getCellByColumnAndRow(2, 3)->setValue(implode(', ', $sheet->getExceptions()));
+            $objWorksheet->getCellByColumnAndRow(2, 3)->setValue(!empty($sheet->getExceptions()) ? implode(', ', $sheet->getExceptions()) : 'Нет');
 
             $objWorksheet->getCellByColumnAndRow(1, 4)->setValue('Адрес:');
             $objWorksheet->getCellByColumnAndRow(2, 4)->setValue($sheet->getAddress());
@@ -561,8 +561,8 @@ class Excel
             $objWorksheet->getCellByColumnAndRow(3, 9)->setValue((new Phone($sheet->getFranchise()->phone))->getHumanView());
 
             $objWorksheet->getCellByColumnAndRow(1, 10)->setValue('Изготовлено и упаковано:');
-            $objWorksheet->getCellByColumnAndRow(2, 10)->setValue(date('H:i', $sheet->getManufacturedAt()));
-            $objWorksheet->getCellByColumnAndRow(3, 10)->setValue(date('d.m.Y', $sheet->getManufacturedAt()));
+            $objWorksheet->getCellByColumnAndRow(2, 10)->setValue(!empty($sheet->getManufacturedAt()) ? date('H:i', $sheet->getManufacturedAt()): "06:00");
+            $objWorksheet->getCellByColumnAndRow(3, 10)->setValue(!empty($sheet->getManufacturedAt()) ? date('d.m.Y', $sheet->getManufacturedAt()) : date('d.m.Y', strtotime($sheet->getDate())));
 
             $settings = ArrayHelper::map(Settings::find()->asArray()->all(), 'name', 'value');
 

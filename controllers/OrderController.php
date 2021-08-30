@@ -579,7 +579,7 @@ class OrderController extends BaseController
 
         try {
             $excel = new Excel();
-            $excel->loadFromTemplate('files/templates/base.xlsx');
+            $excel->loadFromTemplate('files/templates/base_with_logo.xlsx');
             $excel->prepare($customerSheets, Excel::MODEL_CUSTOMER_SHEET, \Yii::$app->request->post());
             $excel->save('client_report.xlsx', 'temp');
         } catch (\Exception $e) {

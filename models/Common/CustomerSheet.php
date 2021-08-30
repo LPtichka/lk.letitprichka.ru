@@ -35,6 +35,8 @@ class CustomerSheet extends Model
     private $subscriptionDayCount;
     /** @var int */
     private $subscriptionDayBalance;
+    /** @var string */
+    private $date;
     /** @var int */
     private $manufacturedAt;
     /** @var string[] */
@@ -51,6 +53,23 @@ class CustomerSheet extends Model
     private $hasLunch;
     /** @var bool */
     private $hasSupper;
+
+    /**
+     * @return string
+     */
+    public function getDate(): string
+    {
+        return $this->date;
+    }
+
+    /**
+     * @param string $date
+     */
+    public function setDate(string $date): CustomerSheet
+    {
+        $this->date = $date;
+        return $this;
+    }
 
     /**
      * @return bool
@@ -469,6 +488,7 @@ class CustomerSheet extends Model
                 ->setSubscriptionDayBalance($dayBalance - 1)
                 ->setExceptions($order->getExceptionNames())
                 ->setDeliveryTime($orderSchedule->interval)
+                ->setDate($orderSchedule->date)
                 ->setDishes($dishes)
                 ->setHasBreakfast((bool) $order->subscription->has_breakfast)
                 ->setHasDinner((bool) $order->subscription->has_dinner)
