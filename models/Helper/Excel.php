@@ -2,6 +2,7 @@
 namespace app\models\Helper;
 
 use app\models\Common\CustomerSheet;
+use app\models\Common\Ingestion;
 use app\models\Common\MarriageDish;
 use app\models\Common\Route;
 use app\models\Repository\Dish;
@@ -552,7 +553,7 @@ class Excel
             $objWorksheet->getCellByColumnAndRow(4, 6)->setValue($sheet->getSubscriptionDayBalance());
 
             $objWorksheet->getCellByColumnAndRow(1, 7)->setValue('Приборы:');
-            $culteryText = $sheet->getCutlery() ? $sheet->getCutlery() : 'Нет (пожалуйста, сообщите нам, если Вам понадобятся приборы)';
+            $culteryText = $sheet->getCutlery() ? 'Да' : 'Нет (пожалуйста, сообщите нам, если Вам понадобятся приборы)';
             $objWorksheet->getCellByColumnAndRow(2, 7)->setValue($culteryText);
 
             $objWorksheet->getCellByColumnAndRow(1, 9)->setValue('Изготовитель:');
@@ -591,32 +592,32 @@ class Excel
             } else {
                 if ($sheet->isHasBreakfast()) {
                     foreach ($sheet->getDishes() as $dish) {
-                        if ($dish->is_breakfast) {
-                            $this->setDishToCustomerSheet($objWorksheet, $dish, $lastID, Dish::INGESTION_TYPE_BREAKFAST_NAME);
+                        if ($dish->ingestion_type == Ingestion::BREAKFAST) {
+                            $this->setDishToCustomerSheet($objWorksheet, $dish->dish, $lastID, Dish::INGESTION_TYPE_BREAKFAST_NAME);
                             $lastID++;
                         }
                     }
                 }
                 if ($sheet->isHasDinner()) {
                     foreach ($sheet->getDishes() as $dish) {
-                        if ($dish->is_dinner) {
-                            $this->setDishToCustomerSheet($objWorksheet, $dish, $lastID, Dish::INGESTION_TYPE_DINNER_NAME);
+                        if ($dish->ingestion_type == Ingestion::DINNER) {
+                            $this->setDishToCustomerSheet($objWorksheet, $dish->dish, $lastID, Dish::INGESTION_TYPE_DINNER_NAME);
                             $lastID++;
                         }
                     }
                 }
                 if ($sheet->isHasLunch()) {
                     foreach ($sheet->getDishes() as $dish) {
-                        if ($dish->is_lunch) {
-                            $this->setDishToCustomerSheet($objWorksheet, $dish, $lastID, Dish::INGESTION_TYPE_LUNCH_NAME);
+                        if ($dish->ingestion_type == Ingestion::LUNCH) {
+                            $this->setDishToCustomerSheet($objWorksheet, $dish->dish, $lastID, Dish::INGESTION_TYPE_LUNCH_NAME);
                             $lastID++;
                         }
                     }
                 }
                 if ($sheet->isHasSupper()) {
                     foreach ($sheet->getDishes() as $dish) {
-                        if ($dish->is_supper) {
-                            $this->setDishToCustomerSheet($objWorksheet, $dish, $lastID, Dish::INGESTION_TYPE_SUPPER_NAME);
+                        if ($dish->ingestion_type == Ingestion::SUPPER) {
+                            $this->setDishToCustomerSheet($objWorksheet, $dish->dish, $lastID, Dish::INGESTION_TYPE_SUPPER_NAME);
                             $lastID++;
                         }
                     }

@@ -687,7 +687,13 @@ class OrderController extends BaseController
         if ($order->subscription_id !== Subscription::NO_SUBSCRIPTION_ID) {
             $ingestion = new Ingestion();
             foreach ($dishes as $dish) {
-                $types[$dish->ingestion_type] = $ingestion->getIngestionName($dish->ingestion_type);
+                if ($dish->ingestion_type == Ingestion::BREAKFAST && $order->subscription->has_breakfast) {
+                    $types[$dish->ingestion_type] = $ingestion->getIngestionName($dish->ingestion_type);
+                } elseif ($dish->ingestion_type == Ingestion::LUNCH && $order->subscription->has_lunch) {
+                    $types[$dish->ingestion_type] = $ingestion->getIngestionName($dish->ingestion_type);
+                } elseif ($dish->ingestion_type == Ingestion::DINNER || $dish->ingestion_type == Ingestion::SUPPER) {
+                    $types[$dish->ingestion_type] = $ingestion->getIngestionName($dish->ingestion_type);
+                }
             }
         }
 

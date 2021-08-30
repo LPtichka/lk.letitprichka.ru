@@ -5,6 +5,7 @@ use app\models\Helper\Phone;
 use app\models\Repository\Dish;
 use app\models\Repository\Franchise;
 use app\models\Repository\OrderSchedule;
+use app\models\Repository\OrderScheduleDish;
 use yii\base\Model;
 
 /**
@@ -38,7 +39,7 @@ class CustomerSheet extends Model
     private $manufacturedAt;
     /** @var string[] */
     private $exceptions;
-    /** @var Dish[] */
+    /** @var OrderScheduleDish[] */
     private $dishes;
     /** @var Franchise */
     private $franchise;
@@ -252,7 +253,7 @@ class CustomerSheet extends Model
     }
 
     /**
-     * @param Dish[] $dishes
+     * @param OrderScheduleDish[] $dishes
      * @return CustomerSheet
      */
     public function setDishes(array $dishes): CustomerSheet
@@ -362,7 +363,7 @@ class CustomerSheet extends Model
     }
 
     /**
-     * @return Dish[]
+     * @return OrderScheduleDish[]
      */
     public function getDishes(): array
     {
@@ -385,7 +386,7 @@ class CustomerSheet extends Model
         $result = 0;
 
         foreach ($this->dishes as $dish) {
-            $result += $dish->kkal;
+            $result += $dish->dish->kkal;
         }
 
         return $result;
@@ -399,7 +400,7 @@ class CustomerSheet extends Model
         $result = 0;
 
         foreach ($this->dishes as $dish) {
-            $result += $dish->fat;
+            $result += $dish->dish->fat;
         }
 
         return $result;
@@ -413,7 +414,7 @@ class CustomerSheet extends Model
         $result = 0;
 
         foreach ($this->dishes as $dish) {
-            $result += $dish->proteins;
+            $result += $dish->dish->proteins;
         }
 
         return $result;
@@ -427,7 +428,7 @@ class CustomerSheet extends Model
         $result = 0;
 
         foreach ($this->dishes as $dish) {
-            $result += $dish->carbohydrates;
+            $result += $dish->dish->carbohydrates;
         }
 
         return $result;
@@ -444,7 +445,7 @@ class CustomerSheet extends Model
             $dishes         = [];
             $manufacturedAt = 0;
             foreach ($orderSchedule->dishes as $scheduleDish) {
-                $dishes[] = $scheduleDish->dish;
+                $dishes[] = $scheduleDish;
                 if ($scheduleDish->manufactured_at > $manufacturedAt) {
                     $manufacturedAt = $scheduleDish->manufactured_at;
                 }
