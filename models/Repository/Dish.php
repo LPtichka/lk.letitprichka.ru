@@ -26,6 +26,7 @@ use yii\helpers\ArrayHelper;
  * @property int $proteins
  * @property int $carbohydrates
  * @property string $storage_condition
+ * @property string $comment
  * @property int $created_at
  * @property int $updated_at
  *
@@ -89,6 +90,7 @@ class Dish extends \yii\db\ActiveRecord
             'carbohydrates'     => \Yii::t('dish', 'Carbohydrates'),
             'storage_condition' => \Yii::t('dish', 'Storage condition'),
             'process'           => \Yii::t('dish', 'Process'),
+            'comment'           => \Yii::t('dish', 'Comment'),
         ];
     }
 
@@ -99,7 +101,7 @@ class Dish extends \yii\db\ActiveRecord
     {
         return [
             [['is_breakfast', 'is_dinner', 'is_lunch', 'is_supper', 'with_garnish'], 'boolean'],
-            [['storage_condition', 'process', 'name'], 'string'],
+            [['storage_condition', 'process', 'name', 'comment'], 'string'],
             [['type'], 'integer'],
             [['fat', 'weight', 'proteins', 'kkal', 'carbohydrates'], 'number'],
             [['name', 'process', 'fat', 'weight', 'proteins', 'kkal', 'carbohydrates'], 'required'],

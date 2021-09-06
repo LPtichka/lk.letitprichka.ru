@@ -119,6 +119,15 @@ if ($model->id) {
                         </div>
                     </div>
                 </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <?= $form->field($model, 'comment')->textarea([
+                                'rows' => 3
+                            ]) ?>
+                        </div>
+                    </div>
+                </div>
 
             </div>
         </div>

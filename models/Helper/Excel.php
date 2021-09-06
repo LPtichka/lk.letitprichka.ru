@@ -684,7 +684,7 @@ class Excel
         $objWorksheet->getCellByColumnAndRow(5, $lastID)->setValue($dish->proteins);
         $objWorksheet->getCellByColumnAndRow(6, $lastID)->setValue($dish->fat);
         $objWorksheet->getCellByColumnAndRow(7, $lastID)->setValue($dish->carbohydrates);
-        $objWorksheet->getCellByColumnAndRow(8, $lastID)->setValue('');
+        $objWorksheet->getCellByColumnAndRow(8, $lastID)->setValue($dish->comment);
     }
 
     /**

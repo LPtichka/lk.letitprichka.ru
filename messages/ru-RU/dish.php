@@ -6,6 +6,7 @@ return [
     'breakfast'                                                                  => 'Завтрак',
     'Carbohydrates'                                                              => 'Углеводы',
     'Create dish'                                                                => 'Создать блюдо',
+    'Comment'                                                                    => 'Комментарий',
     'Description and conditions'                                                 => 'Описание процесса изготовления и хранения',
     'Dessert'                                                                    => 'Десерт',
     'Dinner'                                                                     => 'Обед',
