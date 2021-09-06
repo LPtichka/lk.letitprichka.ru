@@ -1,4 +1,5 @@
 <?php
+
 namespace app\controllers;
 
 use app\models\Helper\Excel;
@@ -19,7 +20,7 @@ class ProductController extends BaseController
      */
     public function actionIndex()
     {
-        $searchModel  = new Product();
+        $searchModel = new Product();
         $dataProvider = $searchModel->search(\Yii::$app->request->queryParams);
 
         return $this->render('/product/index', [
@@ -39,7 +40,7 @@ class ProductController extends BaseController
             $this->log('product-create', []);
             $product->load(\Yii::$app->request->post());
             $product->count = (new Unit($product->unit))->convert($product->count);
-            $isValidate     = $product->validate();
+            $isValidate = $product->validate();
 
             if ($isValidate && $product->save()) {
                 \Yii::$app->session->addFlash('success', \Yii::t('product', 'Product was saved successfully'));
@@ -78,7 +79,7 @@ class ProductController extends BaseController
             $post = \Yii::$app->request->post();
             $product->load($post);
             $product->count = (new Unit($product->unit))->convert($product->count);
-            $isValidate     = $product->validate();
+            $isValidate = $product->validate();
             if ($isValidate && $product->save()) {
                 $this->log('product-edit-success', $product->getAttributes());
                 \Yii::$app->session->addFlash('success', \Yii::t('product', 'Product was saved successfully'));
@@ -111,7 +112,7 @@ class ProductController extends BaseController
     public function actionImport()
     {
         $inputFile = $_FILES['xml'];
-        $excel     = new Excel();
+        $excel = new Excel();
         $excel->load($inputFile);
         if (!$excel->validate()) {
             throw new \Exception(\Yii::t('file', 'Product file is not suitable'));
@@ -119,11 +120,11 @@ class ProductController extends BaseController
 
         \Yii::$app->response->format = Response::FORMAT_JSON;
 
-        $parserData  = $excel->parse();
+        $parserData = $excel->parse();
         $transaction = \Yii::$app->db->beginTransaction();
         foreach ($parserData as $productData) {
             $parsedData = (new ExcelParser($productData, ExcelParser::MODEL_PRODUCT))->getParsedArray();
-            $product    = (new \app\models\Repository\Product())->build($parsedData);
+            $product = (new \app\models\Repository\Product())->build($parsedData);
             if (!($product->validate() && $product->save())) {
                 $transaction->rollBack();
                 \Yii::$app->session->addFlash('danger', \Yii::t('product', 'Product import was failed'));
@@ -145,7 +146,7 @@ class ProductController extends BaseController
      */
     public function actionDelete()
     {
-        $productIDs                  = \Yii::$app->request->post('selection');
+        $productIDs = \Yii::$app->request->post('selection');
         \Yii::$app->response->format = Response::FORMAT_JSON;
 
         $this->log('product-delete', $productIDs);
@@ -154,7 +155,7 @@ class ProductController extends BaseController
             $isDelete = \app\models\Repository\Product::deleteAll(['id' => $id]);
             if (!$isDelete) {
                 $transaction->rollBack();
-                $this->log('product-delete-fail', ['id' => (string) $id]);
+                $this->log('product-delete-fail', ['id' => (string)$id]);
                 return [
                     'status' => false,
                     'title'  => \Yii::t('product', 'Products was not deleted')
@@ -208,15 +209,15 @@ class ProductController extends BaseController
      */
     public function actionSearch()
     {
-        $term    = \Yii::$app->request->get('term');
+        $term = \Yii::$app->request->get('term');
         $element = \Yii::$app->request->get('element');
 
         $products = \app\models\Repository\Product::find()
-            ->select(['*', $element . ' as value'])
-            ->andFilterWhere(['like', $element, $term])
-            ->orderBy(['count' => SORT_DESC])
-            ->asArray()
-            ->all();
+                                                  ->select(['*', $element . ' as value'])
+                                                  ->andFilterWhere(['like', $element, $term])
+                                                  ->orderBy(['count' => SORT_DESC])
+                                                  ->asArray()
+                                                  ->all();
 
         $result = [];
         foreach ($products as $product) {
@@ -241,27 +242,26 @@ class ProductController extends BaseController
     {
         $products = [];
         $menuList = [];
-        $success  = true;
+        $success = true;
 
         $menus = Menu::find()->all();
         foreach ($menus as $menu) {
-            $menuList[$menu->id] = sprintf('%s - %s',
+            $menuList[$menu->id] = sprintf(
+                '%s - %s',
                 date('d.m.Y', strtotime($menu->menu_start_date)),
                 date('d.m.Y', strtotime($menu->menu_end_date))
             );
         }
 
-
         if ($post = \Yii::$app->request->post()) {
-            $menuId     = $post['menu_id'];
+            $menuId = $post['menu_id'];
             $chosenMenu = Menu::findOne($menuId);
             try {
                 $products = $chosenMenu->getProcurementProducts();
             } catch (\LogicException $e) {
                 $success = false;
-                $error   = $e->getMessage();
+                $error = $e->getMessage();
             }
-
         }
 
         return $this->renderAjax('/product/_procurement_sheet', [
@@ -275,6 +275,19 @@ class ProductController extends BaseController
     }
 
     /**
+     * Получение страницы Склад учет
+     *
+     * @return string
+     */
+    public function actionGetWarehouseAccounting()
+    {
+        return $this->renderAjax('/product/_warehouse_accounting', [
+            'title'   => \Yii::t('product', 'Warehouse accounting'),
+            'success' => true,
+        ]);
+    }
+
+    /**
      * @return array
      * @throws \PHPExcel_Exception
      * @throws \PHPExcel_Reader_Exception
@@ -284,7 +297,7 @@ class ProductController extends BaseController
         if ($menuId = \Yii::$app->request->post('menu_id')) {
             \Yii::$app->response->format = Response::FORMAT_JSON;
 
-            $products    = Menu::findOne($menuId)->getProcurementProducts();
+            $products = Menu::findOne($menuId)->getProcurementProducts();
             $productList = [];
             foreach ($products as $product) {
                 $productList[] = [
@@ -309,5 +322,36 @@ class ProductController extends BaseController
         }
 
         return [];
+    }
+
+    /**
+     * @return array
+     * @throws \PHPExcel_Exception
+     * @throws \PHPExcel_Reader_Exception
+     */
+    public function actionSaveWarehouseAccounting()
+    {
+        \Yii::$app->response->format = Response::FORMAT_JSON;
+
+        $products = \app\models\Repository\Product::find()->all();
+        $productList = [];
+        foreach ($products as $product) {
+            $productList[] = [
+                'id'        => $product->id,
+                'name'      => $product->name,
+                'available' => $product->count,
+            ];
+        }
+
+        $excel = new Excel();
+        $excel->loadFromTemplate('files/templates/base.xlsx');
+        $excel->prepare($productList, Excel::MODEL_PRODUCT, \Yii::$app->request->post());
+        $excel->save('warehouse_accounting.xlsx', 'temp');
+
+        \Yii::$app->response->format = Response::FORMAT_JSON;
+
+        return [
+            'url' => $excel->getUrl()
+        ];
     }
 }

@@ -31,6 +31,7 @@ return [
     'available'                                       => 'Доступно на складе',
     'need'                                            => 'Необходимо',
     'not_enough'                                      => 'Нужно докупить',
+    'Warehouse accounting'                                      => 'Склад учет',
     'Count / Weight / Liters'                         => 'Количество (кг/шт/л)',
 
     'count'        => 'Количество',

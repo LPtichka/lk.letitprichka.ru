@@ -85,7 +85,7 @@ class MenuCreated extends Event
 
                                 if ($menuDish['with_garnish']) {
                                     if (!empty($menu[$garnishKey])) {
-                                        foreach ($menu[$key] as $menuGarnish) {
+                                        foreach ($menu[$garnishKey] as $menuGarnish) {
                                             $garnishException = $menuGarnish['exception_list'];
                                             $gArray           = array_intersect($garnishException, $orderExceptionList);
                                             if (empty($gArray)) {

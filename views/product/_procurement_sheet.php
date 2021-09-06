@@ -16,7 +16,6 @@ Pjax::begin([
 ]); ?>
 <?php if (empty($products) && $success): ?>
     <div class="route-row">
-        <h1><?= $title; ?></h1>
         <title><?= $title; ?></title>
         <?php $form = ActiveForm::begin(); ?>
         <div>
