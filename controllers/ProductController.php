@@ -39,7 +39,7 @@ class ProductController extends BaseController
         if (\Yii::$app->request->post()) {
             $this->log('product-create', []);
             $product->load(\Yii::$app->request->post());
-            $product->count = (new Unit($product->unit))->convert($product->count);
+            $product->count = (new Unit($product->unit))->convert((float) $product->count);
             $isValidate = $product->validate();
 
             if ($isValidate && $product->save()) {

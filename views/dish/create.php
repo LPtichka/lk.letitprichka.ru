@@ -142,7 +142,7 @@ if ($model->id) {
                             <div class="col-sm-4"><label><?= \Yii::t('product', 'Name');?></label></div>
                             <div class="col-sm-1"><label><?= \Yii::t('product', 'Brutto');?></label></div>
                             <div class="col-sm-1"><label><?= \Yii::t('product', 'Netto');?></label></div>
-                            <div class="col-sm-1"><label><?= \Yii::t('product', 'Count');?></label></div>
+                            <div class="col-sm-1"><label><?= \Yii::t('product', 'Product count');?></label></div>
                             <div class="col-sm-5"><label></label></div>
                         </div>
                     </div>

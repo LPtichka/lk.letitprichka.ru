@@ -23,6 +23,7 @@ return [
     'Brutto'                                          => 'Брутто',
     'Brutto on 1 kg'                                  => 'Брутто на 1кг',
     'Count'                                           => 'Количество',
+    'Product count'                                   => 'Выход',
     'Unit'                                            => 'Единица измерения',
     'Procurement sheet'                               => 'Лист закупок',
     'Available'                                       => 'Доступное количетсво',
@@ -31,7 +32,7 @@ return [
     'available'                                       => 'Доступно на складе',
     'need'                                            => 'Необходимо',
     'not_enough'                                      => 'Нужно докупить',
-    'Warehouse accounting'                                      => 'Склад учет',
+    'Warehouse accounting'                            => 'Склад учет',
     'Count / Weight / Liters'                         => 'Количество (кг/шт/л)',
 
     'count'        => 'Количество',
