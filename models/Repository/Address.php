@@ -136,8 +136,8 @@ class Address extends \yii\db\ActiveRecord
 
             $address->full_address = $data->value;
             $address->city         = $data->getData()->cityWithType;
-            $address->street       = $data->getData()->streetWithType;
-            $address->house        = $data->getData()->house;
+            $address->street       = $data->getData()->streetWithType ?? '-';
+            $address->house        = $data->getData()->house ?? '-';
             $address->housing      = $data->getData()->block;
             //$address->flat         = $data->getData()->flat;
             $address->postcode     = $data->getData()->postalCode;
