@@ -60,6 +60,7 @@ class Dish extends Repository
         }
 
         $query->andFilterWhere(['id' => $this->id]);
+        $query->andFilterWhere(['status' => \app\models\Repository\Dish::STATUS_ACTIVE]);
         $query->andFilterWhere(['type' => $this->type]);
         $query->andFilterWhere(['like', 'name', $this->name]);
 

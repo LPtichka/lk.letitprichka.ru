@@ -12,6 +12,7 @@ use yii\helpers\ArrayHelper;
  * This is the model class for table "{{%dish}}".
  *
  * @property int $id
+ * @property int $status
  * @property int $type
  * @property string $name
  * @property boolean $is_breakfast
@@ -51,6 +52,9 @@ class Dish extends \yii\db\ActiveRecord
     const INGESTION_TYPE_LUNCH_NAME = 'lunch';
     const INGESTION_TYPE_SUPPER_NAME = 'supper';
 
+    const STATUS_ACTIVE = 1;
+    const STATUS_DISABLED = 0;
+
     private $weightUnitDefault = Weight::UNIT_KG;
 
     /**
@@ -77,6 +81,7 @@ class Dish extends \yii\db\ActiveRecord
     {
         return [
             'name'              => \Yii::t('dish', 'Name'),
+            'status'            => \Yii::t('dish', 'Status'),
             'is_breakfast'      => \Yii::t('dish', 'Breakfast'),
             'is_dinner'         => \Yii::t('dish', 'Dinner'),
             'is_lunch'          => \Yii::t('dish', 'Lunch'),
@@ -102,7 +107,7 @@ class Dish extends \yii\db\ActiveRecord
         return [
             [['is_breakfast', 'is_dinner', 'is_lunch', 'is_supper', 'with_garnish'], 'boolean'],
             [['storage_condition', 'process', 'name', 'comment'], 'string'],
-            [['type'], 'integer'],
+            [['type', 'status'], 'integer'],
             [['fat', 'weight', 'proteins', 'kkal', 'carbohydrates'], 'number'],
             [['name', 'process', 'fat', 'weight', 'proteins', 'kkal', 'carbohydrates'], 'required'],
             [['with_garnish'], 'validateGarnish'],

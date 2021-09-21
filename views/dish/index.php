@@ -29,9 +29,9 @@ $this->params['breadcrumbs'][] = $this->title;
                 'class'     => 'btn btn-sm btn-default export',
                 'data-href' => Url::to(['dish/export']),
             ]) ?>
-            <?= Html::submitButton('<i class="material-icons">v</i>', [
+            <?= Html::submitButton('<i class="material-icons">delete</i>', [
                 'class'      => 'btn btn-sm btn-danger delete',
-                'data-title' => \Yii::t('payment', 'Do you really want to delete selected dishes?'),
+                'data-title' => \Yii::t('dish', 'Do you really want to delete selected dishes?'),
                 'data-href'  => Url::to(['dish/delete']),
             ]) ?>
             <div class="hidden"><?= Html::fileInput('import', '', [

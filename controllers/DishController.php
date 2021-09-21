@@ -186,16 +186,17 @@ class DishController extends BaseController
         $this->log('dish-delete', $dishIds);
         $transaction = \Yii::$app->db->beginTransaction();
         foreach ($dishIds as $id) {
-            $errorMessage = \Yii::t('order', 'Dish was not deleted');
+            $errorMessage = \Yii::t('dish', 'Dish was not deleted');
             try {
-                $isDelete = DishProduct::deleteAll(['dish_id' => $id])
-                    && \app\models\Repository\Dish::deleteAll(['id' => $id]);
+                $dish = \app\models\Repository\Dish::findOne($id);
+                $dish->status = 0;
+                $isSuccess = $dish->validate() && $dish->save();
             } catch (IntegrityException $e) {
                 $this->log('dish-delete-fail', [$e->getMessage()]);
                 $errorMessage = \Yii::t('dish', 'You can not delete dish before you dont delete products');
             }
 
-            if (empty($isDelete)) {
+            if (!$isSuccess) {
                 $transaction->rollBack();
                 $this->log('dish-delete-fail', $dishIds);
                 return [
