@@ -25,11 +25,11 @@ $this->params['breadcrumbs'][] = $this->title;
             ) ?>
         </div>
         <div class="pull-right">
-            <?= Html::button('<i class="fa fa-download"></i> ', [
+            <?= Html::button('<i class="material-icons">cloud_download</i> ', [
                 'class'     => 'btn btn-sm btn-default export',
                 'data-href' => Url::to(['user/export']),
             ]) ?>
-            <?= Html::submitButton('<i class="fa fa-times"></i> ', [
+            <?= Html::submitButton('<i class="material-icons">delete</i> ', [
                 'class'      => 'btn btn-sm btn-danger delete',
                 'data-title' => \Yii::t('user', 'Do you really want to delete selected users?'),
                 'data-href'  => Url::to(['user/delete']),

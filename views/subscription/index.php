@@ -26,7 +26,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 ) ?>
             </div>
             <div class="pull-right">
-                <?= Html::submitButton('<i class="fa fa-times"></i> ', [
+                <?= Html::submitButton('<i class="material-icons">delete</i> ', [
                     'class'      => 'btn btn-sm btn-danger delete',
                     'data-title' => \Yii::t('subscription', 'Do you really want to delete selected subscriptions?'),
                     'data-href'  => Url::to(['subscription/delete']),
