@@ -586,7 +586,7 @@ class Excel
             $lastID = 15;
             if ($sheet->getSubscriptionId() === Subscription::NO_SUBSCRIPTION_ID) {
                 foreach ($sheet->getDishes() as $dish) {
-                    $this->setDishToCustomerSheet($objWorksheet, $dish, $lastID, '');
+                    $this->setDishToCustomerSheet($objWorksheet, $dish->dish, $lastID, '');
                     $lastID++;
                 }
             } else {
@@ -603,6 +603,10 @@ class Excel
                         if ($dish->ingestion_type == Ingestion::DINNER) {
                             $this->setDishToCustomerSheet($objWorksheet, $dish->dish, $lastID, Dish::INGESTION_TYPE_DINNER_NAME);
                             $lastID++;
+                            if ($dish->garnish_id) {
+                                $this->setDishToCustomerSheet($objWorksheet, $dish->garnish, $lastID, Dish::INGESTION_TYPE_DINNER_NAME);
+                                $lastID++;
+                            }
                         }
                     }
                 }
@@ -619,6 +623,10 @@ class Excel
                         if ($dish->ingestion_type == Ingestion::SUPPER) {
                             $this->setDishToCustomerSheet($objWorksheet, $dish->dish, $lastID, Dish::INGESTION_TYPE_SUPPER_NAME);
                             $lastID++;
+                            if ($dish->garnish_id) {
+                                $this->setDishToCustomerSheet($objWorksheet, $dish->garnish, $lastID, Dish::INGESTION_TYPE_SUPPER_NAME);
+                                $lastID++;
+                            }
                         }
                     }
                 }

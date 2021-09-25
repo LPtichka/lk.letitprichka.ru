@@ -405,9 +405,17 @@ class CustomerSheet extends Model
         $result = 0;
 
         foreach ($this->dishes as $dish) {
-            $result += $dish->dish->kkal;
+            if (($dish->ingestion_type == Dish::INGESTION_TYPE_BREAKFAST && $this->hasBreakfast)
+                || ($dish->ingestion_type == Dish::INGESTION_TYPE_DINNER && $this->hasDinner)
+                || ($dish->ingestion_type == Dish::INGESTION_TYPE_LUNCH && $this->hasLunch)
+                || ($dish->ingestion_type == Dish::INGESTION_TYPE_SUPPER && $this->hasSupper)
+            ) {
+                $result += $dish->dish->kkal;
+                if ($dish->with_garnish) {
+                    $result += $dish->garnish->kkal;
+                }
+            }
         }
-
         return $result;
     }
 
@@ -419,7 +427,16 @@ class CustomerSheet extends Model
         $result = 0;
 
         foreach ($this->dishes as $dish) {
-            $result += $dish->dish->fat;
+            if (($dish->ingestion_type == Dish::INGESTION_TYPE_BREAKFAST && $this->hasBreakfast)
+                || ($dish->ingestion_type == Dish::INGESTION_TYPE_DINNER && $this->hasDinner)
+                || ($dish->ingestion_type == Dish::INGESTION_TYPE_LUNCH && $this->hasLunch)
+                || ($dish->ingestion_type == Dish::INGESTION_TYPE_SUPPER && $this->hasSupper)
+            ) {
+                $result += $dish->dish->fat;
+                if ($dish->with_garnish) {
+                    $result += $dish->garnish->fat;
+                }
+            }
         }
 
         return $result;
@@ -433,7 +450,16 @@ class CustomerSheet extends Model
         $result = 0;
 
         foreach ($this->dishes as $dish) {
-            $result += $dish->dish->proteins;
+            if (($dish->ingestion_type == Dish::INGESTION_TYPE_BREAKFAST && $this->hasBreakfast)
+                || ($dish->ingestion_type == Dish::INGESTION_TYPE_DINNER && $this->hasDinner)
+                || ($dish->ingestion_type == Dish::INGESTION_TYPE_LUNCH && $this->hasLunch)
+                || ($dish->ingestion_type == Dish::INGESTION_TYPE_SUPPER && $this->hasSupper)
+            ) {
+                $result += $dish->dish->proteins;
+                if ($dish->with_garnish) {
+                    $result += $dish->garnish->proteins;
+                }
+            }
         }
 
         return $result;
@@ -447,7 +473,16 @@ class CustomerSheet extends Model
         $result = 0;
 
         foreach ($this->dishes as $dish) {
-            $result += $dish->dish->carbohydrates;
+            if (($dish->ingestion_type == Dish::INGESTION_TYPE_BREAKFAST && $this->hasBreakfast)
+                || ($dish->ingestion_type == Dish::INGESTION_TYPE_DINNER && $this->hasDinner)
+                || ($dish->ingestion_type == Dish::INGESTION_TYPE_LUNCH && $this->hasLunch)
+                || ($dish->ingestion_type == Dish::INGESTION_TYPE_SUPPER && $this->hasSupper)
+            ) {
+                $result += $dish->dish->carbohydrates;
+                if ($dish->with_garnish) {
+                    $result += $dish->garnish->carbohydrates;
+                }
+            }
         }
 
         return $result;
