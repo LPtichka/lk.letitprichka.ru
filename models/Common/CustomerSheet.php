@@ -507,6 +507,7 @@ class CustomerSheet extends Model
 
             $dayBalance = OrderSchedule::find()
                 ->where(['status' => OrderSchedule::EDITABLE_STATUSES])
+                ->andWhere(['>', 'date', $orderSchedule->date])
                 ->andWhere(['order_id' => $order->id])
                 ->count();
 
@@ -520,7 +521,7 @@ class CustomerSheet extends Model
                 ->setSubscriptionId($order->subscription_id)
                 ->setSubscriptionName($order->subscription->name)
                 ->setSubscriptionDayCount($order->count)
-                ->setSubscriptionDayBalance($dayBalance - 1)
+                ->setSubscriptionDayBalance((int) $dayBalance)
                 ->setExceptions($order->getExceptionNames())
                 ->setDeliveryTime($orderSchedule->interval)
                 ->setDate($orderSchedule->date)
