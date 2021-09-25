@@ -56,7 +56,7 @@ if ($model->id) {
                                     'type'          => DatePicker::TYPE_RANGE,
                                     'separator'     => ' - ',
                                     'name2'         => 'menu_end_date',
-                                    'disabled'      => !empty($model->id),
+                                    'disabled'      => $is_created,
                                     'value2'        => $model->menu_end_date,
                                     'pluginOptions' => [
                                         'autoclose'     => true,
@@ -88,7 +88,8 @@ if ($model->id) {
     </div>
 
 <?php
-if ($model->id) {
+//var_dump($model->id);
+if ($is_created) {
     \Yii::$app->view->registerJs(
         <<<JS
         window.getMenuOrders("$model->id");
@@ -97,7 +98,7 @@ JS
     );
 }
 $post = \Yii::$app->request->post();
-if (!$model->id && $post) {
+if (!$is_created) {
     $post = json_encode($post);
     \Yii::$app->view->registerJs(
         <<<JS

@@ -57,6 +57,7 @@ class MenuController extends BaseController
                     );
                     return $this->redirect(['menu/view', 'id' => $menu->id]);
                 } else {
+                    \Yii::$app->session->addFlash('danger', implode('<br />', $menu->getFirstErrors()));
                     $this->log(
                         'menu-create-fail',
                         [
@@ -70,10 +71,12 @@ class MenuController extends BaseController
                 \Yii::$app->session->addFlash('danger', implode('<br />', $menu->getFirstErrors()));
             }
         }
+
         return $this->render(
             '/menu/create',
             [
                 'model'        => $menu,
+                'is_created'        => false,
                 'disabledDays' => $disabledDays,
                 'title'        => \Yii::t('product', 'Menu create'),
             ]
@@ -124,6 +127,7 @@ class MenuController extends BaseController
         return $this->render(
             '/menu/create',
             [
+                'is_created'        => true,
                 'model'        => $menu,
                 'disabledDays' => $disabledDays,
                 'title'        => \Yii::t('menu', 'Menu update'),
@@ -365,7 +369,7 @@ class MenuController extends BaseController
         $this->log('menu-delete-success', $menuIds);
         return [
             'status' => true,
-            'title'  => \Yii::t('dish', 'Menu was successful deleted')
+            'title'  => \Yii::t('menu', 'Menu was successful deleted')
         ];
     }
 }

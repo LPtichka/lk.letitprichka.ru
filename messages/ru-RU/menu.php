@@ -27,6 +27,8 @@ return [
     'Old menu can not be deleted'                          => 'Нельзя удалить меню которое уже применено, к нему могут быть закреплены заказы.',
     'An error occurred in the cleaning time'               => 'Произошла ошибка во время очистки блюд заказов.',
     'You have not made a menu for this day'                => 'На эту дату меню не составленно.',
+    'Menu was successful deleted'                           => 'Меню было удалено.',
+    'You have not completed all the dishes on the menu'                           => 'Вы не заполнили все блюда в меню',
 
     'Empty dish id for dinner'    => 'Не выбранно блюдо для обеда, проверьте форму.',
     'Empty dish id for supper'    => 'Не выбранно блюдо для ужина, проверьте форму.',

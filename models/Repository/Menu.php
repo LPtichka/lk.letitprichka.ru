@@ -75,7 +75,7 @@ class Menu extends \yii\db\ActiveRecord
     public function getDisabledDays(): array
     {
         $startDate = date('Y-m-d', time() - 86400 * 50);
-        $menu      = Menu::find()->where(['>', 'menu_start_date', $startDate])->asArray()->all();
+        $menu      = Menu::find()->where(['>', 'menu_start_date', $startDate])->andWhere(['status' => Menu::STATUS_ACTIVE])->asArray()->all();
 
         $result = [];
         foreach ($menu as $menuItem) {
@@ -186,6 +186,7 @@ class Menu extends \yii\db\ActiveRecord
         foreach ($this->dishes as $dish) {
             $dish->menu_id = $this->id;
             if (!$dish->validate() || !$dish->save()) {
+                $this->addError('dish_id', \Yii::t('menu','You have not completed all the dishes on the menu'));
                 $transaction->rollBack();
                 return false;
             }
