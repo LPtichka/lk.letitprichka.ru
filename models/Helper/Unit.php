@@ -27,10 +27,10 @@ class Unit
     }
 
     /**
-     * @param int $count
+     * @param float $count
      * @return string
      */
-    public function format(int $count): string
+    public function format(float $count): string
     {
         switch ($this->unit) {
             case self::UNIT_LITER:
@@ -44,9 +44,9 @@ class Unit
 
     /**
      * @param float $count
-     * @return int
+     * @return float
      */
-    public function convert(float $count): int
+    public function convert(float $count): float
     {
         switch ($this->unit) {
             case self::UNIT_LITER:
@@ -55,7 +55,7 @@ class Unit
             case self::UNIT_COUNT:
             case self::UNIT_GR:
             case self::UNIT_MILLI_LITER:
-                return (int) $count;
+                return $count;
         }
     }
 

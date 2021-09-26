@@ -14,9 +14,9 @@ use yii\behaviors\TimestampBehavior;
  * @property string $name
  * @property int $product_id
  * @property int $dish_id
- * @property int $brutto
- * @property int $netto
- * @property int $weight
+ * @property float $brutto
+ * @property float $netto
+ * @property float $weight
  * @property int $created_at
  * @property int $updated_at
  *
