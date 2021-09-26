@@ -55,6 +55,7 @@ return [
     'Subscription'                          => 'Подписка',
     'Subscription ID'                       => 'Вариант подписки',
     'Total'                                 => 'Итого',
+    'Total cost'                            => 'Итоговая стоимость (оставьте пустым для авто расчета)',
     'Without soup'                          => 'Убрать супы из рациона',
     'Without subscription'                  => 'Без подписки',
     'No exceptions'                         => 'Нет исключений',

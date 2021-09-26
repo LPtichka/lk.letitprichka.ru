@@ -39,6 +39,13 @@ use kartik\date\DatePicker;
                             ]
                         ); ?>
                     </div>
+                    <div class="col-sm-12 col-md-3">
+                        <?= $form->field($model, 'total')->textInput(
+                            [
+                                'class' => 'form-control input-sm'
+                            ]
+                        ); ?>
+                    </div>
                     <div class="col-sm-12 col-md-3 hidden" id="comment-block">
                         <?= $form->field($model, 'comment')->textInput(
                             [

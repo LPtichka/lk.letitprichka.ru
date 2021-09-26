@@ -116,6 +116,7 @@ class Order extends \yii\db\ActiveRecord
             'subscription_id'   => \Yii::t('order', 'Subscription ID'),
             'franchise_id'      => \Yii::t('order', 'Franchise ID'),
             'count'             => \Yii::t('order', 'Count'),
+            'total'             => \Yii::t('order', 'Total cost'),
             'cutlery'           => \Yii::t('order', 'Cutlery'),
             'without_soup'      => \Yii::t('order', 'Without soup'),
             'scheduleFirstDate' => \Yii::t('order', 'Schedule first date'),
@@ -280,6 +281,11 @@ class Order extends \yii\db\ActiveRecord
         /** @var \app\models\User $user */
         $user = \Yii::$app->user->identity;
         $this->franchise_id = $user->franchise_id ?? 1;
+
+        $isTotalSetted = null;
+        if ($this->total) {
+            $isTotalSetted = $this->total;
+        }
         if (!empty($this->subscription_id) && $this->subscription_id != Subscription::NO_SUBSCRIPTION_ID) {
             $subscriptionDiscount = SubscriptionDiscount::find()
                                                         ->where(['subscription_id' => $this->subscription_id])
@@ -301,6 +307,10 @@ class Order extends \yii\db\ActiveRecord
 
             if ($this->individual_menu) {
                 $this->total = $this->total + $settings['individual_menu_price'] * $this->count;
+            }
+
+            if ($isTotalSetted) {
+                $this->total = $isTotalSetted;
             }
         }
 
