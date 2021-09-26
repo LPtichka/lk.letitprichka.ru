@@ -270,9 +270,9 @@ class Order extends \yii\db\ActiveRecord
     {
         if ($this->id) {
             $this->isUpdated = true;
-        } else {
-            $this->load($data);
         }
+
+        $this->load($data);
 
         $this->scenario = self::SCENARIO_DESKTOP;
         $settings = ArrayHelper::map(Settings::find()->asArray()->all(), 'name', 'value');
@@ -436,6 +436,7 @@ class Order extends \yii\db\ActiveRecord
         $this->subscription_id = $data['subscription_id'];
         $this->comment = $data['comment'];
         $this->count = $data['count'];
+        $totalFromRequest = $data['total'];
 
         $this->cutlery = $data['cutlery'] == 'true';
         $this->without_soup = $data['without_soup'] == 'true';
@@ -464,6 +465,10 @@ class Order extends \yii\db\ActiveRecord
             if ($this->individual_menu) {
                 $this->total = $this->total + $settings['individual_menu_price'] * $this->count;
             }
+        }
+
+        if (!empty($totalFromRequest)) {
+            $this->total = $totalFromRequest;
         }
 
         if (!empty($data['scheduleFirstDate'])) {
@@ -722,6 +727,7 @@ class Order extends \yii\db\ActiveRecord
             $transaction->rollBack();
             return false;
         }
+
         if (!$this->save(!$this->isUpdated)) {
             \Yii::error(Helper::DEVIDER . json_encode($this->getFirstErrors()));
             $transaction->rollBack();

@@ -20,4 +20,9 @@ return [
     'Subscription type was saved successfully'             => 'Подписка была успешно сохранена',
     'Update subscription'                                  => 'Обновление подписки',
     'Subscriptions'                                        => 'Подписки',
+    'One day'                                              => 'Один день',
+    '5 day'                                                => '5 дней',
+    '10 day'                                               => '10 дней',
+    '20 day'                                               => '20 дней',
+    'Unique'                                               => 'Уникальное количество',
 ];

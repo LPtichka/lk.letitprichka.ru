@@ -144,6 +144,21 @@ $subscription_id = Html::getInputId($model, "subscription_id");
     </span>
 </div>
 <br/>
+<div>
+    <span class="">
+    <?= Html::textInput(
+        'total',
+        $model->total,
+        [
+            'class' => 'form-control input-sm',
+            'style' => 'width: 100%;',
+        ]
+    ); ?>
+    </span>
+    <?= \Yii::t('order', 'Total<br /> cost'); ?>
+
+</div>
+<br/>
 <div class="text-right">
     <a href="#" class="btn btn-default" id="cancel-primary-order-params"><?php echo \Yii::t('app', 'Cancel');?></a>
     <a href="#" class="btn btn-primary" id="save-primary-order-params"><?php echo \Yii::t('app', 'Save');?></a>

@@ -180,11 +180,6 @@ class OrderController extends BaseController
             $order->setAddress(new Address());
         }
 
-//        if (empty($order->exceptions)) {
-//            $order->setExceptions([new Exception()]);
-//        }
-
-
         $paymentTypes = ArrayHelper::map(
             PaymentType::find()->select(['id', 'name'])->where(['status' => PaymentType::STATUS_ACTIVE])->asArray(
             )->all(),
@@ -310,7 +305,6 @@ class OrderController extends BaseController
         $customer = Customer::findOne($customerId);
         if ($customer) {
             foreach ($customer->exceptions as $key => $exception) {
-
                 $excp = new OrderException();
                 $excp->exception_id = $exception->id;
 
@@ -573,7 +567,7 @@ class OrderController extends BaseController
 
         if (!$dates) {
             return [
-                'success' => false,
+                'success'      => false,
                 'errorMessage' => \Yii::t('order', 'No orders for chousen date'),
             ];
         }
@@ -602,7 +596,7 @@ class OrderController extends BaseController
 
             \Yii::error($e->getMessage());
             return [
-                'success' => false,
+                'success'      => false,
                 'errorMessage' => \Yii::t('order', 'Error in this orders') . implode(', ', $order_ids),
             ];
         }
@@ -750,6 +744,14 @@ class OrderController extends BaseController
             'name'
         );
 
+        $paymentTypes = ArrayHelper::map(
+            PaymentType::find()->select(['id', 'name'])->where(['status' => PaymentType::STATUS_ACTIVE])->asArray(
+            )->all(),
+            'id',
+            'name'
+        );
+
+
         $subscriptionCounts = (new Subscription())->getCounts();
 
         return $this->renderAjax(
@@ -758,6 +760,7 @@ class OrderController extends BaseController
                 'model'              => \app\models\Repository\Order::findOne($orderId),
                 'subscriptions'      => $subscriptions,
                 'subscriptionCounts' => $subscriptionCounts,
+                'paymentTypes'       => $paymentTypes,
                 'intervals'          => (new OrderSchedule())->getIntervals(),
             ]
         );
@@ -784,7 +787,7 @@ class OrderController extends BaseController
             return $this->renderAjax(
                 '/order/_order_info_block',
                 [
-                    'model' => $order,
+                    'model'   => $order,
                     'isError' => true,
                 ]
             );

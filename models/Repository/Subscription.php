@@ -179,11 +179,11 @@ class Subscription extends \yii\db\ActiveRecord
     public function getCounts(): array
     {
         return [
-            1 => \Yii::t('Subscription', 'One day'),
-            5 => \Yii::t('Subscription', '5 day'),
-            10 => \Yii::t('Subscription', '10 day'),
-            20 => \Yii::t('Subscription', '20 day'),
-            999 => \Yii::t('Subscription', 'Unique'),
+            1 => \Yii::t('subscription', 'One day'),
+            5 => \Yii::t('subscription', '5 day'),
+            10 => \Yii::t('subscription', '10 day'),
+            20 => \Yii::t('subscription', '20 day'),
+            999 => \Yii::t('subscription', 'Unique'),
         ];
     }
 }

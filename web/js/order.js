@@ -197,6 +197,7 @@ body.delegate('#save-primary-order-params', 'click', function (e) {
             without_soup: $('[name="without_soup"]').is(':checked'),
             individual_menu: $('[name="individual_menu"]').is(':checked'),
             cutlery: $('[name="cutlery"]').is(':checked'),
+            total: $('[name="total"]').val(),
         },
         success: function (html) {
             $('#ordering-info .order-info').remove();
