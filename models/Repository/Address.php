@@ -173,4 +173,36 @@ class Address extends \yii\db\ActiveRecord
     {
         return $this->hasOne(Customer::class, ['id' => 'customer_id']);
     }
+
+    public function getFullAddress(): string
+    {
+        $address = '';
+        if (!empty($this->city) && $this->city != 'null') {
+            $address .= $this->city;
+            if (!empty($this->street)) {
+                $address .= ', '. $this->street;
+            }
+        } else {
+            $address .= $this->full_address;
+        }
+
+        if (!empty($this->flat)) {
+            $address .= ', кв. '. $this->flat;
+        }
+        if (!empty($this->floor)) {
+            $address .= ', этаж '. $this->floor;
+        }
+        if (!empty($this->porch)) {
+            $address .= ', подъезд '. $this->porch;
+        }
+        if (!empty($this->description)) {
+            $address .= ', доп. информация '. $this->description;
+        }
+
+        if (!empty($this->full_address) && !empty($this->city)) {
+            $address .= ', ('. $this->full_address . ')';
+        }
+
+        return $address;
+    }
 }

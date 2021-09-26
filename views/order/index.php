@@ -10,10 +10,12 @@ use yii\widgets\Pjax;
 $this->title = \Yii::t('order', 'Orders');
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<?php Pjax::begin([
-    'id'              => 'order-form',
-    'formSelector'    => '#order-form form',
-]); ?>
+<?php
+Pjax::begin([
+                'id'           => 'order-form',
+                'formSelector' => '#order-form form',
+                'timeout'      => 2000,
+            ]); ?>
 <div class="box">
     <div class="box-header with-border">
         <div class="pull-left">
@@ -24,15 +26,18 @@ $this->params['breadcrumbs'][] = $this->title;
             ) ?>
         </div>
         <div class="pull-right">
-            <?= Html::a('<span>Маршрутный лист</span>',
+            <?= Html::a(
+                '<span>Маршрутный лист</span>',
                 ['order/get-route-sheet'],
                 [
                     'class'       => 'btn btn-sm btn-default',
                     'data-href'   => Url::to(['order/get-route-sheet']),
                     'data-toggle' => 'modal',
                     'data-target' => '#modal',
-                ]); ?>
-            <?= Html::button('<i class="material-icons">cloud_upload</i>', ['class' => 'btn btn-sm btn-default import']) ?>
+                ]
+            ); ?>
+            <?= Html::button('<i class="material-icons">cloud_upload</i>', ['class' => 'btn btn-sm btn-default import']
+            ) ?>
             <?= Html::button('<i class="material-icons">cloud_download</i>', [
                 'class'     => 'btn btn-sm btn-default export',
                 'data-href' => Url::to(['product/export']),
@@ -49,27 +54,31 @@ $this->params['breadcrumbs'][] = $this->title;
             </div>
         </div>
     </div>
-    <?php Pjax::begin(); ?>
-    <?php echo GridView::widget([
-        'tableOptions' => [
-            'data-resizable-columns-id' => 'order',
-            'class'                     => 'table'
-        ],
-        'dataProvider' => $dataProvider,
-        'rowOptions'   => function ($model, $key, $index, $grid){
-            $class = $model->isNotEquipped() ? 'error' : 'success';
-            return [
-                'key'   => $key,
-                'index' => $index,
-                'class' => $class
-            ];
-        },
-        'filterModel'  => $searchModel,
-        'columns'      => (new \app\models\Search\Order())->getSearchColumns($searchModel),
-    ]);
+    <?php
+    Pjax::begin(); ?>
+    <?php
+    echo GridView::widget([
+                              'tableOptions' => [
+                                  'data-resizable-columns-id' => 'order',
+                                  'class'                     => 'table'
+                              ],
+                              'dataProvider' => $dataProvider,
+                              'rowOptions'   => function ($model, $key, $index, $grid) {
+                                  $class = $model->isNotEquipped() ? 'error' : 'success';
+                                  return [
+                                      'key'   => $key,
+                                      'index' => $index,
+                                      'class' => $class
+                                  ];
+                              },
+                              'filterModel'  => $searchModel,
+                              'columns'      => (new \app\models\Search\Order())->getSearchColumns($searchModel),
+                          ]);
     ?>
-    <?php Pjax::end(); ?>
+    <?php
+    Pjax::end(); ?>
 </div>
-<?php Pjax::end(); ?>
+<?php
+Pjax::end(); ?>
 
 

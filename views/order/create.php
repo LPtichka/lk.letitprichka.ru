@@ -313,8 +313,6 @@ if ($model->id) {
 
                         </div>
                         <hr/>
-                        <?php
-                        if ($model->isEditable()): ?>
                             <div class="row">
                                 <div class="col-sm-12 exception-buttons">
                                     <a href="javascript:void(0)"
@@ -330,8 +328,6 @@ if ($model->id) {
                                     </a>
                                 </div>
                             </div>
-                        <?php
-                        endif; ?>
                     </div>
                 </div>
             </div>

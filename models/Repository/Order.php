@@ -857,11 +857,12 @@ class Order extends \yii\db\ActiveRecord
         foreach ($orderSchedules as $schedule) {
             $route = new Route(
                 $schedule->order->customer->fio,
-                $schedule->address->full_address . " " . $schedule->comment,
+                $schedule->address->getFullAddress(),
                 $schedule->order->customer->phone
             );
             $route->setInterval($schedule->interval);
             !empty($schedule->comment) && $route->setComment($schedule->comment);
+            !empty($schedule->order->comment) && empty($route->getComment()) && $route->setComment($schedule->order->comment);
 
             if ($schedule->order->isNeedPaymentForDate($schedule->date)) {
                 $payment = $schedule->order->total;
