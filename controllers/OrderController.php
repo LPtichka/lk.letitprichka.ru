@@ -551,7 +551,7 @@ class OrderController extends BaseController
         }
 
         return $this->renderAjax(
-            '/order/_get_user_sheet',
+            '/order/_get_customer_sheet',
             [
                 'routes' => $userSheet,
                 'dates'  => $dates,
@@ -572,7 +572,10 @@ class OrderController extends BaseController
                               ->all();
 
         if (!$dates) {
-            return ['success' => false];
+            return [
+                'success' => false,
+                'errorMessage' => \Yii::t('order', 'No orders for chousen date'),
+            ];
         }
 
         $customerSheets = (new CustomerSheet())->getAllCustomerSheets($dates);
@@ -582,7 +585,7 @@ class OrderController extends BaseController
             $excel->loadFromTemplate('files/templates/base_with_logo.xlsx');
             $excel->prepare($customerSheets, Excel::MODEL_CUSTOMER_SHEET, \Yii::$app->request->post());
             $excel->save('client_report.xlsx', 'temp');
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             $schedules = OrderSchedule::find()
                                       ->leftJoin(
                                           'order_schedule_dish',
@@ -600,7 +603,7 @@ class OrderController extends BaseController
             \Yii::error($e->getMessage());
             return [
                 'success' => false,
-                'orders'  => $order_ids
+                'errorMessage' => \Yii::t('order', 'Error in this orders') . implode(', ', $order_ids),
             ];
         }
 

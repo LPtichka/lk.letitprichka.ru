@@ -102,15 +102,15 @@ Pjax::begin([
                 } else {
                     let orderText = '';
                     
-                    if (data.orders) {
-                        for(let i = 0; i < data.orders.length; i++) {
-                            orderText += '<a href="/order/'+data.orders[i]+'/view">Заказ номер №'+data.orders[i]+'</a><br />';
-                        }
-                    }
+                    // if (data.orders) {
+                    //     for(let i = 0; i < data.orders.length; i++) {
+                    //         orderText += '<a href="/order/'+data.orders[i]+'/view">Заказ номер №'+data.orders[i]+'</a><br />';
+                    //     }
+                    // }
                     
                     swal({
                         title: "Ошибка",
-                        text: 'Возможно не все блюда назначены заказу в выбранный вами день. Попробуйте проверить содержание следующих заказов.<br />' + orderText,
+                        text: data.errorMessage,
                         type: 'error',
                         html: true,
                         showCancelButton: true,

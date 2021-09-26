@@ -68,6 +68,8 @@ return [
     'Choose date'                                                                                                                               => 'Выберите дату выгрузки',
     'completed'                                                                                                                                 => 'Завершить',
     'deffered'                                                                                                                                  => 'Отложить',
+    'Error in this orders'                                                                                                                      => 'Возможно не все блюда назначены заказу в выбранный вами день. Попробуйте проверить содержание следующих заказов.<br />',
+    'No orders for chousen date'                                                                                                                => 'Нет заказов на выбранную дату',
     'Do you want change status to processed'                                                                                                    => 'Вы дейстивтельно хотите перевести&nbsp;заказ в статус "В&nbsp;работе"?',
     'Order schedule saved successfully'                                                                                                         => 'Вы успешно изменили дату доставки',
     'Do you want change status to canceled'                                                                                                     => 'Вы дейстивтельно хотите отменить&nbsp;заказ?',

@@ -122,7 +122,7 @@ $this->title = \Yii::t('order', 'Order inventory');
         <hr/>
         <?php foreach ($dishes as $dish): ?>
             <div class="row">
-                <div class="col-sm-4"><?= $dish->name ?? $dish->dish->name; ?></div>
+                <div class="col-sm-4"><?= $dish->name; ?></div>
                 <div class="col-sm-2"><?= $dish->count; ?> шт.</div>
                 <div class="col-sm-2"><?= \Yii::$app->formatter->asCurrency($dish->price ?? 0, 'RUB'); ?></div>
                 <div class="col-sm-2"><?= \Yii::$app->formatter->asCurrency($dish->price * $dish->count ?? 0, 'RUB'); ?></div>
