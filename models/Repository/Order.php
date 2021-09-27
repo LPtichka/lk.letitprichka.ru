@@ -759,67 +759,68 @@ class Order extends \yii\db\ActiveRecord
         }
 
         if ($this->isUpdated) {
-            $orderSchedules = OrderSchedule::find()->where(['order_id' => $this->id])->asArray()->all();
-            foreach ($orderSchedules as $scheduleItem) {
-                OrderScheduleDish::deleteAll(['order_schedule_id' => $scheduleItem['id']]);
-                OrderSchedule::deleteAll(['id' => $scheduleItem['id']]);
-            }
+//            $orderSchedules = OrderSchedule::find()->where(['order_id' => $this->id])->asArray()->all();
+//            foreach ($orderSchedules as $scheduleItem) {
+//                OrderScheduleDish::deleteAll(['order_schedule_id' => $scheduleItem['id']]);
+//                OrderSchedule::deleteAll(['id' => $scheduleItem['id']]);
+//            }
         }
 
-        foreach ($this->schedules as $schedule) {
-            $schedule->order_id = $this->id;
-            empty($schedule->address_id) && $schedule->address_id = $this->address_id;
-            if (!$schedule->validate() || !$schedule->save()) {
-                $transaction->rollBack();
-                return false;
-            }
-            if ($this->subscription_id == Subscription::NO_SUBSCRIPTION_ID && !empty($schedule->dishes)) {
-                foreach ($schedule->dishes as $dish) {
-                    $dish->order_schedule_id = $schedule->id;
-                    if (!$dish->validate() || !$dish->save()) {
-                        \Yii::error(Helper::DEVIDER . json_encode($dish->getFirstErrors()));
-                        $transaction->rollBack();
-                        return false;
-                    }
+        if (!$this->isUpdated) {
+            foreach ($this->schedules as $schedule) {
+                $schedule->order_id = $this->id;
+                empty($schedule->address_id) && $schedule->address_id = $this->address_id;
+                if (!$schedule->validate() || !$schedule->save()) {
+                    $transaction->rollBack();
+                    return false;
                 }
-            } else {
-                // TODO тут нужно сохранить сразу ORDER_SCHEDULE_DISH
-                foreach (OrderSchedule::INGESTION_CONTENT as $key => $ingestion) {
-                    if (empty($ingestion)) {
-                        $orderScheduleDish = new OrderScheduleDish();
-
-                        $orderScheduleDish->order_schedule_id = $schedule->id;
-                        $orderScheduleDish->ingestion_type = $key;
-                        $orderScheduleDish->dish_id = null;
-
-                        if (!$orderScheduleDish->validate() || !$orderScheduleDish->save()) {
-                            \Yii::error(Helper::DEVIDER . json_encode($orderScheduleDish->getFirstErrors()));
+                if ($this->subscription_id == Subscription::NO_SUBSCRIPTION_ID && !empty($schedule->dishes)) {
+                    foreach ($schedule->dishes as $dish) {
+                        $dish->order_schedule_id = $schedule->id;
+                        if (!$dish->validate() || !$dish->save()) {
+                            \Yii::error(Helper::DEVIDER . json_encode($dish->getFirstErrors()));
                             $transaction->rollBack();
                             return false;
                         }
-                    } else {
-                        foreach ($ingestion as $iType) {
-                            if ($this->without_soup && $iType == Dish::TYPE_FIRST) {
-                                continue;
-                            }
-
+                    }
+                } else {
+                    // TODO тут нужно сохранить сразу ORDER_SCHEDULE_DISH
+                    foreach (OrderSchedule::INGESTION_CONTENT as $key => $ingestion) {
+                        if (empty($ingestion)) {
                             $orderScheduleDish = new OrderScheduleDish();
+
                             $orderScheduleDish->order_schedule_id = $schedule->id;
                             $orderScheduleDish->ingestion_type = $key;
                             $orderScheduleDish->dish_id = null;
-                            $orderScheduleDish->type = $iType;
 
                             if (!$orderScheduleDish->validate() || !$orderScheduleDish->save()) {
                                 \Yii::error(Helper::DEVIDER . json_encode($orderScheduleDish->getFirstErrors()));
                                 $transaction->rollBack();
                                 return false;
                             }
+                        } else {
+                            foreach ($ingestion as $iType) {
+                                if ($this->without_soup && $iType == Dish::TYPE_FIRST) {
+                                    continue;
+                                }
+
+                                $orderScheduleDish = new OrderScheduleDish();
+                                $orderScheduleDish->order_schedule_id = $schedule->id;
+                                $orderScheduleDish->ingestion_type = $key;
+                                $orderScheduleDish->dish_id = null;
+                                $orderScheduleDish->type = $iType;
+
+                                if (!$orderScheduleDish->validate() || !$orderScheduleDish->save()) {
+                                    \Yii::error(Helper::DEVIDER . json_encode($orderScheduleDish->getFirstErrors()));
+                                    $transaction->rollBack();
+                                    return false;
+                                }
+                            }
                         }
                     }
                 }
             }
         }
-
         $transaction->commit();
         $event->prepareEvent();
         \Yii::$app->trigger(\app\events\OrderCreated::EVENT_ORDER_CREATED, $event);
@@ -868,7 +869,9 @@ class Order extends \yii\db\ActiveRecord
             );
             $route->setInterval($schedule->interval);
             !empty($schedule->comment) && $route->setComment($schedule->comment);
-            !empty($schedule->order->comment) && empty($route->getComment()) && $route->setComment($schedule->order->comment);
+            !empty($schedule->order->comment) && empty($route->getComment()) && $route->setComment(
+                $schedule->order->comment
+            );
 
             if ($schedule->order->isNeedPaymentForDate($schedule->date)) {
                 $payment = $schedule->order->total;

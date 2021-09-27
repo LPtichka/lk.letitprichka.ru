@@ -46,7 +46,7 @@ class OrderController extends BaseController
     }
 
     /**
-     * @return string
+     * @return Response|string
      * @throws \yii\db\Exception
      */
     public function actionCreate()
@@ -142,7 +142,7 @@ class OrderController extends BaseController
 
     /**
      * @param int $id
-     * @return string
+     * @return string|Response
      * @throws \yii\db\Exception
      */
     public function actionView(int $id)
@@ -162,6 +162,7 @@ class OrderController extends BaseController
                 );
                 return $this->redirect(['order/view', 'id' => $order->id]);
             } else {
+                \Yii::$app->session->addFlash('danger', \Yii::t('order', 'Order was not saved successfully'));
                 $this->log(
                     'order-update-fail',
                     [
