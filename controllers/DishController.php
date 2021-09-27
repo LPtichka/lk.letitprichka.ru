@@ -335,9 +335,21 @@ class DishController extends BaseController
      */
     public function actionGetRow(int $counter)
     {
-        return $this->renderAjax('/order/_product', [
+        return $this->renderAjax('/order/_order_product', [
             'dish' => new \app\models\Repository\OrderScheduleDish(),
             'i'    => ++$counter,
         ]);
+    }
+
+    public function actionGetInfo(int $id)
+    {
+        \Yii::$app->response->format = Response::FORMAT_JSON;
+        $dish = \app\models\Repository\Dish::findOne($id);
+
+        return [
+            'id' => $dish->id,
+            'name' => $dish->name,
+            'price' => $dish->price ?? 0,
+        ];
     }
 }

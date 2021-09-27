@@ -703,6 +703,11 @@ class OrderController extends BaseController
                 'scheduleId'     => $scheduleId,
                 'isSubscription' => $order->subscription_id !== Subscription::NO_SUBSCRIPTION_ID,
                 'dishes'         => $dishes,
+                'allDishes'      => ArrayHelper::map(
+                    Dish::find()->where(['status' => Dish::STATUS_ACTIVE])->asArray()->all(),
+                    'id',
+                    'name'
+                ),
             ]
         );
     }

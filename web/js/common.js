@@ -333,6 +333,29 @@ body.delegate('.dish-for-menu', 'change', function (e) {
     });
 });
 
+window.changePriceBlockForDish = function (row) {
+    row.find('.change-no-subscription-dish').removeClass('hidden');
+    var dishId = row.find('select').val();
+    var count = row.find('[name="count"]').val();
+
+    $.ajax({
+        url: "/dish/"+dishId+"/get-info",
+        type: 'GET',
+        success: function (data) {
+            console.log(data);
+            row.find('[name="price"]').val(data.price);
+            row.find('[name="total"]').val(data.price * count);
+        },
+        error: function (error) {
+            swal({
+                confirmButtonColor: colorDanger,
+                title: "Ошибка",
+                text: error.responseJSON.message
+            });
+        }
+    });
+};
+
 window.parseXML = function (url) {
     let formData = new FormData();
 

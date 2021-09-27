@@ -6,7 +6,7 @@ use yii\helpers\Url;
 use yii\web\JsExpression;
 
 /* @var $this yii\web\View */
-/* @var $dish app\models\Repository\OrderScheduleDishr */
+/* @var $dish app\models\Repository\OrderScheduleDish */
 /* @var $disabledEdit boolean */
 /* @var $i integer */
 /* @var $form yii\widgets\ActiveForm */
@@ -52,7 +52,7 @@ $selectExp = new JsExpression('function(event, ui) {
     }');
 ?>
 
-<div class="dish-row" id="group-<?= $i ?>">
+<div class="product-row" id="group-<?= $i ?>">
     <div class="row">
         <div class="col-sm-6">
             <?= AutoComplete::widget([

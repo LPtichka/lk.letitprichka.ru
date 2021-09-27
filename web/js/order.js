@@ -105,7 +105,7 @@ window.getMenuBlock = function ($orderId) {
 let orderId = document.getElementById('order-container').getAttribute('data-order-id');
 let dishBlock = $('.dish-block');
 let subscriptionBlock = $('.subscription-block');
-let noSubscriptionId = 8;
+let noSubscriptionId = 6;
 if (orderId) {
     // window.getAddressBlock();
     // window.getExceptionBlock();
@@ -327,6 +327,7 @@ body.delegate('[name="Order[address_id]"]', 'change', function () {
 body.delegate('[name="Order[subscription_id]"]', 'change', function () {
     if ($(this).val() == noSubscriptionId) {
         subscriptionBlock.hide();
+        $('[name="Order[subscriptionCount]').val(1);
         dishBlock.show();
     } else {
         subscriptionBlock.show();

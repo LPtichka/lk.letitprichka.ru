@@ -25,7 +25,9 @@ if ($model->id) {
     <div class="row" id="order-container" data-order-id="<?php
     echo $model->id; ?>">
         <?php
-        $form = ActiveForm::begin(); ?>
+        $form = ActiveForm::begin([
+                                      'enableClientValidation' => false,
+                                  ]); ?>
         <div class="col-sm-12">
 
             <div class="row">
@@ -270,7 +272,8 @@ if ($model->id) {
                                 <a href="#" id="edit-order-primary-params"><i class="material-icons">mode_edit</i></a>
                             </span>
                         <h2 class="box-title">
-                            <?php echo \Yii::t('order', 'Order details'); ?>
+                            <?php
+                            echo \Yii::t('order', 'Order details'); ?>
                         </h2>
                     </div>
                     <div class="box-body order-info">
@@ -294,7 +297,8 @@ if ($model->id) {
                             if (empty($model->exceptions)): ?>
                                 <p class="empty-text"><?php
                                     echo \Yii::t('order', 'No exceptions'); ?></p>
-                            <?php else: ?>
+                            <?php
+                            else: ?>
                                 <?php
                                 foreach ($model->orderExceptions as $i => $exception): ?>
                                     <?= $this->render(
@@ -313,21 +317,21 @@ if ($model->id) {
 
                         </div>
                         <hr/>
-                            <div class="row">
-                                <div class="col-sm-12 exception-buttons">
-                                    <a href="javascript:void(0)"
-                                       id="add-exception"
-                                       data-href="<?php
-                                       echo Url::to(['order/add-exception']); ?>"
-                                       data-block="exceptions"
-                                       data-row="exception-row"
-                                       class="btn btn-sm btn-primary pull-right add-row-action"
-                                    >
-                                        <i class="material-icons">add</i>
-                                        <?= Yii::t('order', 'Add exception') ?>
-                                    </a>
-                                </div>
+                        <div class="row">
+                            <div class="col-sm-12 exception-buttons">
+                                <a href="javascript:void(0)"
+                                   id="add-exception"
+                                   data-href="<?php
+                                   echo Url::to(['order/add-exception']); ?>"
+                                   data-block="exceptions"
+                                   data-row="exception-row"
+                                   class="btn btn-sm btn-primary pull-right add-row-action"
+                                >
+                                    <i class="material-icons">add</i>
+                                    <?= Yii::t('order', 'Add exception') ?>
+                                </a>
                             </div>
+                        </div>
                     </div>
                 </div>
             </div>

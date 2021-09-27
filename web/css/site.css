@@ -864,3 +864,7 @@ select.form-control.input-sm {
 #menu-orders .box-body .table thead {
     display: none;
 }
+
+.change-no-subscription-dish {
+    padding: 6px 15px;
+}

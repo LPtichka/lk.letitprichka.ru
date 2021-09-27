@@ -15,6 +15,7 @@ use yii\helpers\ArrayHelper;
  * @property int $status
  * @property int $type
  * @property string $name
+ * @property int $price
  * @property boolean $is_breakfast
  * @property boolean $is_dinner
  * @property boolean $is_lunch
@@ -90,6 +91,7 @@ class Dish extends \yii\db\ActiveRecord
             'fat'               => \Yii::t('dish', 'Fat'),
             'kkal'              => \Yii::t('dish', 'Kkal'),
             'type'              => \Yii::t('dish', 'Type'),
+            'price'             => \Yii::t('dish', 'Price'),
             'weight'            => \Yii::t('dish', 'Weight'),
             'proteins'          => \Yii::t('dish', 'Proteins'),
             'carbohydrates'     => \Yii::t('dish', 'Carbohydrates'),
@@ -107,7 +109,7 @@ class Dish extends \yii\db\ActiveRecord
         return [
             [['is_breakfast', 'is_dinner', 'is_lunch', 'is_supper', 'with_garnish'], 'boolean'],
             [['storage_condition', 'process', 'name', 'comment'], 'string'],
-            [['type', 'status'], 'integer'],
+            [['type', 'status', 'price'], 'integer'],
             [['fat', 'weight', 'proteins', 'kkal', 'carbohydrates'], 'number'],
             [['name', 'process', 'fat', 'weight', 'proteins', 'kkal', 'carbohydrates'], 'required'],
             [['with_garnish'], 'validateGarnish'],
@@ -131,7 +133,13 @@ class Dish extends \yii\db\ActiveRecord
     public function validateGarnish($attribute, $params)
     {
         if (!empty($this->$attribute) && $this->type == self::TYPE_GARNISH) {
-            $this->addError($attribute, \Yii::t('dish', 'The type of dish cannot be a side dish and have an option with a side dish'));
+            $this->addError(
+                $attribute,
+                \Yii::t(
+                    'dish',
+                    'The type of dish cannot be a side dish and have an option with a side dish'
+                )
+            );
         }
     }
 
@@ -151,8 +159,8 @@ class Dish extends \yii\db\ActiveRecord
     public function getTypes(): array
     {
         return [
-            self::TYPE_FIRST  => \Yii::t('dish', 'First course'),
-            self::TYPE_SECOND => \Yii::t('dish', 'Second course'),
+            self::TYPE_FIRST   => \Yii::t('dish', 'First course'),
+            self::TYPE_SECOND  => \Yii::t('dish', 'Second course'),
 //            self::TYPE_SALAD   => \Yii::t('dish', 'Salad'),
 //            self::TYPE_DESERT  => \Yii::t('dish', 'Dessert'),
             self::TYPE_GARNISH => \Yii::t('dish', 'Garnish'),
@@ -230,20 +238,20 @@ class Dish extends \yii\db\ActiveRecord
         $dish = new Dish();
         $dish->setWeightUnitDefault($weightUnit);
 
-        $dish->name              = $data['name'];
+        $dish->name = $data['name'];
         $dish->storage_condition = $data['storage_conditions'];
-        $dish->process           = $data['process'];
-        $dish->kkal              = $data['kkal'];
-        $dish->proteins          = $data['proteins'];
-        $dish->fat               = $data['fat'];
-        $dish->carbohydrates     = $data['carbohydrates'];
-        $dish->is_breakfast      = $data['is_breakfast'];
-        $dish->is_dinner         = $data['is_dinner'];
-        $dish->is_lunch          = $data['is_lunch'];
-        $dish->is_supper         = $data['is_supper'];
-        $dish->type              = $data['type'];
-        $dish->with_garnish      = $data['with_garnish'];
-        $dish->weight            = $data['weight'];
+        $dish->process = $data['process'];
+        $dish->kkal = $data['kkal'];
+        $dish->proteins = $data['proteins'];
+        $dish->fat = $data['fat'];
+        $dish->carbohydrates = $data['carbohydrates'];
+        $dish->is_breakfast = $data['is_breakfast'];
+        $dish->is_dinner = $data['is_dinner'];
+        $dish->is_lunch = $data['is_lunch'];
+        $dish->is_supper = $data['is_supper'];
+        $dish->type = $data['type'];
+        $dish->with_garnish = $data['with_garnish'];
+        $dish->weight = $data['weight'];
 
         $products = [];
         foreach ($data['products'] as $product) {
@@ -254,16 +262,16 @@ class Dish extends \yii\db\ActiveRecord
                 $productRepository = Product::find()->where(['name' => trim($product['name'])])->one();
             }
 
-            $dishProduct->product_id     = $productRepository->id ?? null;
-            $dishProduct->name           = $product['name'];
-            $dishProduct->brutto         = $product['brutto'];
-            $dishProduct->netto          = $product['netto'];
-            $dishProduct->weight         = $product['weight'];
+            $dishProduct->product_id = $productRepository->id ?? null;
+            $dishProduct->name = $product['name'];
+            $dishProduct->brutto = $product['brutto'];
+            $dishProduct->netto = $product['netto'];
+            $dishProduct->weight = $product['weight'];
             $dishProduct->brutto_on_1_kg = $product['weight_on_1_kg'];
-            $dishProduct->kkal           = $product['kkal'];
-            $dishProduct->proteins       = $product['proteins'];
-            $dishProduct->fat            = $product['fat'];
-            $dishProduct->carbohydrates  = $product['carbohydrates'];
+            $dishProduct->kkal = $product['kkal'];
+            $dishProduct->proteins = $product['proteins'];
+            $dishProduct->fat = $product['fat'];
+            $dishProduct->carbohydrates = $product['carbohydrates'];
 
             $products[] = $dishProduct;
         }

@@ -118,14 +118,69 @@ $this->title = \Yii::t('order', 'Order inventory');
             <div class="col-sm-2"><label><?= \Yii::t('dish', 'Quantity'); ?></label></div>
             <div class="col-sm-2"><label><?= \Yii::t('dish', 'Price'); ?></label></div>
             <div class="col-sm-2"><label><?= \Yii::t('dish', 'Total'); ?></label></div>
+            <div class="col-sm-2"></div>
         </div>
         <hr/>
         <?php foreach ($dishes as $dish): ?>
-            <div class="row">
-                <div class="col-sm-4"><?= $dish->name; ?></div>
+            <div class="row dish-row">
+                <div class="col-sm-4"><?= $dish->dish ? $dish->dish->name : ''; ?></div>
                 <div class="col-sm-2"><?= $dish->count; ?> шт.</div>
                 <div class="col-sm-2"><?= \Yii::$app->formatter->asCurrency($dish->price ?? 0, 'RUB'); ?></div>
                 <div class="col-sm-2"><?= \Yii::$app->formatter->asCurrency($dish->price * $dish->count ?? 0, 'RUB'); ?></div>
+                <?php if (false):?><div class="col-sm-4">
+                    <?= Html::dropDownList(
+                        'dish_id',
+                        $dish->dish->id ?? null,
+                        ['' => \Yii::t('app', 'Choose')] + $allDishes,
+                        [
+                            'class' => 'subscription-schedule-interval-select form-control input-sm',
+                            'id'    => 'order-scheduleinterval',
+                        ]
+                    ); ?>
+                    <?= $dish->name; ?>
+                </div>
+                <div class="col-sm-2">
+                    <?= Html::textInput(
+                        'count',
+                        $dish->count ?? 1,
+                        [
+                            'class' => 'form-control input-sm',
+                            'style' => 'width: 100%;',
+                            'type' => 'number',
+                        ]
+                    ); ?>
+                    </span>
+                </div>
+                <div class="col-sm-2">
+                    <?= Html::textInput(
+                        'price',
+                        $dish->price ?? 0,
+                        [
+                            'class' => 'form-control input-sm',
+                            'style' => 'width: 100%;'
+                        ]
+                    ); ?>
+                </div>
+                <div class="col-sm-2">
+                    <?= Html::textInput(
+                        'total',
+                        $dish->price * $dish->count,
+                        [
+                            'class' => 'form-control input-sm',
+                            'style' => 'width: 100%;'
+                        ]
+                    ); ?>
+                </div>
+                <div class="col-sm-2">
+                    <?= Html::a(
+                        '<span>' . \Yii::t('app', 'Save') . '</span>',
+                        '#',
+                        [
+                            'class'        => 'btn btn-sm btn-primary hidden change-no-subscription-dish',
+                        ]
+                    ) ?>
+                </div>
+                <?php endif;?>
             </div>
             <hr/>
         <?php endforeach; ?>
@@ -146,3 +201,19 @@ $this->title = \Yii::t('order', 'Order inventory');
         </div>
     </div>
 </div>
+<?php
+\Yii::$app->view->registerJs(<<<JS
+    body.delegate('.dish-row select', 'change', function (e) {
+        var row = $(this).parent().parent();
+        window.changePriceBlockForDish(row);
+    });
+    body.delegate('.dish-row input', 'keyup', function (e) {
+        var row = $(this).parent().parent();
+        var count = row.find('[name="count"]').val();
+        var price = row.find('[name="price"]').val();
+        
+        row.find('[name="total"]').val(price * count);
+        row.find('.change-no-subscription-dish').removeClass('hidden');
+    });
+JS
+);

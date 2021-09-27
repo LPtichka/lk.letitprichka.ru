@@ -46,6 +46,14 @@ use kartik\date\DatePicker;
                             ]
                         ); ?>
                     </div>
+                    <div class="col-sm-12 col-md-3 select-block">
+                        <?= $form->field($model, 'scheduleInterval')->dropDownList(
+                            ['' => \Yii::t('app', 'Choose')] + $intervals,
+                            [
+                                'class' => 'form-control input-sm'
+                            ]
+                        ) ?>
+                    </div>
                     <div class="col-sm-12 col-md-3 hidden" id="comment-block">
                         <?= $form->field($model, 'comment')->textInput(
                             [
@@ -57,14 +65,6 @@ use kartik\date\DatePicker;
             </div>
             <div class="col-md-12 col-sm-12">
                 <div class="row subscription-block">
-                    <div class="col-sm-12 col-md-3 select-block">
-                        <?= $form->field($model, 'scheduleInterval')->dropDownList(
-                            ['' => \Yii::t('app', 'Choose')] + $intervals,
-                            [
-                                'class' => 'form-control input-sm'
-                            ]
-                        ) ?>
-                    </div>
                     <div class="col-sm-12 col-md-3 select-block">
                         <?= $form->field($model, 'subscriptionCount')->dropDownList(
                             ['' => \Yii::t('app', 'Choose')] + $subscriptionCounts,
@@ -80,7 +80,32 @@ use kartik\date\DatePicker;
                             ]
                         ) ?>
                     </div>
+                    <div class="col-md-12 col-sm-12">
+                        <div class="row">
+                            <div class="col-sm-12 col-md-3">
+                                <?= $form->field($model, 'without_soup')->checkbox(); ?>
+                            </div>
+                            <div class="col-sm-12 col-md-3">
+                                <?= $form->field($model, 'cutlery')->checkbox(
+                                    [
+                                        'value'   => 1,
+                                        'checked' => $model->cutlery || !$model->id
+                                    ]
+                                ); ?>
+                            </div>
+                            <div class="col-sm-12 col-md-3">
+                                <?= $form->field($model, 'individual_menu')->checkbox(
+                                    [
+                                        'value'   => 1,
+                                        'checked' => $model->individual_menu
+                                    ]
+                                ); ?>
+                            </div>
+                        </div>
+                    </div>
                 </div>
+            </div>
+            <div class="col-md-12 col-sm-12">
                 <div class="row dish-block">
                     <div class="col-sm-12">
                         <div class="row">
@@ -110,29 +135,6 @@ use kartik\date\DatePicker;
                         <a href="javascript:void(0)" id="add-dish" class="btn btn-sm btn-primary">
                             <i class="material-icons">add</i><?= \Yii::t('dish', 'Add product') ?>
                         </a>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-12 col-sm-12">
-                <div class="row">
-                    <div class="col-sm-12 col-md-3">
-                        <?= $form->field($model, 'without_soup')->checkbox(); ?>
-                    </div>
-                    <div class="col-sm-12 col-md-3">
-                        <?= $form->field($model, 'cutlery')->checkbox(
-                            [
-                                'value'   => 1,
-                                'checked' => $model->cutlery || !$model->id
-                            ]
-                        ); ?>
-                    </div>
-                    <div class="col-sm-12 col-md-3">
-                        <?= $form->field($model, 'individual_menu')->checkbox(
-                            [
-                                'value'   => 1,
-                                'checked' => $model->individual_menu
-                            ]
-                        ); ?>
                     </div>
                 </div>
             </div>
