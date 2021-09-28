@@ -30,7 +30,7 @@ class ProductController extends BaseController
     }
 
     /**
-     * @return string
+     * @return string|Response
      */
     public function actionCreate()
     {
@@ -63,7 +63,7 @@ class ProductController extends BaseController
 
     /**
      * @param int $id
-     * @return string
+     * @return string|Response
      * @throws NotFoundHttpException
      */
     public function actionView(int $id)
@@ -83,7 +83,7 @@ class ProductController extends BaseController
             if ($isValidate && $product->save()) {
                 $this->log('product-edit-success', $product->getAttributes());
                 \Yii::$app->session->addFlash('success', \Yii::t('product', 'Product was saved successfully'));
-                return $this->redirect(['product/index']);
+                return $this->redirect(\Yii::$app->request->referrer);
             } else {
                 $this->log('product-edit-fail', [
                     'name' => $product->name,
@@ -144,7 +144,7 @@ class ProductController extends BaseController
      * @return array
      * @throws \yii\db\Exception
      */
-    public function actionDelete()
+    public function actionDelete(): array
     {
         $productIDs = \Yii::$app->request->post('selection');
         \Yii::$app->response->format = Response::FORMAT_JSON;
