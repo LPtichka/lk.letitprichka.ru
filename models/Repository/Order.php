@@ -820,6 +820,10 @@ class Order extends \yii\db\ActiveRecord
                     }
                 }
             }
+        } else {
+            foreach ($this->schedules as $schedule) {
+                $schedule->save(false);
+            }
         }
         $transaction->commit();
         $event->prepareEvent();

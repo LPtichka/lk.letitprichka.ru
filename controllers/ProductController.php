@@ -152,8 +152,10 @@ class ProductController extends BaseController
         $this->log('product-delete', $productIDs);
         $transaction = \Yii::$app->db->beginTransaction();
         foreach ($productIDs as $id) {
-            $isDelete = \app\models\Repository\Product::deleteAll(['id' => $id]);
-            if (!$isDelete) {
+            $product = \app\models\Repository\Product::findOne($id);
+            $product->status = \app\models\Repository\Product::STATUS_DISABLED;
+            $isUpdated = $product->validate() && $product->save();
+            if (!$isUpdated) {
                 $transaction->rollBack();
                 $this->log('product-delete-fail', ['id' => (string)$id]);
                 return [
@@ -215,6 +217,7 @@ class ProductController extends BaseController
         $products = \app\models\Repository\Product::find()
                                                   ->select(['*', $element . ' as value'])
                                                   ->andFilterWhere(['like', $element, $term])
+                                                  ->andFilterWhere(['status', \app\models\Repository\Product::STATUS_ACTIVE])
                                                   ->orderBy(['count' => SORT_DESC])
                                                   ->asArray()
                                                   ->all();

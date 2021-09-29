@@ -11,6 +11,7 @@ use yii\helpers\ArrayHelper;
  * This is the model class for table "{{%payment_type}}".
  *
  * @property int $id
+ * @property int $status
  * @property string $name
  * @property int $count
  * @property string $unit
@@ -22,6 +23,9 @@ use yii\helpers\ArrayHelper;
  */
 class Product extends \yii\db\ActiveRecord
 {
+    const STATUS_ACTIVE = 10;
+    const STATUS_DISABLED = 0;
+
     /** @var int */
     private $needCount = 0;
 
@@ -59,7 +63,7 @@ class Product extends \yii\db\ActiveRecord
             [['count'], 'number'],
             [['name', 'unit'], 'string'],
             [['unit'], 'in', 'range' => [Unit::UNIT_COUNT, Unit::UNIT_KG, Unit::UNIT_LITER]],
-            [['exception_id'], 'integer'],
+            [['exception_id', 'status'], 'integer'],
             ['exception_id', 'exist', 'targetClass' => Exception::class, 'targetAttribute' => 'id'],
             [['name'], 'required'],
         ];

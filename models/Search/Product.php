@@ -44,6 +44,7 @@ class Product extends Repository
 
         $this->load($params);
 
+        $query->andFilterWhere(['status' => \app\models\Repository\Product::STATUS_ACTIVE]);
         $query->andFilterWhere(['id' => $this->id]);
         $query->andFilterWhere(['count' => $this->count]);
         $query->andFilterWhere(['exception_id' => $this->exception_id]);
