@@ -741,6 +741,10 @@ class OrderController extends BaseController
         ];
     }
 
+    /**
+     * @param int $orderId
+     * @return string
+     */
     public function actionGetEditPrimaryBlock(int $orderId)
     {
         $subscriptions = ArrayHelper::map(
@@ -900,6 +904,40 @@ class OrderController extends BaseController
         return [
             'message' => "Ошибка",
             'success' => false,
+        ];
+    }
+
+    /**
+     * @return array
+     */
+    public function actionDelete()
+    {
+        $orderIDs = \Yii::$app->request->post('selection');
+        \Yii::$app->response->format = Response::FORMAT_JSON;
+
+        $this->log('order-delete', $orderIDs);
+        $transaction = \Yii::$app->db->beginTransaction();
+        foreach ($orderIDs as $id) {
+            $order = \app\models\Repository\Order::findOne($id);
+            $order->status_id = \app\models\Repository\Order::STATUS_ARCHIVED;
+            $isUpdated = $order->validate() && $order->save();
+            if (!$isUpdated) {
+                $transaction->rollBack();
+                $this->log('order-delete-fail', ['id' => (string)$id]);
+                $this->log('order-delete-fail', ['error' => $order->getFirstErrors()]);
+                return [
+                    'status' => false,
+                    'title'  => \Yii::t('order', 'Order was not deleted')
+                ];
+            }
+        }
+
+        $transaction->commit();
+        $this->log('order-delete-success', $orderIDs);
+        return [
+            'status'      => true,
+            'title'       => \Yii::t('order', 'Orders was successful deleted'),
+            'description' => \Yii::t('order', 'Chosen orders was successful deleted'),
         ];
     }
 }

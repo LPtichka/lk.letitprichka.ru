@@ -4,6 +4,7 @@ namespace app\models\Common;
 use app\models\Helper\Phone;
 use app\models\Repository\Dish;
 use app\models\Repository\Franchise;
+use app\models\Repository\Order;
 use app\models\Repository\OrderSchedule;
 use app\models\Repository\OrderScheduleDish;
 use yii\base\Model;
@@ -496,6 +497,9 @@ class CustomerSheet extends Model
     {
         foreach ($orderSchedules as $orderSchedule) {
             $order = $orderSchedule->order;
+            if ($order->status_id == Order::STATUS_ARCHIVED) {
+                continue;
+            }
             $dishes         = [];
             $manufacturedAt = 0;
             foreach ($orderSchedule->dishes as $scheduleDish) {

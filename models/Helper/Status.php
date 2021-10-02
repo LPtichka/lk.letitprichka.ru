@@ -28,6 +28,7 @@ class Status
             Order::STATUS_DEFERRED => 'deffered',
             Order::STATUS_PROCESSED => 'processed',
             Order::STATUS_CANCELED => 'canceled',
+            Order::STATUS_ARCHIVED => 'deleted',
         ];
         return $statuses[$this->statusID];
     }

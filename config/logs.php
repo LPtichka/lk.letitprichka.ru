@@ -18,6 +18,15 @@ return [
         ],
         [
             'class'       => 'yii\log\FileTarget',
+            'logFile'     => '@runtime/logs/order.log',
+            'levels'      => ['info'],
+            'categories'  => ['order-*'],
+            'logVars'     => [],
+            'maxFileSize' => 102400,
+            'maxLogFiles' => 10,
+        ],
+        [
+            'class'       => 'yii\log\FileTarget',
             'logFile'     => '@runtime/logs/product.log',
             'levels'      => ['info'],
             'categories'  => ['product-*'],

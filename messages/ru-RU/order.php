@@ -63,6 +63,9 @@ return [
 
     'Order was not saved successfully'                                                                                                          => 'Не удалось сохранить заказ, проверите форму на наличие ошибок.',
     'Order was saved successfully'                                                                                                              => 'Заказ успешно сохранен.',
+    'Order was not deleted'                                                                                                                     => 'Заказ не был удален.',
+    'Orders was successful deleted'                                                                                                             => 'Заказы были удалены.',
+    'Chosen orders was successful deleted'                                                                                                      => 'Выбранные вами заказы были успешно удалены.',
     'canceled'                                                                                                                                  => 'Отменить',
     'processed'                                                                                                                                 => 'В работу',
     'new'                                                                                                                                       => 'Новый',
@@ -76,5 +79,6 @@ return [
     'Do you want change status to canceled'                                                                                                     => 'Вы дейстивтельно хотите отменить&nbsp;заказ?',
     'Order change status successfully'                                                                                                          => 'Заказ успешно переведен в статус.',
     'Defer the implementation of the order'                                                                                                     => 'Отложить выполнение заказа.',
+    'Do you really want to archive selected orders?'                                                                                            => 'Вы действительно хотите удалить выбранные заказы?',
     'Select from which date you want to transfer the order to which date. This means that the order will begin to be executed from a new date.' => 'Выберите с какой даты необходимо перенести заказ на какую дату. Это означает что заказ начнет выполняться с новой даты.',
 ];

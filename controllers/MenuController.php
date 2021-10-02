@@ -220,6 +220,7 @@ class MenuController extends BaseController
             ]
         );
 
+        $query->andWhere(['>', 'status_id', \app\models\Repository\Order::STATUS_ARCHIVED]);
         /** @var \app\models\User $user */
         $user = \Yii::$app->user->identity;
         if (!empty($user->franchise_id)) {

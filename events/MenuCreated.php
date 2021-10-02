@@ -64,6 +64,9 @@ class MenuCreated extends Event
         $transaction = \Yii::$app->db->beginTransaction();
         foreach ($orderSchedules as $schedule) {
             $order = Order::findOne($schedule['order_id']);
+            if ($order->status_id == Order::STATUS_ARCHIVED) {
+                continue;
+            }
             if ($order->subscription_id != Subscription::NO_SUBSCRIPTION_ID) {
                 foreach ($schedule['dishes'] as $dish) {
                     // Сгенерируем ключ меню

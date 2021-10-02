@@ -44,8 +44,8 @@ Pjax::begin([
             ]) ?>
             <?= Html::submitButton('<i class="material-icons">delete_forever</i>', [
                 'class'      => 'btn btn-sm btn-danger delete',
-                'data-title' => \Yii::t('order', 'Do you really want to delete selected products?'),
-                'data-href'  => Url::to(['product/delete']),
+                'data-title' => \Yii::t('order', 'Do you really want to archive selected orders?'),
+                'data-href'  => Url::to(['order/delete']),
             ]); ?>
             <div class="hidden">
                 <?= Html::fileInput('import', '', [

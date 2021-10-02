@@ -50,6 +50,7 @@ class Order extends \yii\db\ActiveRecord
     const STATUS_CANCELED = 3;
     const STATUS_COMPLETED = 4;
     const STATUS_DEFERRED = 5;
+    const STATUS_ARCHIVED = 0;
 
     const STATUSES = [
         self::STATUS_CANCELED,
@@ -57,6 +58,7 @@ class Order extends \yii\db\ActiveRecord
         self::STATUS_DEFERRED,
         self::STATUS_COMPLETED,
         self::STATUS_NEW,
+        self::STATUS_ARCHIVED,
     ];
 
     const STATUSES_NO_EDITABLE = [
@@ -64,6 +66,7 @@ class Order extends \yii\db\ActiveRecord
         self::STATUS_PROCESSED,
         self::STATUS_DEFERRED,
         self::STATUS_COMPLETED,
+        self::STATUS_ARCHIVED,
     ];
 
     const STATUS_MAP = [
