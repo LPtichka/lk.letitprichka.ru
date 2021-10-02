@@ -26,7 +26,6 @@ Pjax::begin([
                         ['product/save-warehouse-accounting'],
                         [
                             'class'        => 'btn btn-sm btn-warning save-warehouse-accounting',
-                            'data-menu-id' => $menuId,
                         ]
                     ) ?>
                 </div>

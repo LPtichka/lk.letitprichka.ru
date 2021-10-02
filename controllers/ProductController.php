@@ -336,7 +336,9 @@ class ProductController extends BaseController
     {
         \Yii::$app->response->format = Response::FORMAT_JSON;
 
-        $products = \app\models\Repository\Product::find()->all();
+        $products = \app\models\Repository\Product::find()
+                                                  ->andWhere(['>', 'status', \app\models\Repository\Product::STATUS_DISABLED])
+                                                  ->all();
         $productList = [];
         foreach ($products as $product) {
             $productList[] = [
