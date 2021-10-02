@@ -344,7 +344,7 @@ class ProductController extends BaseController
             $productList[] = [
                 'id'        => $product->id,
                 'name'      => $product->name,
-                'available' => $product->count,
+                'available' => (new Unit($product->unit))->format($product->count),
             ];
         }
 
