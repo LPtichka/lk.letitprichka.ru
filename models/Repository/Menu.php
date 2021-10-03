@@ -382,29 +382,32 @@ class Menu extends \yii\db\ActiveRecord
     }
 
     /**
+     * @param Menu[] $menus
      * @return Product[]
      */
-    public function getProcurementProducts(): array
+    public function getProcurementProducts(array $menus): array
     {
         $products = [];
 
-        $schedules = OrderSchedule::find()
-            ->where(['>=', 'date', $this->menu_start_date])
-            ->andWhere(['<=', 'date', $this->menu_end_date])
-            ->all();
+        foreach ($menus as $menu) {
+            $schedules = OrderSchedule::find()
+                                      ->where(['>=', 'date', $menu->menu_start_date])
+                                      ->andWhere(['<=', 'date', $menu->menu_end_date])
+                                      ->all();
 
-        foreach ($schedules as $schedule) {
-            foreach ($schedule->dishes as $scheduleDish) {
-                if (empty($scheduleDish->dish)) {
-                    throw new \LogicException('Имеются не назначенные блюда в меню для заказа '.$schedule->order->id.'.');
-                }
-                foreach ($scheduleDish->dish->dishProducts as $dishProduct) {
-                    if (empty($products[$dishProduct->product_id])) {
-                        $product = $dishProduct->product;
-                        $product->setNeedCount($dishProduct->weight);
-                        $products[$dishProduct->product_id] = $product;
-                    } else {
-                        $products[$dishProduct->product_id]->setNeedCount($dishProduct->weight);
+            foreach ($schedules as $schedule) {
+                foreach ($schedule->dishes as $scheduleDish) {
+                    if (empty($scheduleDish->dish)) {
+                        throw new \LogicException('Имеются не назначенные блюда в меню для заказа '.$schedule->order->id.'.');
+                    }
+                    foreach ($scheduleDish->dish->dishProducts as $dishProduct) {
+                        if (empty($products[$dishProduct->product_id])) {
+                            $product = $dishProduct->product;
+                            $product->setNeedCount($dishProduct->weight);
+                            $products[$dishProduct->product_id] = $product;
+                        } else {
+                            $products[$dishProduct->product_id]->setNeedCount($dishProduct->weight);
+                        }
                     }
                 }
             }

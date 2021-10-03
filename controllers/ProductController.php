@@ -39,7 +39,7 @@ class ProductController extends BaseController
         if (\Yii::$app->request->post()) {
             $this->log('product-create', []);
             $product->load(\Yii::$app->request->post());
-            $product->count = (new Unit($product->unit))->convert((float) $product->count);
+            $product->count = (new Unit($product->unit))->convert((float)$product->count);
             $isValidate = $product->validate();
 
             if ($isValidate && $product->save()) {
@@ -217,7 +217,9 @@ class ProductController extends BaseController
         $products = \app\models\Repository\Product::find()
                                                   ->select(['*', $element . ' as value'])
                                                   ->andFilterWhere(['like', $element, $term])
-                                                  ->andFilterWhere(['status', \app\models\Repository\Product::STATUS_ACTIVE])
+                                                  ->andFilterWhere(
+                                                      ['status', \app\models\Repository\Product::STATUS_ACTIVE]
+                                                  )
                                                   ->orderBy(['count' => SORT_DESC])
                                                   ->asArray()
                                                   ->all();
@@ -244,36 +246,36 @@ class ProductController extends BaseController
     public function actionGetProcurementSheet()
     {
         $products = [];
-        $menuList = [];
         $success = true;
 
-        $menus = Menu::find()->all();
-        foreach ($menus as $menu) {
-            $menuList[$menu->id] = sprintf(
-                '%s - %s',
-                date('d.m.Y', strtotime($menu->menu_start_date)),
-                date('d.m.Y', strtotime($menu->menu_end_date))
-            );
-        }
-
         if ($post = \Yii::$app->request->post()) {
-            $menuId = $post['menu_id'];
-            $chosenMenu = Menu::findOne($menuId);
-            try {
-                $products = $chosenMenu->getProcurementProducts();
-            } catch (\LogicException $e) {
+            $menuStart = $post['menu_start_date'];
+            $menuEnd = $post['menu_end_date'];
+            $chosenMenus = Menu::find()
+                               ->where(['>=', 'menu_start_date', $menuStart])
+                               ->andWhere(['<=', 'menu_end_date', $menuEnd])
+                               ->all();
+
+            if (empty($chosenMenus)) {
                 $success = false;
-                $error = $e->getMessage();
+                $error = \Yii::t('menu', 'No menu for chosen dates');
+            } else {
+                try {
+                    $products = (new Menu())->getProcurementProducts($chosenMenus);
+                } catch (\LogicException $e) {
+                    $success = false;
+                    $error = $e->getMessage();
+                }
             }
         }
 
         return $this->renderAjax('/product/_procurement_sheet', [
-            'success'  => $success,
-            'error'    => $error ?? null,
-            'menus'    => $menuList,
-            'menuId'   => \Yii::$app->request->post('menu_id', 0),
-            'title'    => \Yii::t('product', 'Procurement sheet'),
-            'products' => $products,
+            'success'   => $success,
+            'error'     => $error ?? null,
+            'menuStart' => \Yii::$app->request->post('menu_start_date', null),
+            'menuEnd'   => \Yii::$app->request->post('menu_end_date', null),
+            'title'     => \Yii::t('product', 'Procurement sheet'),
+            'products'  => $products,
         ]);
     }
 
@@ -297,18 +299,25 @@ class ProductController extends BaseController
      */
     public function actionSaveProcurementSheet()
     {
-        if ($menuId = \Yii::$app->request->post('menu_id')) {
-            \Yii::$app->response->format = Response::FORMAT_JSON;
+        \Yii::$app->response->format = Response::FORMAT_JSON;
+        if (\Yii::$app->request->post()) {
+            $start = \Yii::$app->request->post('start');
+            $end = \Yii::$app->request->post('end');
 
-            $products = Menu::findOne($menuId)->getProcurementProducts();
+            $chosenMenus = Menu::find()
+                               ->where(['>=', 'menu_start_date', $start])
+                               ->andWhere(['<=', 'menu_end_date', $end])
+                               ->all();
+
+            $products = (new Menu())->getProcurementProducts($chosenMenus);
             $productList = [];
             foreach ($products as $product) {
                 $productList[] = [
                     'id'         => $product->id,
                     'name'       => $product->name,
-                    'available'  => $product->count,
-                    'need'       => $product->getNeedCount(),
-                    'not_enough' => $product->getNotEnoughCount(),
+                    'available'  => (new Unit($product->unit))->format($product->count),
+                    'need'       => (new Unit($product->unit))->format($product->getNeedCount()),
+                    'not_enough' => (new Unit($product->unit))->format($product->getNotEnoughCount()),
                 ];
             }
 
@@ -337,7 +346,9 @@ class ProductController extends BaseController
         \Yii::$app->response->format = Response::FORMAT_JSON;
 
         $products = \app\models\Repository\Product::find()
-                                                  ->andWhere(['>', 'status', \app\models\Repository\Product::STATUS_DISABLED])
+                                                  ->andWhere(
+                                                      ['>', 'status', \app\models\Repository\Product::STATUS_DISABLED]
+                                                  )
                                                   ->all();
         $productList = [];
         foreach ($products as $product) {
