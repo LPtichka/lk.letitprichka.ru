@@ -538,7 +538,21 @@ class Excel
             $objWorksheet->getCellByColumnAndRow(2, 2)->setValue($sheet->getSubscriptionName());
 
             $objWorksheet->getCellByColumnAndRow(1, 3)->setValue('Исключения:');
-            $objWorksheet->getCellByColumnAndRow(2, 3)->setValue(!empty($sheet->getExceptions()) ? implode(', ', $sheet->getExceptions()) : 'Нет');
+            $exceptionText = '';
+            if (!empty($sheet->getExceptions())) {
+                $exceptionText = implode(', ', $sheet->getExceptions());
+            }
+            if ($sheet->getComment()) {
+                if ($exceptionText == '') {
+                    $exceptionText = $sheet->getComment();
+                } else {
+                    $exceptionText .= ", " . $sheet->getComment();
+                }
+            }
+            if (!$exceptionText) {
+                $exceptionText = 'Нет';
+            }
+            $objWorksheet->getCellByColumnAndRow(2, 3)->setValue($exceptionText);
 
             $objWorksheet->getCellByColumnAndRow(1, 4)->setValue('Адрес:');
             $objWorksheet->getCellByColumnAndRow(2, 4)->setValue($sheet->getAddress());

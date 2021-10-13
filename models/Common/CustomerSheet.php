@@ -54,6 +54,10 @@ class CustomerSheet extends Model
     private $hasLunch;
     /** @var bool */
     private $hasSupper;
+    /** @var bool */
+    private $hasSoup = true;
+    /** @var string */
+    private $comment;
 
     /**
      * @return string
@@ -347,7 +351,11 @@ class CustomerSheet extends Model
      */
     public function getSubscriptionName(): string
     {
-        return $this->subscriptionName;
+        $name = $this->subscriptionName;
+        if (!$this->hasSoup) {
+            $name .= " (-суп)";
+        }
+        return $name;
     }
 
     /**
@@ -530,14 +538,52 @@ class CustomerSheet extends Model
                 ->setDeliveryTime($orderSchedule->interval)
                 ->setDate($orderSchedule->date)
                 ->setDishes($dishes)
+                ->setHasSoup($order->without_soup == 0)
                 ->setHasBreakfast((bool) $order->subscription->has_breakfast)
                 ->setHasDinner((bool) $order->subscription->has_dinner)
                 ->setHasLunch((bool) $order->subscription->has_lunch)
-                ->setHasSupper((bool) $order->subscription->has_supper);
+                ->setHasSupper((bool) $order->subscription->has_supper)
+                ->setComment((string) $order->comment);
 
             $result[] = $customerSheet;
         }
 
         return $result;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isHasSoup(): bool
+    {
+        return $this->hasSoup;
+    }
+
+    /**
+     * @param bool $hasSoup
+     * @return CustomerSheet
+     */
+    public function setHasSoup(bool $hasSoup): CustomerSheet
+    {
+        $this->hasSoup = $hasSoup;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getComment(): string
+    {
+        return $this->comment;
+    }
+
+    /**
+     * @param string $comment
+     * @return CustomerSheet
+     */
+    public function setComment(string $comment): CustomerSheet
+    {
+        $this->comment = $comment;
+        return $this;
     }
 }
