@@ -531,7 +531,7 @@ class Excel
             $drawing = new \PhpOffice\PhpSpreadsheet\Worksheet\Drawing();
             $drawing->setName('Logo');
             $drawing->setDescription('Logo');
-            $drawing->setPath('/var/www/lk.letitprichka.ru/web/images/logo.png'); // put your path and image here
+            $drawing->setPath('/var/www/lk.letitptichka.ru/web/images/logo.png'); // put your path and image here
             $drawing->setCoordinates('H1');
             $drawing->setWidth('250');
             $drawing->setWorksheet($objWorksheet);
