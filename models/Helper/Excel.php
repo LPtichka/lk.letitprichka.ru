@@ -528,6 +528,14 @@ class Excel
                 $objWorksheet->getColumnDimensionByColumn($i)->setWidth($columnWidths[$i]);
             }
 
+            $drawing = new \PhpOffice\PhpSpreadsheet\Worksheet\Drawing();
+            $drawing->setName('Logo');
+            $drawing->setDescription('Logo');
+            $drawing->setPath('/var/www/lk.letitprichka.ru/web/images/logo.png'); // put your path and image here
+            $drawing->setCoordinates('H1');
+            $drawing->setWidth('250');
+            $drawing->setWorksheet($objWorksheet);
+
             $objWorksheet->setTitle($sheet->getFio());
 
             $objWorksheet->getCellByColumnAndRow(1, 1)->setValue('Покупатель:');
