@@ -99,6 +99,15 @@ return [
         ],
         [
             'class'       => 'yii\log\FileTarget',
+            'logFile'     => '@runtime/logs/menu.log',
+            'levels'      => ['info'],
+            'categories'  => ['menu-*'],
+            'logVars'     => [],
+            'maxFileSize' => 102400,
+            'maxLogFiles' => 10,
+        ],
+        [
+            'class'       => 'yii\log\FileTarget',
             'logFile'     => '@runtime/logs/debug.log',
             'levels'      => ['info'],
             'categories'  => ['debug-*'],

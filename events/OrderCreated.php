@@ -56,32 +56,64 @@ class OrderCreated extends Event
                     $dishException  = $mDish->dish->getExceptionList();
                     $crossException = array_intersect($dishException, $orderExceptionList);
 
-                    if (empty($crossException)) {
-                        foreach ($schedule->dishes as $dish) {
-                            if (!empty($dish->dish_id)) {
-                                continue;
-                            }
+                    if ($mDish->is_main) {
+                        if (empty($crossException)) {
+                            foreach ($schedule->dishes as $dish) {
+                                if (!empty($dish->dish_id)) {
+                                    continue;
+                                }
 
-                            if ($dish->ingestion_type == $mDish->ingestion_type
-                                && $dish->type == $mDish->dish_type
-                            ) {
-                                $dish->with_garnish = $mDish->dish->with_garnish;
-                                if ($dish->with_garnish) {
-                                    foreach ($menuDish as $gDish) {
-                                        if ($gDish->dish_type == Dish::TYPE_GARNISH) {
-                                            $garnishException  = $mDish->dish->getExceptionList();
-                                            $crossGarnishException = array_intersect($garnishException, $orderExceptionList);
-                                            if (empty($crossGarnishException)) {
-                                                $dish->garnish_id = $gDish->dish_id;
+                                if ($dish->ingestion_type == $mDish->ingestion_type
+                                    && $dish->type == $mDish->dish_type
+                                ) {
+                                    $dish->with_garnish = $mDish->dish->with_garnish;
+                                    if ($dish->with_garnish) {
+                                        foreach ($menuDish as $gDish) {
+                                            if ($gDish->dish_type == Dish::TYPE_GARNISH) {
+                                                $garnishException  = $mDish->dish->getExceptionList();
+                                                $crossGarnishException = array_intersect($garnishException, $orderExceptionList);
+                                                if (empty($crossGarnishException)) {
+                                                    $dish->garnish_id = $gDish->dish_id;
+                                                }
                                             }
                                         }
                                     }
+                                    $dish->dish_id = $mDish->dish_id;
+                                    $dish->save(false);
                                 }
-                                $dish->dish_id = $mDish->dish_id;
-                                $dish->save(false);
                             }
                         }
                     }
+
+                    if (!$mDish->is_main) {
+                        if (empty($crossException)) {
+                            foreach ($schedule->dishes as $dish) {
+                                if (!empty($dish->dish_id)) {
+                                    continue;
+                                }
+
+                                if ($dish->ingestion_type == $mDish->ingestion_type
+                                    && $dish->type == $mDish->dish_type
+                                ) {
+                                    $dish->with_garnish = $mDish->dish->with_garnish;
+                                    if ($dish->with_garnish) {
+                                        foreach ($menuDish as $gDish) {
+                                            if ($gDish->dish_type == Dish::TYPE_GARNISH) {
+                                                $garnishException  = $mDish->dish->getExceptionList();
+                                                $crossGarnishException = array_intersect($garnishException, $orderExceptionList);
+                                                if (empty($crossGarnishException)) {
+                                                    $dish->garnish_id = $gDish->dish_id;
+                                                }
+                                            }
+                                        }
+                                    }
+                                    $dish->dish_id = $mDish->dish_id;
+                                    $dish->save(false);
+                                }
+                            }
+                        }
+                    }
+
                 }
             }
         }

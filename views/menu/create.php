@@ -58,6 +58,9 @@ if ($model->id) {
                                     'name2'         => 'menu_end_date',
                                     'disabled'      => $is_created,
                                     'value2'        => $model->menu_end_date,
+                                    'options'       => [
+                                        'autocomplete' => 'off'
+                                    ],
                                     'pluginOptions' => [
                                         'autoclose'     => true,
                                         'datesDisabled' => $disabledDays,
@@ -66,8 +69,8 @@ if ($model->id) {
                                     ],
                                     'pluginEvents'  => [
                                         "changeDate" => "function(e) {
-                                    window.getMenuBlocks();
-                                }",
+                                            window.getMenuBlocks();
+                                        }",
                                     ]
                                 ]
                             ); ?>
@@ -81,14 +84,12 @@ if ($model->id) {
                     <div class="row"></div>
                 </div>
             </div>
-
         </div>
         <?php
         ActiveForm::end(); ?>
     </div>
 
 <?php
-//var_dump($model->id);
 if ($is_created) {
     \Yii::$app->view->registerJs(
         <<<JS

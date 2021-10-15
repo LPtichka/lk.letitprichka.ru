@@ -1045,7 +1045,7 @@ class Order extends \yii\db\ActiveRecord
      */
     public function isEditable(): bool
     {
-        return !in_array($this->status_id, self::STATUSES_NO_EDITABLE);
+        return !in_array($this->status_id, self::STATUSES_NO_EDITABLE) || !$this->status_id;
     }
 
     public function getErrorMessages(string $model): array

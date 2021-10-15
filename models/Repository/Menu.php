@@ -119,6 +119,7 @@ class Menu extends \yii\db\ActiveRecord
                                 $menuDish = new MenuDish();
 
                                 $menuDish->dish_id        = $dishId;
+                                $menuDish->is_main        = $data['is_main'][$date][$ingestionType][$ingestionId];
                                 $menuDish->ingestion      = $ingestionId;
                                 $menuDish->dish_type      = (new Dish())->getDishTypeByName($type);
                                 $menuDish->ingestion_type = (new Dish())->getIngestionTypeByName($ingestionType);
@@ -136,6 +137,7 @@ class Menu extends \yii\db\ActiveRecord
                             $menuDish = new MenuDish();
 
                             $menuDish->dish_id        = $dishId;
+                            $menuDish->is_main        = $data['is_main'][$date][$ingestionType][$ingestionId];
                             $menuDish->ingestion      = $ingestionId;
                             $menuDish->dish_type      = null;
                             $menuDish->ingestion_type = (new Dish())->getIngestionTypeByName($ingestionType);
@@ -260,41 +262,60 @@ class Menu extends \yii\db\ActiveRecord
                     return $dish->dish_id;
                 }
                 if ($type == 'dinner'
-                    && $dish->dish->is_dinner
+                    //&& $dish->dish->is_dinner
                     && $dish->ingestion_type == Dish::INGESTION_TYPE_DINNER
                     && $ingestionType == $dish->dish->type
                 ) {
                     return $dish->dish_id;
                 }
-//                if ($type == 'garnish'
-//                    && $dish->ingestion_type == Dish::INGESTION_TYPE_DINNER
-//                    && $ingestionType == $dish->dish->type
-//                ) {
-//                    return $dish->dish_id;
-//                }
-                if ($type == 'supper' && $dish->dish->is_supper && $dish->ingestion_type == Dish::INGESTION_TYPE_SUPPER && $ingestionType == $dish->dish->type) {
+                if ($type == 'supper'
+                    //&& $dish->dish->is_supper
+                    && $dish->ingestion_type == Dish::INGESTION_TYPE_SUPPER
+                    && $ingestionType == $dish->dish->type
+                ) {
                     return $dish->dish_id;
                 }
             }
         }
+        return 0;
+    }
 
-        if ($type == 'dinner' || $type == 'supper') {
-            if ($ingestionType == Dish::TYPE_SECOND) {
-                $type = 'second';
-            } elseif ($ingestionType == Dish::TYPE_GARNISH) {
-                $type = 'garnish';
-            } else {
-                $type = 'first';
-            }
-            if (!empty($chosenDishes[$type][$ingestionID])) {
-                return (int) $chosenDishes[$type][$ingestionID];
-            }
-        } else {
-            if (!empty($chosenDishes[$ingestionID])) {
-                return (int) $chosenDishes[$ingestionID];
+    /**
+     * @param int $ingestionID
+     * @param string $date
+     * @param string $type
+     * @param int $ingestionType
+     * @param array $chosenDishes
+     * @return int
+     */
+    public function getDishIsMainByParams(
+        int $ingestionID = 0,
+        string $date = '',
+        string $type = '',
+        int $ingestionType = 0
+    ): int{
+        foreach ($this->dishes as $dish) {
+            if ($dish->ingestion == $ingestionID && $dish->date == $date) {
+                if ($type == 'breakfast' && $dish->dish->is_breakfast) {
+                    return $dish->is_main;
+                }
+                if ($type == 'lunch'
+                    && $dish->dish->is_lunch
+                ) {
+                    return $dish->is_main;
+                }
+                if ($type == 'dinner'
+                    && $dish->dish->is_dinner
+                ) {
+                    return $dish->is_main;
+                }
+                if ($type == 'supper'
+                    && $dish->dish->is_supper
+                ) {
+                    return $dish->is_main;
+                }
             }
         }
-
 
         return 0;
     }

@@ -31,6 +31,7 @@ use kartik\date\DatePicker;
                                 'options'       => [
                                     'placeholder' => \Yii::t('order', 'Choose date'),
                                     'class'       => 'form-control input-sm',
+                                    'autocomplete'       => 'off',
                                 ],
                                 'removeButton'  => false,
                                 'pluginOptions' => [

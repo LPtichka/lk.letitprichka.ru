@@ -286,6 +286,11 @@ body.delegate('.add-menu-ingestion', 'click', function (e) {
         $(this).prop('name', newName);
         $(this).attr('data-ingestion-number', lastIngestionID.toString());
     });
+    ingestionClone.find('input[type="hidden"]').each(function () {
+        let newName = $(this).prop('name').replace('[' + (lastIngestionID - 1) + ']', '[' + lastIngestionID + ']');
+        $(this).prop('name', newName);
+        $(this).attr('value', "0");
+    });
 
     ingestionClone.attr('data-ingestion-id', lastIngestionID.toString());
 

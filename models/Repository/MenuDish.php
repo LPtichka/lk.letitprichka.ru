@@ -4,18 +4,14 @@ namespace app\models\Repository;
 
 use app\models\Common\Ingestion;
 use app\models\Common\MarriageDish;
-use app\models\Helper\Weight;
 use app\models\Queries\MenuDishQuery;
-use app\models\Queries\MenuQuery;
-use app\models\Queries\OrderQuery;
-use app\models\Queries\ProductQuery;
 use yii\behaviors\TimestampBehavior;
-use yii\helpers\ArrayHelper;
 
 /**
  * This is the model class for table "{{%menu_dish}}".
  *
  * @property int $id
+ * @property int $is_main
  * @property string $date
  * @property int $menu_id
  * @property int $dish_id
@@ -61,7 +57,7 @@ class MenuDish extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['dish_id', 'menu_id', 'ingestion', 'ingestion_type', 'dish_type'], 'integer'],
+            [['dish_id', 'menu_id', 'ingestion', 'ingestion_type', 'dish_type', 'is_main'], 'integer'],
             [['date'], 'string'],
         ];
     }
@@ -92,7 +88,8 @@ class MenuDish extends \yii\db\ActiveRecord
     {
         $result = [];
         $time = strtotime($date);
-        $dishes = MenuDish::find()->where(['date' => date('Y-m-d', $time)])->orderBy(['ingestion_type' => SORT_ASC])->all();
+        $dishes = MenuDish::find()->where(['date' => date('Y-m-d', $time)])->orderBy(['ingestion_type' => SORT_ASC]
+        )->all();
         $time = date("H:i", time());
         foreach ($dishes as $dish) {
             if (!empty($dish->dish_type)) {

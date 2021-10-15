@@ -28,7 +28,7 @@ use app\widgets\Html; ?>
             <?php for ($i = 0; $i < $count; $i++): ?>
                 <?php if ($menu->hasIngestion('breakfast', $i) || !$menu->id): ?>
                     <div class="ingestion" data-ingestion-id="<?php echo $i; ?>">
-                        <?= Html::a('<i class="material-icons">delete_forever</i>', '#', [
+                        <?php echo Html::a('<i class="material-icons">delete_forever</i>', '#', [
                             'class' => 'btn btn-sm btn-default delete-ingestion',
                         ]); ?>
                         <?php echo \yii\helpers\Html::dropDownList(
@@ -41,6 +41,10 @@ use app\widgets\Html; ?>
                                 'data-ingestion-type'   => 'breakfast',
                                 'data-ingestion-number' => $i,
                             ]
+                        ); ?>
+                        <?php echo \yii\helpers\Html::hiddenInput(
+                            'is_main[' . $date . '][breakfast][' . $i . ']',
+                            $menu->id ? $menu->getDishIsMainByParams($i, $date, 'breakfast', $i) : 1
                         ); ?>
                     </div>
                 <?php endif; ?>
@@ -87,7 +91,6 @@ use app\widgets\Html; ?>
                                 'data-ingestion-number' => $i,
                             ]
                         ); ?>
-
                         <?php if ($menu->isGarnishNeeded($i, $date, 'dinner', \app\models\Repository\Dish::TYPE_SECOND, $chosenDishes['dinner'] ?? [])): ?>
                             <?php echo \yii\helpers\Html::dropDownList(
                                 'dish[' . $date . '][dinner][garnish][' . $i . ']',
@@ -101,6 +104,10 @@ use app\widgets\Html; ?>
                                 ]
                             ); ?>
                         <?php endif; ?>
+                        <?php echo \yii\helpers\Html::hiddenInput(
+                            'is_main[' . $date . '][dinner][' . $i . ']',
+                            $menu->id ? $menu->getDishIsMainByParams($i, $date, 'dinner', \app\models\Repository\Dish::TYPE_SECOND) : 1
+                        ); ?>
                     </div>
                 <?php endif; ?>
             <?php endfor; ?>
@@ -120,7 +127,7 @@ use app\widgets\Html; ?>
             <?php $count = $menu->id ? $menu->getIngestionCountForDay('lunch') : 1; ?>
             <?php for ($i = 0; $i < $count; $i++): ?>
                 <?php if ($menu->hasIngestion('lunch', $i) || !$menu->id): ?>
-                    <div class="ingestion" id="ingestion_lunch_<?php echo $i; ?>">
+                    <div class="ingestion" data-ingestion-id="<?php echo $i; ?>" id="ingestion_lunch_<?php echo $i; ?>">
                         <?= Html::a('<i class="material-icons">delete_forever</i>', '#', [
                             'class' => 'btn btn-sm btn-default delete-ingestion',
                         ]); ?>
@@ -134,6 +141,10 @@ use app\widgets\Html; ?>
                                 'data-ingestion-type'   => 'lunch',
                                 'data-ingestion-number' => $i,
                             ]
+                        ); ?>
+                        <?php echo \yii\helpers\Html::hiddenInput(
+                            'is_main[' . $date . '][lunch][' . $i . ']',
+                            $menu->id ? $menu->getDishIsMainByParams($i, $date, 'lunch', $i) : 1
                         ); ?>
                     </div>
                 <?php endif; ?>
@@ -154,7 +165,7 @@ use app\widgets\Html; ?>
             <?php $count = $menu->id ? $menu->getIngestionCountForDay('supper') : 1; ?>
             <?php for ($i = 0; $i < $count; $i++): ?>
                 <?php if ($menu->hasIngestion('supper', $i) || !$menu->id): ?>
-                    <div class="ingestion" id="ingestion_supper_<?php echo $i; ?>">
+                    <div class="ingestion" data-ingestion-id="<?php echo $i; ?>" id="ingestion_supper_<?php echo $i; ?>">
                         <?= Html::a('<i class="material-icons">delete_forever</i>', '#', [
                             'class' => 'btn btn-sm btn-default delete-ingestion',
                         ]); ?>
@@ -182,6 +193,10 @@ use app\widgets\Html; ?>
                                 ]
                             ); ?>
                         <?php endif; ?>
+                        <?php echo \yii\helpers\Html::hiddenInput(
+                            'is_main[' . $date . '][supper][' . $i . ']',
+                            $menu->id ? $menu->getDishIsMainByParams($i, $date, 'supper', \app\models\Repository\Dish::TYPE_SECOND) : 1
+                        ); ?>
                     </div>
                 <?php endif; ?>
             <?php endfor; ?>
