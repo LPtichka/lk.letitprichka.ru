@@ -29,7 +29,7 @@ use app\widgets\Html; ?>
                 <?php if ($menu->hasIngestion('breakfast', $i) || !$menu->id): ?>
                     <div class="ingestion" data-ingestion-id="<?php echo $i; ?>">
                         <?php echo Html::a('<i class="material-icons">delete_forever</i>', '#', [
-                            'class' => 'btn btn-sm btn-default delete-ingestion',
+                            'class' => 'btn btn-sm btn-default delete-ingestion ' . ($i == 0 ? 'hidden' : ''),
                         ]); ?>
                         <?php echo \yii\helpers\Html::dropDownList(
                             'dish[' . $date . '][breakfast][' . $i . ']',
@@ -67,7 +67,7 @@ use app\widgets\Html; ?>
                 <?php if ($menu->hasIngestion('dinner', $i) || !$menu->id): ?>
                     <div class="ingestion" data-ingestion-id="<?php echo $i; ?>">
                         <?= Html::a('<i class="material-icons">delete_forever</i>', '#', [
-                            'class' => 'btn btn-sm btn-default delete-ingestion',
+                            'class' => 'btn btn-sm btn-default delete-ingestion ' . ($i == 0 ? 'hidden' : ''),
                         ]); ?>
                         <?php echo \yii\helpers\Html::dropDownList(
                             'dish[' . $date . '][dinner][first][' . $i . ']',
@@ -129,7 +129,7 @@ use app\widgets\Html; ?>
                 <?php if ($menu->hasIngestion('lunch', $i) || !$menu->id): ?>
                     <div class="ingestion" data-ingestion-id="<?php echo $i; ?>" id="ingestion_lunch_<?php echo $i; ?>">
                         <?= Html::a('<i class="material-icons">delete_forever</i>', '#', [
-                            'class' => 'btn btn-sm btn-default delete-ingestion',
+                            'class' => 'btn btn-sm btn-default delete-ingestion ' . ($i == 0 ? 'hidden' : ''),
                         ]); ?>
                         <?php echo \yii\helpers\Html::dropDownList(
                             'dish[' . $date . '][lunch][' . $i . ']',
@@ -167,7 +167,7 @@ use app\widgets\Html; ?>
                 <?php if ($menu->hasIngestion('supper', $i) || !$menu->id): ?>
                     <div class="ingestion" data-ingestion-id="<?php echo $i; ?>" id="ingestion_supper_<?php echo $i; ?>">
                         <?= Html::a('<i class="material-icons">delete_forever</i>', '#', [
-                            'class' => 'btn btn-sm btn-default delete-ingestion',
+                            'class' => 'btn btn-sm btn-default delete-ingestion ' . ($i == 0 ? 'hidden' : ''),
                         ]); ?>
                         <?php echo \yii\helpers\Html::dropDownList(
                             'dish[' . $date . '][supper][second][' . $i . ']',

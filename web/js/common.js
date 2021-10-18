@@ -291,6 +291,9 @@ body.delegate('.add-menu-ingestion', 'click', function (e) {
         $(this).prop('name', newName);
         $(this).attr('value', "0");
     });
+    ingestionClone.find('a.delete-ingestion').each(function () {
+        $(this).removeClass('hidden');
+    });
 
     ingestionClone.attr('data-ingestion-id', lastIngestionID.toString());
 
