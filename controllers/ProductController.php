@@ -218,7 +218,7 @@ class ProductController extends BaseController
                                                   ->select(['*', $element . ' as value'])
                                                   ->andFilterWhere(['like', $element, $term])
                                                   ->andFilterWhere(
-                                                      ['status', \app\models\Repository\Product::STATUS_ACTIVE]
+                                                      ['status' => \app\models\Repository\Product::STATUS_ACTIVE]
                                                   )
                                                   ->orderBy(['count' => SORT_DESC])
                                                   ->asArray()
