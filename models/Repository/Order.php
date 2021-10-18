@@ -565,6 +565,11 @@ class Order extends \yii\db\ActiveRecord
         !empty($data['franchise_id']) && $this->franchise_id = $data['franchise_id'];
         !empty($data['options']) && $this->without_soup = in_array('without_soup', $data['options']);
 
+        if ($order = Order::find()->where(['shop_order_number' => $this->shop_order_number])->one()) {
+            $this->addError('shop_order_number','Already exist order');
+            return false;
+        }
+
         $paymentType = PaymentType::findOne($this->payment_type);
         if (!$paymentType) {
             return false;
