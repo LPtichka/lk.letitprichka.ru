@@ -528,13 +528,15 @@ class Excel
                 $objWorksheet->getColumnDimensionByColumn($i)->setWidth($columnWidths[$i]);
             }
 
-            $drawing = new \PhpOffice\PhpSpreadsheet\Worksheet\Drawing();
-            $drawing->setName('Logo');
-            $drawing->setDescription('Logo');
-            $drawing->setPath('/var/www/lk.letitptichka.ru/web/images/logo.png'); // put your path and image here
-            $drawing->setCoordinates('H1');
-            $drawing->setWidth('250');
-            $drawing->setWorksheet($objWorksheet);
+            if (file_exists('/var/www/lk.letitptichka.ru/web/images/logo.png')) {
+                $drawing = new \PhpOffice\PhpSpreadsheet\Worksheet\Drawing();
+                $drawing->setName('Logo');
+                $drawing->setDescription('Logo');
+                $drawing->setPath('/var/www/lk.letitptichka.ru/web/images/logo.png'); // put your path and image here
+                $drawing->setCoordinates('H1');
+                $drawing->setWidth('250');
+                $drawing->setWorksheet($objWorksheet);
+            }
 
             $objWorksheet->setTitle($sheet->getFio());
 
@@ -645,7 +647,7 @@ class Excel
                         if ($dish->ingestion_type == Ingestion::SUPPER) {
                             $this->setDishToCustomerSheet($objWorksheet, $dish->dish, $lastID, Dish::INGESTION_TYPE_SUPPER_NAME);
                             $lastID++;
-                            if ($dish->garnish_id) {
+                            if ($dish->with_garnish) {
                                 $this->setDishToCustomerSheet($objWorksheet, $dish->garnish, $lastID, Dish::INGESTION_TYPE_SUPPER_NAME);
                                 $lastID++;
                             }

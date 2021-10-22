@@ -16,6 +16,8 @@ use yii\base\Model;
  */
 class CustomerSheet extends Model
 {
+    /** @var int */
+    private $orderId;
     /** @var string */
     private $fio;
     /** @var string */
@@ -524,6 +526,7 @@ class CustomerSheet extends Model
                 ->count();
 
             $customerSheet = (new CustomerSheet())
+                ->setOrderId($order->id)
                 ->setFio($order->customer->fio)
                 ->setPhone($order->customer->phone)
                 ->setAddress($order->address->full_address)
@@ -545,6 +548,13 @@ class CustomerSheet extends Model
                 ->setHasSupper((bool) $order->subscription->has_supper)
                 ->setComment((string) $order->comment);
 
+//            if ($order->id == 393) {
+//                foreach ($customerSheet->dishes as $dish) {
+//                    echo $dish->name . "\n";
+//                }
+////                var_dump($customerSheet);
+//                die();
+//            }
             $result[] = $customerSheet;
         }
 
@@ -584,6 +594,24 @@ class CustomerSheet extends Model
     public function setComment(string $comment): CustomerSheet
     {
         $this->comment = $comment;
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getOrderId(): int
+    {
+        return $this->orderId;
+    }
+
+    /**
+     * @param int $orderId
+     * @return CustomerSheet
+     */
+    public function setOrderId(int $orderId): CustomerSheet
+    {
+        $this->orderId = $orderId;
         return $this;
     }
 }
