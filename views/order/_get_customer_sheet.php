@@ -20,7 +20,7 @@ Pjax::begin([
             <div class="select-block">
                 <div class="form-group">
                     <label><?= \Yii::t('order', 'Choose date'); ?></label>
-                    <?php echo Html::dropDownList('schedule_id', '', $dates ?? [], [
+                    <?php echo Html::dropDownList('date', '', $dates ?? [], [
                         'class' => 'form-control input-sm'
                     ]); ?>
                 </div>

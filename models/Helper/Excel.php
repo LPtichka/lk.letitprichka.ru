@@ -695,7 +695,6 @@ class Excel
             $objWorksheet->getCellByColumnAndRow(5, $lastID)->setValue($sheet->getTotalProteins());
             $objWorksheet->getCellByColumnAndRow(6, $lastID)->setValue($sheet->getTotalFat());
             $objWorksheet->getCellByColumnAndRow(7, $lastID)->setValue($sheet->getTotalCarbohydrates());
-
         }
         return true;
     }

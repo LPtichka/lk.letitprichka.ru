@@ -528,7 +528,7 @@ class OrderController extends BaseController
         $id = \Yii::$app->request->get('id', null);
         if ($post = \Yii::$app->request->post()) {
             \Yii::$app->response->format = Response::FORMAT_JSON;
-            return $this->generateCustomerSheetFile($post);
+            return $this->generateCustomerSheetFile($post, $id);
         }
 
         $orderId = ArrayHelper::getValue(
@@ -537,7 +537,7 @@ class OrderController extends BaseController
         );
         $dates = ArrayHelper::map(
             OrderSchedule::find()->where(['order_id' => $id])->asArray()->all(),
-            'id',
+            'date',
             'date'
         );
 
@@ -558,13 +558,16 @@ class OrderController extends BaseController
 
     /**
      * @param array $post
+     * @param int|null $orderId
      * @return array
      */
-    private function generateCustomerSheetFile(array $post): array
+    private function generateCustomerSheetFile(array $post, ?int $orderId = null): array
     {
-        $dates = OrderSchedule::find()
-                              ->where(['date' => date('Y-m-d', strtotime($post['date']))])
-                              ->all();
+        $query = OrderSchedule::find()->where(['date' => date('Y-m-d', strtotime($post['date']))]);
+        if ($orderId) {
+            $query->andWhere(['order_id' => $orderId]);
+        }
+        $dates = $query->all();
 
         if (!$dates) {
             return [
