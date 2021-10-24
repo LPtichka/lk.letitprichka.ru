@@ -55,12 +55,12 @@ $this->title = \Yii::t('order', 'Order inventory');
                                                     &nbsp;<a href="#"
                                                        class="reload-dish"
                                                        data-ration="<?= $key; ?>"
-                                                       data-dish-id="<?= $dish->garnish_id; ?>"
+                                                       data-dish-id="<?= $dish->dish_id; ?>"
                                                        data-schedule-id="<?= $scheduleId; ?>"
                                                     ><i class="material-icons">cached</i></a><a href="#"
                                                        class="delete-dish"
                                                        data-ration="<?= $key; ?>"
-                                                       data-dish-id="<?= $dish->garnish_id; ?>"
+                                                       data-dish-id="<?= $dish->dish_id; ?>"
                                                        data-schedule-id="<?= $scheduleId; ?>"
                                                     ><i class="material-icons">delete</i></a>
                                                 </p>

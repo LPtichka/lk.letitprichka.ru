@@ -241,6 +241,7 @@ body.delegate('.reload-dish', 'click', function (e) {
                 '<button class="btn btn-primary add-dish-to-inventory" ' +
                 'data-schedule-id="' + scheduleId + '" ' +
                 'data-old-dish-id="' + oldDishId + '" ' +
+                'data-parent-dish-id="" ' +
                 'data-ration="' + ration + '">Добавить</button>' +
                 '</div>';
             block.parents('.ingestion-row').html(dish_request_block);
@@ -252,15 +253,17 @@ body.delegate('.delete-dish', 'click', function (e) {
     e.preventDefault();
     let ration = $(this).data('ration');
     let scheduleId = $(this).data('schedule-id');
+    let dishId = $(this).data('dish-id');
     let block = $(this);
     $.ajax({
         url: '/order/delete-dish-for-inventory',
         method: 'post',
         dataType: 'json',
-        data: {ration: ration, schedule_id: scheduleId},
+        data: {ration: ration, schedule_id: scheduleId, dish_id: dishId},
         success: function (data) {
             let dish_request_block = '<div class="col-sm-10 ingestion-content">' +
                 'Еще не назначено  ' +
+                '<a href="#" class="reload-dish" data-ration="'+ration+'" data-dish-id="" data-schedule-id="'+scheduleId+'"><i class="material-icons">cached</i></a>' +
                 '</div>';
             block.parents('.ingestion-row').html(dish_request_block);
         }
@@ -277,25 +280,59 @@ body.delegate('.exception-row select', 'change', function (e) {
     }
 });
 
+// Ручное добавление блюда в состав заказа
 body.delegate('.add-dish-to-inventory', 'click', function (e) {
     e.preventDefault();
     let ration = $(this).data('ration');
     let scheduleId = $(this).data('schedule-id');
     let oldDishId = $(this).data('old-dish-id');
+    let parentDishId = $(this).data('parent-dish-id');
     let dishId = $(this).parent().find('select').val();
     let block = $(this).parent();
 
     $.ajax({
         url: '/order/add-dish-for-inventory?ration=' + ration,
         method: 'post',
-        data: {dish_id: dishId, old_dish_id: oldDishId, schedule_id: scheduleId, ration: ration},
+        data: {dish_id: dishId, old_dish_id: oldDishId, schedule_id: scheduleId, ration: ration, parent_dish_id: parentDishId},
         dataType: 'json',
         success: function (data) {
             let html = '';
             if (data.success) {
+                if (data.dish.with_garnish) {
+                    block.removeClass('col-sm-10').addClass('col-sm-5');
+                }
                 html += '<p><a href="' + data.dish.href + '">' + data.dish.name + '</a></p>' +
                     '<p>' + data.dish.description + '</p>';
                 block.html(html);
+
+                let dish_id = data.dish.dish_id;
+                if (data.dish.with_garnish) {
+                    $.ajax({
+                        url: '/order/get-dishes-for-inventory?ration=' + ration,
+                        method: 'get',
+                        dataType: 'json',
+                        success: function (data) {
+
+                            let options = '';
+                            $.each(data.dishes, function (index, value) {
+                                options += '<option value="' + index + '">' + value + '</option>';
+                            });
+
+                            // let garnishHtml = '<div class="col-sm-5 ingestion-content"></div>';
+                            let garnishHtml = '<div class="col-sm-5 ingestion-content">' +
+                                '<select class="input-sm">' + options + '</select>' +
+                                '<button class="btn btn-primary add-dish-to-inventory" ' +
+                                'data-schedule-id="' + scheduleId + '" ' +
+                                'data-parent-dish-id="' + dish_id + '" ' +
+                                'data-old-dish-id="' + oldDishId + '" ' +
+                                'data-ration="' + ration + '">Добавить</button>' +
+                                '</div>';
+                            block.parent().append(garnishHtml);
+                        }
+                    });
+                }
+
+                // block.parent().append(garnishHtml);
             }
         }
     });

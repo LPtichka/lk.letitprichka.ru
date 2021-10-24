@@ -821,6 +821,7 @@ class OrderController extends BaseController
         $dishId = $post['dish_id'];
         $scheduleId = $post['schedule_id'];
         $ration = $post['ration'];
+        $parentDishId = $post['parent_dish_id'];
 
         $dish = Dish::findOne($dishId);
         if (!$dish) {
@@ -831,12 +832,14 @@ class OrderController extends BaseController
         if (!empty($post['old_dish_id'])) {
             $scheduleDish = OrderScheduleDish::find()
                                              ->where(['order_schedule_id' => $scheduleId])
-                                             ->andWhere(['dish_id' => $post['old_dish_id']])
+                                             ->andWhere(
+                                                 ['dish_id' => empty($parentDishId) ? $post['old_dish_id'] : $parentDishId]
+                                             )
                                              ->one();
         } else {
             $oldScheduleDish = OrderScheduleDish::find()
                                                 ->where(['order_schedule_id' => $scheduleId])
-                                                ->andWhere(['dish_id' => null])
+                                                ->andWhere(['dish_id' => empty($parentDishId) ? null : $parentDishId])
                                                 ->andWhere(['ingestion_type' => $ration])
                                                 ->one();
             if ($oldScheduleDish) {
@@ -844,20 +847,28 @@ class OrderController extends BaseController
             }
         }
 
-        $scheduleDish->dish_id = $dish->id;
-        $scheduleDish->order_schedule_id = $scheduleId;
-        $scheduleDish->name = $dish->name;
-        $scheduleDish->count = 1;
-        $scheduleDish->type = $dish->type;
-        $scheduleDish->ingestion_type = $ration;
+        if (empty($parentDishId)) {
+            $scheduleDish->dish_id = $dish->id;
+            $scheduleDish->name = $dish->name;
+            $scheduleDish->count = 1;
+            $scheduleDish->with_garnish = $dish->with_garnish;
+            $scheduleDish->garnish_id = null;
+            $scheduleDish->type = $dish->type;
+            $scheduleDish->ingestion_type = $ration;
+            $scheduleDish->order_schedule_id = $scheduleId;
+        } else {
+            $scheduleDish->garnish_id = $dish->id;
+        }
 
         if ($scheduleDish->validate() && $scheduleDish->save()) {
             return [
                 'success' => true,
                 'dish'    => [
-                    'href'        => Url::to(['dish/view', 'id' => $dish->id]),
-                    'name'        => $dish->name,
-                    'description' => implode(', ', $dish->getComposition()) . ', ' . $dish->weight . 'г.',
+                    'href'         => Url::to(['dish/view', 'id' => $dish->id]),
+                    'name'         => $dish->name,
+                    'dish_id'      => $dish->id,
+                    'with_garnish' => (bool)$dish->with_garnish,
+                    'description'  => implode(', ', $dish->getComposition()) . ', ' . $dish->weight . 'г.',
                 ],
             ];
         }
@@ -880,10 +891,12 @@ class OrderController extends BaseController
 
         $scheduleId = $post['schedule_id'];
         $ration = $post['ration'];
+        $dishId = $post['dish_id'];
 
         $scheduleDish = OrderScheduleDish::find()
                                          ->where(['order_schedule_id' => $scheduleId])
                                          ->andWhere(['ingestion_type' => $ration])
+                                         ->andWhere(['dish_id' => $dishId])
                                          ->one();
 
         if (empty($scheduleDish)) {
