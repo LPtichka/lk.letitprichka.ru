@@ -138,8 +138,17 @@ class MenuCreated extends Event
         array $orderExceptionList,
         string $garnishKey
     ): bool {
+        $array = [];
         $dishException = $menuDish['exception_list'];
         $array         = array_intersect($dishException, $orderExceptionList);
+
+        $this->log('menu-create', [
+            $dishException,
+            $orderExceptionList,
+            $array,
+            "Тут пересечение исключений",
+        ]);
+
         // В блюде не должно быть пересекающихся исключений
         if (empty($array)) {
             $orderScheduleDish               = OrderScheduleDish::findOne($dish['id']);
