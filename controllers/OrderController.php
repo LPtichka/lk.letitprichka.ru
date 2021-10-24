@@ -561,7 +561,7 @@ class OrderController extends BaseController
      * @param int|null $orderId
      * @return array
      */
-    private function generateCustomerSheetFile(array $post, ?int $orderId = null): array
+    private function generateCustomerSheetFile(array $post, $orderId = null): array
     {
         $query = OrderSchedule::find()->where(['date' => date('Y-m-d', strtotime($post['date']))]);
         if ($orderId) {
