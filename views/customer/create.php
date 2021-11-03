@@ -23,11 +23,10 @@ if ($model->id) {
     'formSelector'    => '#customer-form form',
     'enablePushState' => false,
 ]); ?>
-<div class="row">
+<div class="row customer-form">
     <?= Alert::widget(['options' => ['style' => 'margin-bottom:20px']]) ?>
 
     <title><?= Html::encode($this->title) ?></title>
-    <h1><?= Html::encode($this->title) ?></h1>
     <div class="col-md-12">
         <?php $form = ActiveForm::begin(); ?>
         <div class="row">
@@ -141,5 +140,6 @@ if ($model->id) {
         <?php ActiveForm::end(); ?>
     </div>
 </div>
+<?php Pjax::end(); ?>
 
 

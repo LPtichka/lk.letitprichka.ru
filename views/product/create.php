@@ -18,7 +18,6 @@ $this->title = $title
     <?= Alert::widget(['options' => ['style' => 'margin-bottom:20px']]) ?>
 
     <title><?= Html::encode($this->title) ?></title>
-    <h1><?= Html::encode($this->title) ?></h1>
 
     <div class="col-md-12">
         <?php $form = ActiveForm::begin(); ?>

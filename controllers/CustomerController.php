@@ -102,6 +102,7 @@ class CustomerController extends BaseController
                     $tempAddress->load($address, '');
                     $tempAddress->customer_id = $customer->id;
                     $tempAddress->status      = Address::STATUS_ACTIVE;
+                    $tempAddress->prepareAddress($tempAddress, $address['full_address']);
 
                     if (!$tempAddress->validate()) {
                         $isAddressesValid = false;
@@ -121,13 +122,16 @@ class CustomerController extends BaseController
                 }
             }
 
+            $customer->setAddresses($addresses);
+            $customer->setExceptions($exceptions);
+
             if (!$isAddressesValid || !$isExceptionsValid) {
                 $transaction->rollBack();
-                \Yii::$app->session->addFlash('warning', \Yii::t('customer', 'Addresses has errors'));
+                \Yii::$app->session->addFlash('danger', \Yii::t('customer', 'Addresses has errors'));
                 return false;
             } else {
-                $customer->setAddresses($addresses);
-                $customer->setExceptions($exceptions);
+//                $customer->setAddresses($addresses);
+//                $customer->setExceptions($exceptions);
 
                 foreach ($customer->addresses as $key => $address) {
                     if (!$customer->addresses[$key]->save()) {
@@ -200,10 +204,6 @@ class CustomerController extends BaseController
             'id',
             'name'
         );
-
-//        if (empty($customer->exceptions)) {
-//            $customer->setExceptions([new Exception()]);
-//        }
 
         return $this->renderAjax('/customer/create', [
             'model'      => $customer,

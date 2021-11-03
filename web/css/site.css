@@ -868,3 +868,7 @@ select.form-control.input-sm {
 .change-no-subscription-dish {
     padding: 6px 15px;
 }
+
+.modal-body .alert {
+    margin: 0 15px 20px !important;
+}
