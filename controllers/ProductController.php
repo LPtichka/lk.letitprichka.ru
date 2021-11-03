@@ -257,11 +257,24 @@ class ProductController extends BaseController
                                ->all();
 
             if (empty($chosenMenus)) {
+                $startMenus = Menu::find()
+                                  ->where(['>=', 'menu_start_date', $menuStart])
+                                  ->limit(10)
+                                  ->all();
+                $chosenMenus = [];
+                foreach ($startMenus as $menu) {
+                    if ($menu->menu_start_date > $menuEnd) {
+                        continue;
+                    }
+                    $chosenMenus[] = $menu;
+                }
+            }
+            if (empty($chosenMenus)) {
                 $success = false;
                 $error = \Yii::t('menu', 'No menu for chosen dates');
             } else {
                 try {
-                    $products = (new Menu())->getProcurementProducts($chosenMenus);
+                    $products = (new Menu())->getProcurementProducts($chosenMenus, $menuEnd);
                 } catch (\LogicException $e) {
                     $success = false;
                     $error = $e->getMessage();
@@ -309,7 +322,21 @@ class ProductController extends BaseController
                                ->andWhere(['<=', 'menu_end_date', $end])
                                ->all();
 
-            $products = (new Menu())->getProcurementProducts($chosenMenus);
+            if (empty($chosenMenus)) {
+                $startMenus = Menu::find()
+                                  ->where(['>=', 'menu_start_date', $start])
+                                  ->limit(10)
+                                  ->all();
+                $chosenMenus = [];
+                foreach ($startMenus as $menu) {
+                    if ($menu->menu_start_date > $end) {
+                        continue;
+                    }
+                    $chosenMenus[] = $menu;
+                }
+            }
+
+            $products = (new Menu())->getProcurementProducts($chosenMenus, $end);
             $productList = [];
             foreach ($products as $product) {
                 $productList[] = [

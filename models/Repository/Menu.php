@@ -406,14 +406,17 @@ class Menu extends \yii\db\ActiveRecord
      * @param Menu[] $menus
      * @return Product[]
      */
-    public function getProcurementProducts(array $menus): array
+    public function getProcurementProducts(array $menus, string $endDate = ''): array
     {
         $products = [];
 
         foreach ($menus as $menu) {
+            if (!$endDate) {
+                $endDate = $menu->menu_end_date;
+            }
             $schedules = OrderSchedule::find()
                                       ->where(['>=', 'date', $menu->menu_start_date])
-                                      ->andWhere(['<=', 'date', $menu->menu_end_date])
+                                      ->andWhere(['<=', 'date', $endDate])
                                       ->all();
 
             foreach ($schedules as $schedule) {
