@@ -51,8 +51,11 @@ class Order extends Repository
         }
 
         $this->load($params);
-        $query->andFilterWhere(['id' => $this->id]);
-        $query->andFilterWhere(['>', 'status_id', \app\models\Repository\Order::STATUS_ARCHIVED]);
+        $query->andFilterWhere(['order.id' => $this->id]);
+        if (!$this->id) {
+            $query->andFilterWhere(['>', 'status_id', \app\models\Repository\Order::STATUS_ARCHIVED]);
+        }
+
         if (!empty($this->email)) {
             $query->andFilterWhere(['LIKE', 'customer.email', '%' . $this->email . '%', false]);
         }

@@ -417,6 +417,9 @@ class Menu extends \yii\db\ActiveRecord
                                       ->all();
 
             foreach ($schedules as $schedule) {
+                if ($schedule->order->status_id == Order::STATUS_ARCHIVED) {
+                    continue;
+                }
                 foreach ($schedule->dishes as $scheduleDish) {
                     if (empty($scheduleDish->dish)) {
                         throw new \LogicException('Имеются не назначенные блюда в меню для заказа '.$schedule->order->id.'.');

@@ -871,9 +871,14 @@ class Order extends \yii\db\ActiveRecord
     public function getRoutesForDate(string $date): array
     {
         $time = strtotime($date);
-        $orderSchedules = OrderSchedule::find()->where(['date' => date('Y-m-d', $time)])->all();
+        $orderSchedules = OrderSchedule::find()
+                                       ->where(['date' => date('Y-m-d', $time)])
+                                       ->all();
         $routes = [];
         foreach ($orderSchedules as $schedule) {
+            if ($schedule->order->status_id == Order::STATUS_ARCHIVED) {
+                continue;
+            }
             $route = new Route(
                 $schedule->order->customer->fio,
                 $schedule->address->getFullAddress(),
