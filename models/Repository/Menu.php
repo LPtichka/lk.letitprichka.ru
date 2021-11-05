@@ -424,6 +424,15 @@ class Menu extends \yii\db\ActiveRecord
                     continue;
                 }
                 foreach ($schedule->dishes as $scheduleDish) {
+
+                    if (!$schedule->order->subscription->has_breakfast && $scheduleDish->ingestion_type == Dish::INGESTION_TYPE_BREAKFAST) {
+                        continue;
+                    } elseif (!$schedule->order->subscription->has_lunch && $scheduleDish->ingestion_type == Dish::INGESTION_TYPE_LUNCH) {
+                        continue;
+                    } elseif (!$schedule->order->subscription->has_supper && $scheduleDish->ingestion_type == Dish::INGESTION_TYPE_SUPPER) {
+                        continue;
+                    }
+
                     if (empty($scheduleDish->dish)) {
                         throw new \LogicException('Имеются не назначенные блюда в меню для заказа '.$schedule->order->id.'.');
                     }
