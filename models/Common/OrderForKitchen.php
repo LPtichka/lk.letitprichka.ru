@@ -133,6 +133,7 @@ class OrderForKitchen extends Model
                     'comment' => '',
                 ];
             }
+            $supperCount = 1;
             foreach ($order as $item) {
                 if ($item['type'] == '4-2') {
                     $item['type'] = 'Ужин' . ($supperCount > 1 ? $supperCount : '');
