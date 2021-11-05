@@ -6,6 +6,7 @@ use app\models\Repository\Dish;
 use app\models\Repository\OrderSchedule;
 use app\models\Repository\OrderScheduleDish;
 use yii\base\Model;
+use yii\helpers\ArrayHelper;
 
 /**
  * Class OrderForKitchen - Заказ для кухни
@@ -80,77 +81,96 @@ class OrderForKitchen extends Model
 
         if (!empty($order)) {
             $breakfastCount = 1;
+            $breakfasts = [];
             foreach ($order as $item) {
                 if ($item['type'] == '1-0') {
                     $item['type'] = 'Завтрак' . ($breakfastCount > 1 ? $breakfastCount : '');
-                    $result[] = $item;
+                    $breakfasts[] = $item;
                     $breakfastCount++;
                 }
             }
+            ArrayHelper::multisort($breakfasts, ['count', 'dish'], [SORT_DESC, SORT_ASC]);
             if ($breakfastCount > 1) {
-                $result[] = [
+                $breakfasts[] = [
                     'type' => '',
                     'name' => '',
                     'count' => '',
                     'comment' => '',
                 ];
             }
+            $result = array_merge($result, $breakfasts);
+
             $soupCount = 1;
+            $soups = [];
             foreach ($order as $item) {
                 if ($item['type'] == '2-1') {
                     $item['type'] = 'Суп' . ($soupCount > 1 ? $soupCount : '');
-                    $result[] = $item;
+                    $soups[] = $item;
                     $soupCount++;
                 }
             }
+            ArrayHelper::multisort($soups, ['count', 'dish'], [SORT_DESC, SORT_ASC]);
             if ($soupCount > 1) {
-                $result[] = [
+                $soups[] = [
                     'type' => '',
                     'name' => '',
                     'count' => '',
                     'comment' => '',
                 ];
             }
+            $result = array_merge($result, $soups);
+
             $dinnerCount = 1;
+            $dinners = [];
             foreach ($order as $item) {
                 if ($item['type'] == '2-2') {
                     $item['type'] = 'Обед' . ($dinnerCount > 1 ? $dinnerCount : '');
-                    $result[] = $item;
+                    $dinners[] = $item;
                     $dinnerCount++;
                 }
             }
+            ArrayHelper::multisort($dinners, ['count', 'dish'], [SORT_DESC, SORT_ASC]);
             if ($dinnerCount > 1) {
-                $result[] = [
+                $dinners[] = [
                     'type' => '',
                     'name' => '',
                     'count' => '',
                     'comment' => '',
                 ];
             }
+            $result = array_merge($result, $dinners);
+
+            $lunchs = [];
             $lunchCount = 1;
             foreach ($order as $item) {
                 if ($item['type'] == '3-0') {
                     $item['type'] = 'Перекус' . ($lunchCount > 1 ? $lunchCount : '');
-                    $result[] = $item;
+                    $lunchs[] = $item;
                     $lunchCount++;
                 }
             }
+            ArrayHelper::multisort($lunchs, ['count', 'dish'], [SORT_DESC, SORT_ASC]);
             if ($lunchCount > 1) {
-                $result[] = [
+                $lunchs[] = [
                     'type' => '',
                     'name' => '',
                     'count' => '',
                     'comment' => '',
                 ];
             }
+            $result = array_merge($result, $lunchs);
+
+            $suppers = [];
             $supperCount = 1;
             foreach ($order as $item) {
                 if ($item['type'] == '4-2') {
                     $item['type'] = 'Ужин' . ($supperCount > 1 ? $supperCount : '');
-                    $result[] = $item;
+                    $suppers[] = $item;
                     $supperCount++;
                 }
             }
+            ArrayHelper::multisort($suppers, ['count', 'dish'], [SORT_DESC, SORT_ASC]);
+            $result = array_merge($result, $suppers);
         }
         return $result;
     }
