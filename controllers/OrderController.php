@@ -5,6 +5,7 @@ namespace app\controllers;
 use app\events\OrderCompleted;
 use app\models\Common\CustomerSheet;
 use app\models\Common\Ingestion;
+use app\models\Common\OrderForKitchen;
 use app\models\Helper\Date;
 use app\models\Helper\Excel;
 use app\models\Repository\Address;
@@ -554,6 +555,42 @@ class OrderController extends BaseController
                 'title'  => \Yii::t('order', 'Customer sheet'),
             ]
         );
+    }
+
+    /**
+     * @return string|array
+     */
+    public function actionGetOrderForKitchen()
+    {
+        return $this->renderAjax(
+            '/order/_get_order_for_kitchen',
+            [
+                'title'  => \Yii::t('order', 'Order for kitchen'),
+            ]
+        );
+    }
+
+    /**
+     * @param int $id
+     * @return string|array
+     */
+    public function actionSaveOrderForKitchen()
+    {
+        if (\Yii::$app->request->post()) {
+            $date = date('Y-m-d', strtotime(\Yii::$app->request->post('date')));
+            $dishes = (new OrderForKitchen($date))->getOrderForKitchen();
+
+            $excel = new Excel();
+            $excel->loadFromTemplate('files/templates/base.xlsx');
+            $excel->prepare($dishes, Excel::MODEL_ORDER_FOR_KITCHEN_SHEET, \Yii::$app->request->post());
+            $excel->save('order_for_kitchen_'.$date.'.xlsx', 'temp');
+
+            \Yii::$app->response->format = Response::FORMAT_JSON;
+
+            return [
+                'url' => $excel->getUrl()
+            ];
+        }
     }
 
     /**

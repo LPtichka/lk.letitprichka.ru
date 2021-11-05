@@ -25,6 +25,7 @@ class Excel
     const MODEL_ROUTE_SHEET = 'route_sheet';
     const MODEL_CUSTOMER_SHEET = 'customer_sheet';
     const MODEL_MARRIAGE_SHEET = 'marriage_sheet';
+    const MODEL_ORDER_FOR_KITCHEN_SHEET = 'kitchen';
     const MODEL_PROCUREMENT_SHEET = 'procurement_sheet';
 
     const COLUMN_NAMES = [

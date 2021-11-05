@@ -37,6 +37,7 @@ return [
     'Order details'                         => 'Детали заказа',
     'Order exceptions'                      => 'Исключения',
     'Order inventory'                       => 'Меню',
+    'Order for kitchen'                       => 'Заказ для кухни',
     'Order sheet'                           => 'Маршрутный лист',
     'Order status'                          => 'Статус заказа',
     'Order subscription dates'              => 'Даты подписки',

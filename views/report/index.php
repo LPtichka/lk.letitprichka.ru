@@ -111,6 +111,26 @@ $this->params['breadcrumbs'][] = $this->title;
                 ]) ?>
         </div>
     </div>
+    <div class="col-lg-3 col-md-4 col-sm-4">
+        <div class="report-item text-center">
+
+            <div class="text-center">
+                <img src="/images/svg/alarm.svg"  style="margin: 10px 0;" height="60px;" />
+            </div>
+            <br />
+            <p>Заказ<br /> для кухни</p>
+            <br />
+            <?php echo \yii\helpers\Html::a(
+                '<span>' . \Yii::t('order', 'Order for kitchen') . '</span>',
+                ['order/get-order-for-kitchen'],
+                [
+                    'class'       => 'btn btn-sm btn-default',
+                    'data-href'   => Url::to(['order/get-order-for-kitchen']),
+                    'data-toggle' => 'modal',
+                    'data-target' => '#modal',
+                ]) ?>
+        </div>
+    </div>
 </div>
 
 
