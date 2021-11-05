@@ -69,8 +69,8 @@ class OrderCreated extends Event
                                     $dish->with_garnish = $mDish->dish->with_garnish;
                                     if ($dish->with_garnish) {
                                         foreach ($menuDish as $gDish) {
-                                            if ($gDish->dish_type == Dish::TYPE_GARNISH) {
-                                                $garnishException  = $mDish->dish->getExceptionList();
+                                            if ($gDish->dish_type == Dish::TYPE_GARNISH && $mDish->ingestion_type == $gDish->ingestion_type) {
+                                                $garnishException  = $gDish->dish->getExceptionList();
                                                 $crossGarnishException = array_intersect($garnishException, $orderExceptionList);
                                                 if (empty($crossGarnishException)) {
                                                     $dish->garnish_id = $gDish->dish_id;
@@ -98,8 +98,8 @@ class OrderCreated extends Event
                                     $dish->with_garnish = $mDish->dish->with_garnish;
                                     if ($dish->with_garnish) {
                                         foreach ($menuDish as $gDish) {
-                                            if ($gDish->dish_type == Dish::TYPE_GARNISH) {
-                                                $garnishException  = $mDish->dish->getExceptionList();
+                                            if ($gDish->dish_type == Dish::TYPE_GARNISH && $mDish->ingestion_type == $gDish->ingestion_type) {
+                                                $garnishException  = $gDish->dish->getExceptionList();
                                                 $crossGarnishException = array_intersect($garnishException, $orderExceptionList);
                                                 if (empty($crossGarnishException)) {
                                                     $dish->garnish_id = $gDish->dish_id;

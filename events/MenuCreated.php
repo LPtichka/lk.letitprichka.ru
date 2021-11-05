@@ -61,6 +61,7 @@ class MenuCreated extends Event
             ->asArray()
             ->all();
 
+
         $transaction = \Yii::$app->db->beginTransaction();
 
         foreach ($orderSchedules as $schedule) {
