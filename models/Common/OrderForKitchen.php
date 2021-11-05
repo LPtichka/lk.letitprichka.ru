@@ -4,6 +4,7 @@ namespace app\models\Common;
 use app\models\Helper\Phone;
 use app\models\Repository\Dish;
 use app\models\Repository\OrderSchedule;
+use app\models\Repository\OrderScheduleDish;
 use yii\base\Model;
 
 /**
@@ -45,6 +46,15 @@ class OrderForKitchen extends Model
                                $scheduleDish->dish_id,
                                (int)$scheduleDish->garnish_id
                 );
+
+                if (!$orderSchedule->order->subscription->has_breakfast && $scheduleDish->ingestion_type == Dish::INGESTION_TYPE_BREAKFAST) {
+                    continue;
+                } elseif (!$orderSchedule->order->subscription->has_lunch && $scheduleDish->ingestion_type == Dish::INGESTION_TYPE_LUNCH) {
+                    continue;
+                } elseif (!$orderSchedule->order->subscription->has_supper && $scheduleDish->ingestion_type == Dish::INGESTION_TYPE_SUPPER) {
+                    continue;
+                }
+
                 if (empty($order[$key])) {
                     // Если в результате еще нет такого ключа то значит создаем
                     $type = sprintf('%d-%d',
