@@ -18,6 +18,8 @@ use app\models\Repository\Order;
 
 <p><?= \Yii::t('order', 'Order subscription'); ?>
     <span><?= $model->getOrderSubscription() ?? '---'; ?></span></p>
+<p><?= \Yii::t('order', 'Without soup'); ?>
+    <span><?= $model->without_soup !== null ? ($model->without_soup ? 'Да' : 'Нет') : '---'; ?></span></p>
 <p><?= \Yii::t('order', 'Cutlery'); ?>
     <span><?= $model->id ? ($model->cutlery ? 'Да' : 'Нет') : '---'; ?></span></p>
 <p><?= \Yii::t('order', 'Individual menu'); ?>

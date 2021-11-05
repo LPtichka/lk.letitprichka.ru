@@ -13,7 +13,6 @@ Pjax::begin([
 ]); ?>
 <?php if (empty($routes)): ?>
     <div class="route-row">
-        <h1><?= $title; ?></h1>
         <title><?= $title; ?></title>
         <?php $form = ActiveForm::begin(); ?>
         <div>
@@ -21,6 +20,9 @@ Pjax::begin([
             <?php echo DatePicker::widget([
                 'name'          => 'date',
                 'removeButton'  => false,
+                'options'       => [
+                    'autocomplete' => 'off'
+                ],
                 'pluginOptions' => [
                     'autoclose' => true,
                     'format'    => 'dd.mm.yyyy'

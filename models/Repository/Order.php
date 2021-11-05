@@ -502,6 +502,7 @@ class Order extends \yii\db\ActiveRecord
                     $orderSchedule->address_id = $schedule->address_id;
                     $orderSchedule->order_id = $schedule->order_id;
                     $orderSchedule->interval = $schedule->interval;
+                    $orderSchedule->status = OrderSchedule::STATUS_NEW;
 
                     $dateObject = new Date($scheduleFirstDate);
                     if (!$dateObject->isWorkDay($time)) {
@@ -705,10 +706,11 @@ class Order extends \yii\db\ActiveRecord
     /**
      * Сохранение всех связанных объектов
      *
+     * @param bool $isNeedDeleteSchedules
      * @return bool
      * @throws \yii\db\Exception
      */
-    public function saveAll(): bool
+    public function saveAll(bool $isNeedDeleteSchedules = false): bool
     {
         $event = new \app\events\OrderCreated();
         $transaction = \Yii::$app->db->beginTransaction();
@@ -766,15 +768,15 @@ class Order extends \yii\db\ActiveRecord
             }
         }
 
-        if ($this->isUpdated) {
-//            $orderSchedules = OrderSchedule::find()->where(['order_id' => $this->id])->asArray()->all();
-//            foreach ($orderSchedules as $scheduleItem) {
-//                OrderScheduleDish::deleteAll(['order_schedule_id' => $scheduleItem['id']]);
-//                OrderSchedule::deleteAll(['id' => $scheduleItem['id']]);
-//            }
+        if ($isNeedDeleteSchedules) {
+            $orderSchedules = OrderSchedule::find()->where(['order_id' => $this->id])->asArray()->all();
+            foreach ($orderSchedules as $scheduleItem) {
+                OrderScheduleDish::deleteAll(['order_schedule_id' => $scheduleItem['id']]);
+                OrderSchedule::deleteAll(['id' => $scheduleItem['id']]);
+            }
         }
 
-        if (!$this->isUpdated) {
+        if (!$this->isUpdated || $isNeedDeleteSchedules) {
             foreach ($this->schedules as $schedule) {
                 $schedule->order_id = $this->id;
                 empty($schedule->address_id) && $schedule->address_id = $this->address_id;
