@@ -97,22 +97,8 @@ class MenuDish extends \yii\db\ActiveRecord
                                        )
                                        ->orderBy(['order_schedule_dish.ingestion_type' => SORT_ASC])
                                        ->all();
-//        $dishes = MenuDish::find()->where(['date' => date('Y-m-d', $time)])->orderBy(['ingestion_type' => SORT_ASC]
-//        )->all();
-        $time = date("H:i", time());
-//        foreach ($dishes as $dish) {
-//            if (!empty($dish->dish_type)) {
-//                $ingestionName = (new Ingestion())->getIngestionName($dish->ingestion_type, $dish->dish_type);
-//            } else {
-//                $ingestionName = (new Ingestion())->getIngestionName($dish->ingestion_type);
-//            }
-//
-//            $marriageDish = new MarriageDish($time, $ingestionName, $dish->dish->name);
-//            $marriageDish->setWeight($dish->dish->weight);
-//            $marriageDish->setResult('проба снята, разрешено к выдаче');
-//            $result[] = $marriageDish;
-//        }
 
+        $time = date("H:i", time());
         $temp = [];
         foreach ($orderSchedules as $orderSchedule) {
             foreach ($orderSchedule->dishes as $orderScheduleDish) {

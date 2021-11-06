@@ -333,6 +333,10 @@ class Order extends \yii\db\ActiveRecord
             $address = new Address();
             $address->load($data);
             $this->customer->setAddresses([$address]);
+        } else {
+            $address = Address::findOne($data['Order']['address_id']);
+            $address->load($data);
+            $this->setAddress($address);
         }
 
         $exceptions = [];
@@ -716,6 +720,12 @@ class Order extends \yii\db\ActiveRecord
         $transaction = \Yii::$app->db->beginTransaction();
         if (!$this->customer->validate() || !$this->customer->save()) {
             \Yii::error(Helper::DEVIDER . json_encode($this->customer->getFirstErrors()));
+            $transaction->rollBack();
+            return false;
+        }
+
+        if (!$this->address->validate() || !$this->address->save()) {
+            \Yii::error(Helper::DEVIDER . json_encode($this->address->getFirstErrors()));
             $transaction->rollBack();
             return false;
         }
