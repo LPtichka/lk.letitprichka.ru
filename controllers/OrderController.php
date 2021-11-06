@@ -444,6 +444,12 @@ class OrderController extends BaseController
         $dateObject = new Date($newDateFrom);
         $newDateTimestamp = strtotime($newDateFrom);
         foreach ($orderSchedules as $key => $orderSchedule) {
+            foreach ($orderSchedule->dishes as $orderScheduleDish) {
+                $orderScheduleDish->dish_id = null;
+                $orderScheduleDish->with_garnish = false;
+                $orderScheduleDish->garnish_id = null;
+                $orderScheduleDish->save(false);
+            }
             $orderSchedule->date = date('Y-m-d', $newDateTimestamp);
             if (!$orderSchedule->save(false)) {
                 $transaction->rollBack();
@@ -458,6 +464,10 @@ class OrderController extends BaseController
 
         try {
             $transaction->commit();
+            $event = new \app\events\OrderCreated();
+            $event->setOrderId($id);
+            $event->prepareEvent();
+            \Yii::$app->trigger(\app\events\OrderCreated::EVENT_ORDER_CREATED, $event);
         } catch (\yii\db\Exception $e) {
             \Yii::$app->session->addFlash('danger', \Yii::t('order', 'Error schedule saving'));
             return [
@@ -565,7 +575,7 @@ class OrderController extends BaseController
         return $this->renderAjax(
             '/order/_get_order_for_kitchen',
             [
-                'title'  => \Yii::t('order', 'Order for kitchen'),
+                'title' => \Yii::t('order', 'Order for kitchen'),
             ]
         );
     }
@@ -583,7 +593,7 @@ class OrderController extends BaseController
             $excel = new Excel();
             $excel->loadFromTemplate('files/templates/base.xlsx');
             $excel->prepare($dishes, Excel::MODEL_ORDER_FOR_KITCHEN_SHEET, \Yii::$app->request->post());
-            $excel->save('order_for_kitchen_'.$date.'.xlsx', 'temp');
+            $excel->save('order_for_kitchen_' . $date . '.xlsx', 'temp');
 
             \Yii::$app->response->format = Response::FORMAT_JSON;
 
@@ -709,11 +719,19 @@ class OrderController extends BaseController
         }
 
         $dishes = [];
-        $scheduleId = 0;
-        foreach ($order->schedules as $schedule) {
-            if ($schedule->date == $date) {
-                $scheduleId = $schedule->id;
-                $dishes = $schedule->dishes;
+        $scheduleId = \Yii::$app->request->get('order_schedule_id', 0);
+        if ($scheduleId) {
+            foreach ($order->schedules as $schedule) {
+                if ($schedule->id == $scheduleId) {
+                    $dishes = $schedule->dishes;
+                }
+            }
+        } else {
+            foreach ($order->schedules as $schedule) {
+                if ($schedule->date == $date) {
+                    $scheduleId = $schedule->id;
+                    $dishes = $schedule->dishes;
+                }
             }
         }
 
@@ -731,7 +749,7 @@ class OrderController extends BaseController
                     $types[$dish->ingestion_type] = $ingestion->getIngestionName($dish->ingestion_type);
                 } elseif ($order->subscription->has_dinner && $dish->ingestion_type == Ingestion::DINNER) {
                     $types[$dish->ingestion_type] = $ingestion->getIngestionName($dish->ingestion_type);
-                } elseif ($order->subscription->has_supper && $dish->ingestion_type == Ingestion::SUPPER ) {
+                } elseif ($order->subscription->has_supper && $dish->ingestion_type == Ingestion::SUPPER) {
                     $types[$dish->ingestion_type] = $ingestion->getIngestionName($dish->ingestion_type);
                 }
             }
@@ -939,10 +957,27 @@ class OrderController extends BaseController
                                          ->one();
 
         if (empty($scheduleDish)) {
-            return [
-                'message' => "Не удалось найти рацион и блюдо",
-                'success' => false,
-            ];
+            $equpiedScheduleDish = OrderScheduleDish::find()
+                                                    ->where(['order_schedule_id' => $scheduleId])
+                                                    ->andWhere(['ingestion_type' => $ration])
+                                                    ->andWhere(['IS NOT', 'dish_id', null])
+                                                    ->one();
+            if ($equpiedScheduleDish) {
+                OrderScheduleDish::deleteAll([
+                                                 'order_schedule_id' => $scheduleId,
+                                                 'ingestion_type'    => $ration,
+                                                 'dish_id'           => null
+                                             ]);
+                return [
+                    'isDeleted' => true,
+                    'success' => true,
+                ];
+            } else {
+                return [
+                    'message' => "Не удалось найти рацион и блюдо",
+                    'success' => false,
+                ];
+            }
         }
 
         $scheduleDish->dish_id = null;
@@ -952,6 +987,7 @@ class OrderController extends BaseController
 
         if ($scheduleDish->validate() && $scheduleDish->save()) {
             return [
+                'isDeleted' => false,
                 'success' => true,
             ];
         }

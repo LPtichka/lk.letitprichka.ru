@@ -261,11 +261,16 @@ body.delegate('.delete-dish', 'click', function (e) {
         dataType: 'json',
         data: {ration: ration, schedule_id: scheduleId, dish_id: dishId},
         success: function (data) {
-            let dish_request_block = '<div class="col-sm-10 ingestion-content">' +
-                'Еще не назначено  ' +
-                '<a href="#" class="reload-dish" data-ration="'+ration+'" data-dish-id="" data-schedule-id="'+scheduleId+'"><i class="material-icons">cached</i></a>' +
-                '</div>';
-            block.parents('.ingestion-row').html(dish_request_block);
+            if (data.isDeleted) {
+                block.parents('.ingestion-row').remove();
+            } else {
+                let dish_request_block = '<div class="col-sm-10 ingestion-content">' +
+                    'Еще не назначено  ' +
+                    '<a href="#" class="reload-dish" data-ration="'+ration+'" data-dish-id="" data-schedule-id="'+scheduleId+'"><i class="material-icons">cached</i></a>' +
+                    '</div>';
+                block.parents('.ingestion-row').html(dish_request_block);
+            }
+
         }
     });
 });

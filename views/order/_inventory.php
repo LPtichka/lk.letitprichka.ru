@@ -104,6 +104,12 @@ $this->title = \Yii::t('order', 'Order inventory');
                                            data-dish-id="<?= $dish->dish_id; ?>"
                                            data-schedule-id="<?= $scheduleId; ?>"
                                         ><i class="material-icons">cached</i></a>
+                                        <a href="#"
+                                           class="delete-dish"
+                                           data-ration="<?= $key; ?>"
+                                           data-dish-id="<?= $dish->dish_id; ?>"
+                                           data-schedule-id="<?= $scheduleId; ?>"
+                                        ><i class="material-icons">delete</i></a>
                                     </div>
                                 <?php endif; ?>
                             </div>
