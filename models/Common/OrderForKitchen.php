@@ -3,6 +3,7 @@ namespace app\models\Common;
 
 use app\models\Helper\Phone;
 use app\models\Repository\Dish;
+use app\models\Repository\Order;
 use app\models\Repository\OrderSchedule;
 use app\models\Repository\OrderScheduleDish;
 use yii\base\Model;
@@ -37,6 +38,9 @@ class OrderForKitchen extends Model
         $result = [];
         $orderSchedules = OrderSchedule::find()->where(['date' => $this->date])->all();
         foreach ($orderSchedules as $orderSchedule) {
+            if ($orderSchedule->order->status_id == Order::STATUS_ARCHIVED) {
+                continue;
+            }
             foreach ($orderSchedule->dishes as $scheduleDish) {
                 if (!$scheduleDish->dish_id) {
                     continue;
