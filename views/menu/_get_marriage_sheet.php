@@ -35,6 +35,9 @@ Pjax::begin(
                     [
                         'name'          => 'date',
                         'removeButton'  => false,
+                        'options'       => [
+                            'autocomplete' => 'off'
+                        ],
                         'pluginOptions' => [
                             'autoclose' => true,
                             'format'    => 'dd.mm.yyyy'

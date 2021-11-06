@@ -6,6 +6,7 @@ use app\models\Common\Ingestion;
 use app\models\Common\MarriageDish;
 use app\models\Queries\MenuDishQuery;
 use yii\behaviors\TimestampBehavior;
+use yii\helpers\ArrayHelper;
 
 /**
  * This is the model class for table "{{%menu_dish}}".
@@ -88,22 +89,91 @@ class MenuDish extends \yii\db\ActiveRecord
     {
         $result = [];
         $time = strtotime($date);
-        $dishes = MenuDish::find()->where(['date' => date('Y-m-d', $time)])->orderBy(['ingestion_type' => SORT_ASC]
-        )->all();
+        $orderSchedules = OrderSchedule::find()
+                                       ->where(['order_schedule.date' => date('Y-m-d', $time)])
+                                       ->leftJoin(
+                                           'order_schedule_dish',
+                                           ['order_schedule.id' => 'order_schedule_dish.order_schedule_id']
+                                       )
+                                       ->orderBy(['order_schedule_dish.ingestion_type' => SORT_ASC])
+                                       ->all();
+//        $dishes = MenuDish::find()->where(['date' => date('Y-m-d', $time)])->orderBy(['ingestion_type' => SORT_ASC]
+//        )->all();
         $time = date("H:i", time());
-        foreach ($dishes as $dish) {
-            if (!empty($dish->dish_type)) {
-                $ingestionName = (new Ingestion())->getIngestionName($dish->ingestion_type, $dish->dish_type);
-            } else {
-                $ingestionName = (new Ingestion())->getIngestionName($dish->ingestion_type);
+//        foreach ($dishes as $dish) {
+//            if (!empty($dish->dish_type)) {
+//                $ingestionName = (new Ingestion())->getIngestionName($dish->ingestion_type, $dish->dish_type);
+//            } else {
+//                $ingestionName = (new Ingestion())->getIngestionName($dish->ingestion_type);
+//            }
+//
+//            $marriageDish = new MarriageDish($time, $ingestionName, $dish->dish->name);
+//            $marriageDish->setWeight($dish->dish->weight);
+//            $marriageDish->setResult('проба снята, разрешено к выдаче');
+//            $result[] = $marriageDish;
+//        }
+
+        $temp = [];
+        foreach ($orderSchedules as $orderSchedule) {
+            foreach ($orderSchedule->dishes as $orderScheduleDish) {
+                if ($orderScheduleDish->dish_id == null) {
+                    continue;
+                }
+
+                if (in_array($orderScheduleDish->dish_id, $temp)) {
+                    continue;
+                }
+
+                if (!empty($orderScheduleDish->type)) {
+                    $ingestionName = (new Ingestion())->getIngestionName($orderScheduleDish->ingestion_type, $orderScheduleDish->type);
+                } else {
+                    $ingestionName = (new Ingestion())->getIngestionName($orderScheduleDish->ingestion_type);
+                }
+
+                $marriageDish = new MarriageDish($time, $ingestionName, $orderScheduleDish->dish->name);
+                $marriageDish->setWeight($orderScheduleDish->dish->weight);
+                $marriageDish->setResult('проба снята, разрешено к выдаче');
+                $temp[] = $orderScheduleDish->dish_id;
+                $result[] = $marriageDish;
+
+                if ($orderScheduleDish->with_garnish && $orderScheduleDish->garnish_id && !in_array($orderScheduleDish->garnish_id, $temp)) {
+                    $marriageDish = new MarriageDish($time, $ingestionName, $orderScheduleDish->garnish->name);
+                    $marriageDish->setWeight($orderScheduleDish->garnish->weight);
+                    $marriageDish->setResult('проба снята, разрешено к выдаче');
+                    $temp[] = $orderScheduleDish->garnish_id;
+                    $result[] = $marriageDish;
+                }
             }
 
-            $marriageDish = new MarriageDish($time, $ingestionName, $dish->dish->name);
-            $marriageDish->setWeight($dish->dish->weight);
-            $marriageDish->setResult('проба снята, разрешено к выдаче');
-            $result[] = $marriageDish;
         }
 
-        return $result;
+        $res = [];
+        foreach ($result as $item) {
+            if ($item->getType() == 'завтрак') {
+                $res[] = $item;
+            }
+        }
+        foreach ($result as $item) {
+            if ($item->getType() == 'обед первое') {
+                $res[] = $item;
+            }
+        }
+        foreach ($result as $item) {
+            if ($item->getType() == 'обед второе') {
+                $res[] = $item;
+            }
+        }
+        foreach ($result as $item) {
+            if ($item->getType() == 'перекус') {
+                $res[] = $item;
+            }
+        }
+        foreach ($result as $item) {
+            if ($item->getType() == 'ужин второе') {
+                $res[] = $item;
+            }
+        }
+
+        return $res;
     }
 }
