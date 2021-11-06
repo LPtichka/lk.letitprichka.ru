@@ -845,7 +845,9 @@ class OrderController extends BaseController
     {
         $order = \app\models\Repository\Order::findOne($orderId);
 
-        if ($order->reBuildFromParams(\Yii::$app->request->post()) && $order->saveAll(true)) {
+        if ($order->reBuildFromParams(\Yii::$app->request->post())
+            && $order->saveAll(true, false)
+        ) {
             return $this->renderAjax(
                 '/order/_order_info_block',
                 [

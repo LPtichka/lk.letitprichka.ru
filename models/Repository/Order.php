@@ -710,7 +710,7 @@ class Order extends \yii\db\ActiveRecord
      * @return bool
      * @throws \yii\db\Exception
      */
-    public function saveAll(bool $isNeedDeleteSchedules = false): bool
+    public function saveAll(bool $isNeedDeleteSchedules = false, bool $isNeedDeleteExceptions = true): bool
     {
         $event = new \app\events\OrderCreated();
         $transaction = \Yii::$app->db->beginTransaction();
@@ -745,26 +745,28 @@ class Order extends \yii\db\ActiveRecord
         }
         $event->setOrderId($this->id);
 
-        CustomerException::deleteAll(['customer_id' => $this->customer_id]);
-        OrderException::deleteAll(['order_id' => $this->id]);
+        if ($isNeedDeleteExceptions) {
+            CustomerException::deleteAll(['customer_id' => $this->customer_id]);
+            OrderException::deleteAll(['order_id' => $this->id]);
 
-        foreach ($this->exceptions as $exception) {
-            $oException = new OrderException();
-            $oException->order_id = $this->id;
-            $oException->exception_id = $exception->id;
-            $oException->comment = $exception->comment;
-            if (!$oException->validate() || !$oException->save()) {
-                \Yii::error(Helper::DEVIDER . json_encode($oException->getFirstErrors()));
-                $transaction->rollBack();
-                return false;
-            }
-            $cException = new CustomerException();
-            $cException->customer_id = $this->customer_id;
-            $cException->exception_id = $exception->id;
-            if (!$cException->validate() || !$cException->save()) {
-                \Yii::error(Helper::DEVIDER . json_encode($cException->getFirstErrors()));
-                $transaction->rollBack();
-                return false;
+            foreach ($this->exceptions as $exception) {
+                $oException = new OrderException();
+                $oException->order_id = $this->id;
+                $oException->exception_id = $exception->id;
+                $oException->comment = $exception->comment;
+                if (!$oException->validate() || !$oException->save()) {
+                    \Yii::error(Helper::DEVIDER . json_encode($oException->getFirstErrors()));
+                    $transaction->rollBack();
+                    return false;
+                }
+                $cException = new CustomerException();
+                $cException->customer_id = $this->customer_id;
+                $cException->exception_id = $exception->id;
+                if (!$cException->validate() || !$cException->save()) {
+                    \Yii::error(Helper::DEVIDER . json_encode($cException->getFirstErrors()));
+                    $transaction->rollBack();
+                    return false;
+                }
             }
         }
 
