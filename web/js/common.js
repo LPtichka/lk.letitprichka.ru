@@ -134,20 +134,24 @@ body.delegate('.delete', 'click', function (e) {
                 type: 'POST',
                 success: function (data) {
                     if (data.status) {
-                        swal({
-                            title: data.title,
-                            text: data.description,
-                            confirmButtonText: closeButton,
-                        }, function () {
-                            location.reload();
-                        });
+                        setTimeout(function () {
+                            swal({
+                                title: data.title,
+                                text: data.description,
+                                confirmButtonText: closeButton,
+                            }, function () {
+                                location.reload();
+                            });
+                        }, 300)
                     } else {
-                        swal({
-                            title: data.title,
-                            text: data.description,
-                        }, function () {
-                            location.reload();
-                        });
+                        setTimeout(function () {
+                            swal({
+                                title: data.title,
+                                text: data.description,
+                            }, function () {
+                                location.reload();
+                            });
+                        }, 300)
                     }
                 },
                 error: function (data) {
