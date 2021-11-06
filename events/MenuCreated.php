@@ -64,8 +64,12 @@ class MenuCreated extends Event
 
         $transaction = \Yii::$app->db->beginTransaction();
 
+        $orderDates = [];
         foreach ($orderSchedules as $schedule) {
             $order = Order::findOne($schedule['order_id']);
+            if (!empty($orderDates[$schedule['order_id']]) && in_array($schedule['date'], $orderDates[$schedule['order_id']])) {
+                continue;
+            }
             if ($order->status_id == Order::STATUS_ARCHIVED) {
                 continue;
             }
@@ -123,6 +127,7 @@ class MenuCreated extends Event
                     }
                 }
             }
+            $orderDates[$order->id][] = $schedule['date'];
         }
         $transaction->commit();
         $this->log('menu-create', ["======================================================"]);

@@ -1087,6 +1087,21 @@ class Order extends \yii\db\ActiveRecord
      */
     public function isNotEquipped(?string $date = null, int $scheduleId = 0): bool
     {
+        if (empty($date)) {
+            $sql = 'SELECT COUNT(*) as `count` FROM `order_schedule` AS os
+              LEFT JOIN `order_schedule_dish` AS osd
+                ON os.id = osd.order_schedule_id
+              WHERE os.order_id = "' . $this->id . '"
+                    AND (osd.dish_id IS NULL OR (osd.with_garnish = 1 AND osd.garnish_id is NULL))';
+
+            try {
+                $result = \Yii::$app->db->createCommand($sql)->queryOne();
+            } catch (\yii\db\Exception $e) {
+                return false;
+            }
+
+            return (bool)$result['count'];
+        }
         $orderSchedule = OrderSchedule::findOne($scheduleId);
         foreach ($orderSchedule->dishes as $dish) {
             if ($dish->ingestion_type == Dish::INGESTION_TYPE_BREAKFAST
@@ -1113,22 +1128,5 @@ class Order extends \yii\db\ActiveRecord
 
         return false;
 
-//        $sql = 'SELECT COUNT(*) as `count` FROM `order_schedule` AS os
-//                      LEFT JOIN `order_schedule_dish` AS osd
-//                        ON os.id = osd.order_schedule_id
-//                      WHERE os.order_id = "' . $this->id . '"
-//                            AND (osd.dish_id IS NULL OR (osd.with_garnish = 1 AND osd.garnish_id is NULL))';
-//
-//        if ($date) {
-//            $sql .= ' AND os.date = "' . $date . '"';
-//        }
-//
-//        try {
-//            $result = \Yii::$app->db->createCommand($sql)->queryOne();
-//        } catch (\yii\db\Exception $e) {
-//            return false;
-//        }
-//
-//        return (bool)$result['count'];
     }
 }

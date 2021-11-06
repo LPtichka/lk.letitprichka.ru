@@ -48,9 +48,14 @@ class OrderCreated extends Event
             return false;
         }
 
+        $dates = [];
         if ($order->subscription_id != Subscription::NO_SUBSCRIPTION_ID) {
             foreach ($order->schedules as $schedule) {
                 $date     = $schedule->date;
+                // Мы не хотим делать 2 одинаковых меню на один и тот же день, поэтому пропускаем этот день
+                if (in_array($date, $dates)) {
+                    continue;
+                }
                 $menuDish = MenuDish::find()->where(['date' => $date])->all();
                 foreach ($menuDish as $mDish) {
                     $dishException  = $mDish->dish->getExceptionList();
@@ -115,6 +120,7 @@ class OrderCreated extends Event
                     }
 
                 }
+                $dates[] = $schedule->date;
             }
         }
     }
