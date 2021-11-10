@@ -333,6 +333,7 @@ class Order extends \yii\db\ActiveRecord
             $address = new Address();
             $address->load($data);
             $this->customer->setAddresses([$address]);
+            $this->setAddress($address);
         } else {
             $address = Address::findOne($data['Order']['address_id']);
             $address->load($data);
