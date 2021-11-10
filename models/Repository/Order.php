@@ -304,7 +304,7 @@ class Order extends \yii\db\ActiveRecord
                 if ($subscriptionDiscount) {
                     $this->total = $subscriptionDiscount->price;
                 } else {
-                    $this->total = $subscription->price * $this->count;
+                    $this->total = (int) $subscription->price * (int) $this->count;
                 }
             }
 
