@@ -312,6 +312,10 @@ class Order extends \yii\db\ActiveRecord
                 $this->total = $this->total + $settings['individual_menu_price'] * $this->count;
             }
 
+            if ($this->without_soup) {
+                $this->total = $this->total + $settings['soupless_discount'] * $this->count;
+            }
+
             if ($isTotalSetted) {
                 $this->total = $isTotalSetted;
             }
@@ -420,6 +424,9 @@ class Order extends \yii\db\ActiveRecord
                         if ($this->individual_menu) {
                             $orderSchedule->cost = $orderSchedule->cost + $settings['individual_menu_price'];
                         }
+                        if ($this->without_soup) {
+                            $orderSchedule->cost = $orderSchedule->cost + $settings['soupless_discount'];
+                        }
 
                         $schedules[] = $orderSchedule;
                         $time = $dateObject->getNextWorkDateTime($time);
@@ -484,6 +491,10 @@ class Order extends \yii\db\ActiveRecord
             if ($this->individual_menu) {
                 $this->total = $this->total + $settings['individual_menu_price'] * $this->count;
             }
+
+            if ($this->without_soup) {
+                $this->total = $this->total + $settings['soupless_discount'] * $this->count;
+            }
         }
 
         if (!empty($totalFromRequest)) {
@@ -528,6 +539,9 @@ class Order extends \yii\db\ActiveRecord
                     $orderSchedule->cost = $price / $this->count;
                     if ($this->individual_menu) {
                         $orderSchedule->cost = $orderSchedule->cost + $settings['individual_menu_price'];
+                    }
+                    if ($this->without_soup) {
+                        $orderSchedule->cost = $orderSchedule->cost + $settings['soupless_discount'];
                     }
 
                     $schedules[] = $orderSchedule;

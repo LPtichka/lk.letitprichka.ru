@@ -13,4 +13,5 @@ return [
     'Saturday'                        => 'Сб',
     'Sunday'                          => 'Вс',
     'Work days'                       => 'Рабочие дни',
+    'soupless_discount'               => 'Скидка за отсутствие супа',
 ];
