@@ -38,7 +38,7 @@ use yii\helpers\Url;
                                             'name'          => 'date_' . $schedule->id,
                                             'removeButton'  => false,
                                             'value'         => date('d.m.Y', strtotime($schedule->date)),
-                                            'disabled'      => $isScheduleDisabled,
+//                                            'disabled'      => $isScheduleDisabled,
                                             'options'       => [
                                                 'id'    => 'date_' . $schedule->id,
                                                 'class' => 'form-control input-sm'

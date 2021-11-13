@@ -336,7 +336,18 @@ class Order extends \yii\db\ActiveRecord
             $this->setAddress($address);
         } else {
             $address = Address::findOne($data['Order']['address_id']);
-            $address->load($data);
+            $newAddress = new Address();
+            $newAddress->load($data);
+
+            (!empty($newAddress->city)) && $address->city = $newAddress->city;
+            (!empty($newAddress->street)) && $address->street = $newAddress->street;
+            (!empty($newAddress->house)) && $address->house = $newAddress->house;
+            (!empty($newAddress->housing)) && $address->housing = $newAddress->housing;
+            (!empty($newAddress->flat)) && $address->flat = $newAddress->flat;
+            (!empty($newAddress->floor)) && $address->floor = $newAddress->floor;
+            (!empty($newAddress->porch)) && $address->porch = $newAddress->porch;
+            (!empty($newAddress->description)) && $address->description = $newAddress->description;
+
             $this->setAddress($address);
         }
 
@@ -725,7 +736,13 @@ class Order extends \yii\db\ActiveRecord
             return false;
         }
 
+        if (!empty($this->customer->id)) {
+            $this->address->customer_id = $this->customer->id;
+        }
+
         if (!$this->address->validate() || !$this->address->save()) {
+//            var_dump($this->address->getFirstErrors());
+//            die("=======");
             \Yii::error(Helper::DEVIDER . json_encode($this->address->getFirstErrors()));
             $transaction->rollBack();
             return false;
