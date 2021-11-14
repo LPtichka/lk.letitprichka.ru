@@ -46,7 +46,7 @@ use yii\helpers\Url;
                                             'pluginOptions' => [
                                                 'autoclose' => true,
                                                 'format'    => 'dd.mm.yyyy',
-                                                'startDate' => date('d.m.Y', time())
+//                                                'startDate' => date('d.m.Y', time())
                                             ],
                                             'pluginEvents'  => [
                                                 "changeDate" => "function(e) {
