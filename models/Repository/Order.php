@@ -644,6 +644,7 @@ class Order extends \yii\db\ActiveRecord
 
         $customer->setAddresses([$address]);
         $this->setCustomer($customer);
+        $this->setAddress($address);
 
         $exceptions = [];
         foreach ($data['exceptions'] as $exception) {
@@ -755,8 +756,6 @@ class Order extends \yii\db\ActiveRecord
         }
 
         if (!$this->address->validate() || !$this->address->save()) {
-//            var_dump($this->address->getFirstErrors());
-//            die("=======");
             \Yii::error(Helper::DEVIDER . json_encode($this->address->getFirstErrors()));
             $transaction->rollBack();
             return false;
@@ -769,6 +768,7 @@ class Order extends \yii\db\ActiveRecord
                 return false;
             }
         }
+
         $this->customer_id = $this->customer->id;
         if (!empty($this->customer->addresses[0]->id)) {
             $this->address_id = $this->customer->addresses[0]->id;
