@@ -193,6 +193,13 @@ class Excel
         }
 
         $objWorksheet = $this->fileName->getActiveSheet();
+        $objWorksheet->getPageSetup()->setOrientation(\PhpOffice\PhpSpreadsheet\Worksheet\PageSetup::ORIENTATION_LANDSCAPE);
+        $objWorksheet->getPageSetup()->setPaperSize(\PhpOffice\PhpSpreadsheet\Worksheet\PageSetup::PAPERSIZE_A4);
+        $objWorksheet->getPageSetup()->setFitToWidth(1);
+        $objWorksheet->getPageMargins()->setTop(0.25);
+        $objWorksheet->getPageMargins()->setRight(0.25);
+        $objWorksheet->getPageMargins()->setLeft(0.25);
+        $objWorksheet->getPageMargins()->setBottom(0.25);
         $iRow         = 1;
         foreach ($data as $row) {
             $col = 1;
@@ -237,6 +244,14 @@ class Excel
             } else {
                 $objWorksheet = $this->fileName->createSheet();
             }
+
+            $objWorksheet->getPageSetup()->setOrientation(\PhpOffice\PhpSpreadsheet\Worksheet\PageSetup::ORIENTATION_LANDSCAPE);
+            $objWorksheet->getPageSetup()->setPaperSize(\PhpOffice\PhpSpreadsheet\Worksheet\PageSetup::PAPERSIZE_A4);
+            $objWorksheet->getPageSetup()->setFitToWidth(1);
+            $objWorksheet->getPageMargins()->setTop(0.25);
+            $objWorksheet->getPageMargins()->setRight(0.25);
+            $objWorksheet->getPageMargins()->setLeft(0.25);
+            $objWorksheet->getPageMargins()->setBottom(0.25);
 
             $title = mb_substr($dish->name, 0, 30);
             $title = preg_replace('/[^ a-zа-яё\d]/ui', '', $title);
@@ -381,6 +396,15 @@ class Excel
     public function prepareRouteSheet(iterable $routes, array $params): bool
     {
         $objWorksheet = $this->fileName->getActiveSheet();
+
+        $objWorksheet->getPageSetup()->setOrientation(\PhpOffice\PhpSpreadsheet\Worksheet\PageSetup::ORIENTATION_LANDSCAPE);
+        $objWorksheet->getPageSetup()->setPaperSize(\PhpOffice\PhpSpreadsheet\Worksheet\PageSetup::PAPERSIZE_A4);
+        $objWorksheet->getPageSetup()->setFitToWidth(1);
+        $objWorksheet->getPageMargins()->setTop(0.25);
+        $objWorksheet->getPageMargins()->setRight(0.25);
+        $objWorksheet->getPageMargins()->setLeft(0.25);
+        $objWorksheet->getPageMargins()->setBottom(0.25);
+
         $objWorksheet->setTitle('Маршрутный лист');
 
         $objWorksheet->getCellByColumnAndRow(1, 1)->setValue('Дата');
@@ -405,7 +429,8 @@ class Excel
 
             $objWorksheet->getCellByColumnAndRow(3, ($i + $key))->setValue($route->getInterval());
             $cell = $objWorksheet->getCellByColumnAndRow(2, ($i + $key));
-            $objWorksheet->getColumnDimension($cell->getColumn())->setAutoSize(true);
+//            $objWorksheet->getColumnDimension($cell->getColumn())->setAutoSize(true);
+            $objWorksheet->getColumnDimension($cell->getColumn())->setWidth(80, 'pt');
 
             $objWorksheet->getCellByColumnAndRow(4, ($i + $key))->setValue($route->getComment());
             $cell = $objWorksheet->getCellByColumnAndRow(3, ($i + $key));
@@ -413,7 +438,8 @@ class Excel
 
             $objWorksheet->getCellByColumnAndRow(5, ($i + $key))->setValue($route->getPhone());
             $cell = $objWorksheet->getCellByColumnAndRow(4, ($i + $key));
-            $objWorksheet->getColumnDimension($cell->getColumn())->setAutoSize(true);
+//            $objWorksheet->getColumnDimension($cell->getColumn())->setAutoSize(true);
+            $objWorksheet->getColumnDimension($cell->getColumn())->setWidth(60, 'pt');
 
             $objWorksheet->getCellByColumnAndRow(6, ($i + $key))->setValue($route->getPayment());
             $cell = $objWorksheet->getCellByColumnAndRow(5, ($i + $key));
@@ -423,6 +449,11 @@ class Excel
         $objWorksheet->getStyle('A3' . ':F' . (count($routes) + 3))->applyFromArray($this->borderAll);
         $objWorksheet->getStyle('A1:B1')->applyFromArray($this->fillGreen);
         $objWorksheet->getStyle('A3:F3')->applyFromArray($this->fillGreen);
+
+        $objWorksheet->getStyle('B1:B'.$objWorksheet->getHighestRow())
+                    ->getAlignment()->setWrapText(true);
+        $objWorksheet->getStyle('D1:D'.$objWorksheet->getHighestRow())
+                    ->getAlignment()->setWrapText(true);
 
         return true;
     }
@@ -437,6 +468,14 @@ class Excel
     {
         $objWorksheet = $this->fileName->getActiveSheet();
         $objWorksheet->setTitle('Лист бракеражной комиссии');
+
+        $objWorksheet->getPageSetup()->setOrientation(\PhpOffice\PhpSpreadsheet\Worksheet\PageSetup::ORIENTATION_LANDSCAPE);
+        $objWorksheet->getPageSetup()->setPaperSize(\PhpOffice\PhpSpreadsheet\Worksheet\PageSetup::PAPERSIZE_A4);
+        $objWorksheet->getPageSetup()->setFitToWidth(1);
+        $objWorksheet->getPageMargins()->setTop(0.25);
+        $objWorksheet->getPageMargins()->setRight(0.25);
+        $objWorksheet->getPageMargins()->setLeft(0.25);
+        $objWorksheet->getPageMargins()->setBottom(0.25);
 
         $objWorksheet->getCellByColumnAndRow(1, 1)->setValue('дата приготовления блюда');
         $objWorksheet->getCellByColumnAndRow(2, 1)->setValue('время бракеража');
@@ -513,6 +552,14 @@ class Excel
             } else {
                 $objWorksheet = $this->fileName->createSheet();
             }
+
+            $objWorksheet->getPageSetup()->setOrientation(\PhpOffice\PhpSpreadsheet\Worksheet\PageSetup::ORIENTATION_LANDSCAPE);
+            $objWorksheet->getPageSetup()->setPaperSize(\PhpOffice\PhpSpreadsheet\Worksheet\PageSetup::PAPERSIZE_A4);
+            $objWorksheet->getPageSetup()->setFitToWidth(1);
+            $objWorksheet->getPageMargins()->setTop(0.25);
+            $objWorksheet->getPageMargins()->setRight(0.25);
+            $objWorksheet->getPageMargins()->setLeft(0.25);
+            $objWorksheet->getPageMargins()->setBottom(0.25);
 
             $columnWidths = [
                 1 => 25,
