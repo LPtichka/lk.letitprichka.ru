@@ -79,7 +79,27 @@ Pjax::begin([
                 button.button('reset');
             },
             success: function(data) {
-                window.location.href = data.url;
+                if (data.success) {
+                    button.removeClass('loading');
+                    window.location.href = '/' + data.url;
+                } else {
+                    let orderText = '';
+                    
+                    // if (data.orders) {
+                    //     for(let i = 0; i < data.orders.length; i++) {
+                    //         orderText += '<a href="/order/'+data.orders[i]+'/view">Заказ номер №'+data.orders[i]+'</a><br />';
+                    //     }
+                    // }
+                    
+                    swal({
+                        title: "Ошибка",
+                        text: data.errorMessage,
+                        type: 'error',
+                        html: true,
+                        showCancelButton: true,
+                        closeOnConfirm: false,
+                    });
+                }
             },
             error: function (xhr, ajaxOptions, thrownError) {
                 swal({

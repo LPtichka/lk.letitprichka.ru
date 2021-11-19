@@ -587,17 +587,26 @@ class OrderController extends BaseController
     public function actionSaveOrderForKitchen()
     {
         if (\Yii::$app->request->post()) {
+            \Yii::$app->response->format = Response::FORMAT_JSON;
             $date = date('Y-m-d', strtotime(\Yii::$app->request->post('date')));
-            $dishes = (new OrderForKitchen($date))->getOrderForKitchen();
+            $orderForKitchen = new OrderForKitchen($date);
+            try {
+                $dishes = $orderForKitchen->getOrderForKitchen();
+            } catch (\Throwable $e) {
+                $order_ids = $orderForKitchen->getOrderNumbersWithEmptyDishes();
+                return [
+                    'success' => false,
+                    'errorMessage' => \Yii::t('order', 'Error in this orders') . implode(', ', $order_ids),
+                ];
+            }
 
             $excel = new Excel();
             $excel->loadFromTemplate('files/templates/base.xlsx');
             $excel->prepare($dishes, Excel::MODEL_ORDER_FOR_KITCHEN_SHEET, \Yii::$app->request->post());
             $excel->save('order_for_kitchen_' . $date . '.xlsx', 'temp');
 
-            \Yii::$app->response->format = Response::FORMAT_JSON;
-
             return [
+                'success' => true,
                 'url' => $excel->getUrl()
             ];
         }

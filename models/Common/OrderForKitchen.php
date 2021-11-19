@@ -6,7 +6,9 @@ use app\models\Repository\Dish;
 use app\models\Repository\Order;
 use app\models\Repository\OrderSchedule;
 use app\models\Repository\OrderScheduleDish;
+use app\models\Repository\Subscription;
 use yii\base\Model;
+use yii\db\Exception;
 use yii\helpers\ArrayHelper;
 
 /**
@@ -32,6 +34,108 @@ class OrderForKitchen extends Model
         parent::__construct($config);
     }
 
+    /**
+     * Проверяет должно ли быть блюдо в меню и назначено ли оно
+     * @param OrderSchedule $orderSchedule
+     * @param OrderScheduleDish $scheduleDish
+     * @return bool
+     */
+    public function isDishInSchedule(OrderSchedule $orderSchedule, OrderScheduleDish $scheduleDish, Subscription $subscription): bool
+    {
+        // Если нет назначенного блюда, тип блюда завтрак и в подписке завтрак имеется то отдаем false
+        if (!$scheduleDish->dish_id
+            && $scheduleDish->ingestion_type == Dish::INGESTION_TYPE_BREAKFAST
+            && $subscription->has_breakfast
+        ) {
+            return false;
+        }
+
+        // Если нет назначенного блюда, тип блюда ланч и в подписке ланч имеется то отдаем false
+        if (!$scheduleDish->dish_id
+            && $scheduleDish->ingestion_type == Dish::INGESTION_TYPE_LUNCH
+            && $subscription->has_lunch
+        ) {
+            return false;
+        }
+
+        if ($scheduleDish->ingestion_type == Dish::INGESTION_TYPE_DINNER) {
+            if (!$scheduleDish->dish_id && $scheduleDish->type == Dish::TYPE_SECOND) {
+                return false;
+            }
+            if ($scheduleDish->type == Dish::TYPE_SECOND && !$scheduleDish->garnish_id && $scheduleDish->with_garnish) {
+                return false;
+            }
+            if (!$scheduleDish->dish_id && $scheduleDish->type == Dish::TYPE_FIRST && !$orderSchedule->order->without_soup) {
+                return false;
+            }
+        }
+
+        if ($scheduleDish->ingestion_type == Dish::INGESTION_TYPE_SUPPER && $subscription->has_supper) {
+            if (!$scheduleDish->dish_id) {
+                return false;
+            }
+            if (!$scheduleDish->garnish_id && $scheduleDish->with_garnish) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    public function getOrderNumbersWithEmptyDishes(): array
+    {
+        $result = [];
+        $orderSchedules = OrderSchedule::find()->where(['date' => $this->date])->all();
+        foreach ($orderSchedules as $orderSchedule) {
+            if ($orderSchedule->order->status_id == Order::STATUS_ARCHIVED) {
+                continue;
+            }
+            foreach ($orderSchedule->dishes as $scheduleDish) {
+                $subscription = $orderSchedule->order->subscription;
+                if (!$scheduleDish->dish_id
+                    && $scheduleDish->ingestion_type == Dish::INGESTION_TYPE_BREAKFAST
+                    && $subscription->has_breakfast
+                ) {
+                    $result[$orderSchedule->order_id] = $orderSchedule->order_id;
+                }
+
+                // Если нет назначенного блюда, тип блюда ланч и в подписке ланч имеется то отдаем false
+                if (!$scheduleDish->dish_id
+                    && $scheduleDish->ingestion_type == Dish::INGESTION_TYPE_LUNCH
+                    && $subscription->has_lunch
+                ) {
+                    $result[$orderSchedule->order_id] = $orderSchedule->order_id;
+                }
+
+                if ($scheduleDish->ingestion_type == Dish::INGESTION_TYPE_DINNER) {
+                    if (!$scheduleDish->dish_id && $scheduleDish->type == Dish::TYPE_SECOND) {
+                        $result[$orderSchedule->order_id] = $orderSchedule->order_id;
+                    }
+                    if ($scheduleDish->type == Dish::TYPE_SECOND && !$scheduleDish->garnish_id && $scheduleDish->with_garnish) {
+                        $result[$orderSchedule->order_id] = $orderSchedule->order_id;
+                    }
+                    if (!$scheduleDish->dish_id && $scheduleDish->type == Dish::TYPE_FIRST && !$orderSchedule->order->without_soup) {
+                        $result[$orderSchedule->order_id] = $orderSchedule->order_id;
+                    }
+                }
+
+                if ($scheduleDish->ingestion_type == Dish::INGESTION_TYPE_SUPPER && $subscription->has_supper) {
+                    if (!$scheduleDish->dish_id) {
+                        $result[$orderSchedule->order_id] = $orderSchedule->order_id;
+                    }
+                    if (!$scheduleDish->garnish_id && $scheduleDish->with_garnish) {
+                        $result[$orderSchedule->order_id] = $orderSchedule->order_id;
+                    }
+                }
+            }
+        }
+
+        return $result;
+    }
+
+    /**
+     * @return array
+     */
     public function getOrderForKitchen(): array
     {
         $order = [];
@@ -42,8 +146,9 @@ class OrderForKitchen extends Model
                 continue;
             }
             foreach ($orderSchedule->dishes as $scheduleDish) {
-                if (!$scheduleDish->dish_id) {
-                    continue;
+                $subscription = $orderSchedule->order->subscription;
+                if (!$this->isDishInSchedule($orderSchedule, $scheduleDish, $subscription)) {
+                    throw new \Exception("Не назначено блюдо в меню");
                 }
                 $key = sprintf('%d-%d-%d-%d',
                                $scheduleDish->ingestion_type,
