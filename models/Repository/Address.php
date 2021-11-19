@@ -186,6 +186,9 @@ class Address extends \yii\db\ActiveRecord
             $address .= $this->full_address;
         }
 
+        if (!empty($this->house)) {
+            $address .= ', д. '. $this->house;
+        }
         if (!empty($this->flat)) {
             $address .= ', кв. '. $this->flat;
         }
@@ -196,12 +199,12 @@ class Address extends \yii\db\ActiveRecord
             $address .= ', подъезд '. $this->porch;
         }
         if (!empty($this->description)) {
-            $address .= ', доп. информация '. $this->description;
+            $address .= ', доп. информация: '. $this->description;
         }
 
-        if (!empty($this->full_address) && !empty($this->city)) {
-            $address .= ', ('. $this->full_address . ')';
-        }
+//        if (!empty($this->full_address) && !empty($this->city)) {
+//            $address .= ', ('. $this->full_address . ')';
+//        }
 
         return $address;
     }
