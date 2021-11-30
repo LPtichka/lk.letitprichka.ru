@@ -26,6 +26,15 @@ $config = [
                     'class' => 'yii\log\FileTarget',
                     'levels' => ['error', 'warning'],
                 ],
+                [
+                    'class'       => 'yii\log\FileTarget',
+                    'logFile'     => '@runtime/logs/write-off.log',
+                    'levels'      => ['info'],
+                    'categories'  => ['write-off-*'],
+                    'logVars'     => [],
+                    'maxFileSize' => 102400,
+                    'maxLogFiles' => 10,
+                ],
             ],
         ],
         'authManager'              => [
