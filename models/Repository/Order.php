@@ -350,6 +350,7 @@ class Order extends \yii\db\ActiveRecord
             (!empty($newAddress->flat)) && $address->flat = $newAddress->flat;
             (!empty($newAddress->floor)) && $address->floor = $newAddress->floor;
             (!empty($newAddress->porch)) && $address->porch = $newAddress->porch;
+            (!empty($newAddress->full_address)) && $address->full_address = $newAddress->full_address;
             (!empty($newAddress->description)) && $address->description = $newAddress->description;
 
             $this->setAddress($address);
