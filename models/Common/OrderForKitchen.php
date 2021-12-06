@@ -187,7 +187,6 @@ class OrderForKitchen extends Model
                 }
             }
         }
-
         if (!empty($order)) {
             $breakfastCount = 1;
             $breakfasts = [];
@@ -279,7 +278,28 @@ class OrderForKitchen extends Model
                 }
             }
             ArrayHelper::multisort($suppers, ['count', 'dish'], [SORT_DESC, SORT_ASC]);
+            if ($supperCount > 1) {
+                $suppers[] = [
+                    'type' => '',
+                    'name' => '',
+                    'count' => '',
+                    'comment' => '',
+                ];
+            }
             $result = array_merge($result, $suppers);
+
+            $others = [];
+            $othersCount = 1;
+            foreach ($order as $item) {
+                if ($item['type'] == '0-0') {
+                    $item['type'] = 'Кейтеринг' . ($othersCount > 1 ? $othersCount : '');
+                    $others[] = $item;
+                    $othersCount++;
+                }
+            }
+            ArrayHelper::multisort($others, ['count', 'dish'], [SORT_DESC, SORT_ASC]);
+
+            $result = array_merge($result, $others);
         }
         return $result;
     }
