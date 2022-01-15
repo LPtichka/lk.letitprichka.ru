@@ -61,10 +61,12 @@ class ProductController extends Controller
                     foreach ($scheduleDish->dish->dishProducts as $dishProduct) {
                         if (empty($products[$dishProduct->product_id])) {
                             $product = $dishProduct->product;
-                            $product->setNeedCount($dishProduct->weight);
+                            // Списываем брутто: Должен списываться брутто грязный вес, От куриного филе взяли грязный вес и запекли
+                            // Кабачки взяли грязный вес, почистили и приготовили
+                            $product->setNeedCount($dishProduct->brutto);
                             $products[$dishProduct->product_id] = $product;
                         } else {
-                            $products[$dishProduct->product_id]->setNeedCount($dishProduct->weight);
+                            $products[$dishProduct->product_id]->setNeedCount($dishProduct->brutto);
                         }
                     }
                 }
