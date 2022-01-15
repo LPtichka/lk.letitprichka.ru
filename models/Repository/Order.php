@@ -403,7 +403,11 @@ class Order extends \yii\db\ActiveRecord
 
                     $schedule->cost = $scheduleTotal;
                     $this->count = 1;
-                    $this->total = $scheduleTotal;
+
+                    if (!$isTotalSetted) {
+                        $deliveryCost = $settings['delivery_cost'] * 1;
+                        $this->total = $scheduleTotal + $deliveryCost;
+                    }
                     $schedule->setDishes($dishes);
                     $schedules[] = $schedule;
                 } else {
