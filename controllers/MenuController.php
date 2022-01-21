@@ -217,6 +217,7 @@ class MenuController extends BaseController
             [
                 'query' => $query,
                 'sort'  => ['defaultOrder' => ['id' => SORT_DESC]],
+                'pagination' => false,
             ]
         );
 
