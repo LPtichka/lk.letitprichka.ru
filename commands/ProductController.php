@@ -20,7 +20,7 @@ class ProductController extends Controller
     {
         $yesterday = time() - 86400;
         $date = date('Y-m-d', $yesterday);
-        $date = "2022-01-14";
+//        $date = "2022-01-14";
         \Yii::info("Начинаем процесс обновления остатков", 'write-off-product');
         $menu = Menu::find()
                     ->where(['menu_end_date' => $date])
