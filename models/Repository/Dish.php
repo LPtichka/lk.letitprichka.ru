@@ -144,6 +144,21 @@ class Dish extends \yii\db\ActiveRecord
     }
 
     /**
+     * @return bool
+     * @throws \yii\db\Exception
+     */
+    public function hasDeletedProducts(): bool
+    {
+        $sql = 'SELECT COUNT(*) as `count` FROM `dish_product` AS dp 
+                      LEFT JOIN `product` AS p
+                        ON p.id = dp.product_id
+                      WHERE p.status = ' . self::STATUS_DISABLED . ' AND dp.dish_id = '.$this->id;
+
+        $result = \Yii::$app->db->createCommand($sql)->queryOne();
+        return (bool) $result['count'];
+    }
+
+    /**
      * @return \yii\db\ActiveQuery
      */
     public function getDishProducts()

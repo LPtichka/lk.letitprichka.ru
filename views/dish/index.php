@@ -44,6 +44,14 @@ $this->params['breadcrumbs'][] = $this->title;
             'data-resizable-columns-id' => 'dish',
             'class'                     => 'table'
         ],
+        'rowOptions'   => function ($model, $key, $index, $grid){
+            $class = $model->hasDeletedProducts() ? 'error' : 'success';
+            return [
+                'key'   => $key,
+                'index' => $index,
+                'class' => $class
+            ];
+        },
         'dataProvider' => $dataProvider,
         'filterModel'  => $searchModel,
         'columns'      => (new \app\models\Search\Dish())->getSearchColumns($searchModel),

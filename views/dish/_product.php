@@ -42,6 +42,9 @@ $sourceExp = new JsExpression('function(request, response) {
 $nameId    = Html::getInputId($product, "[$i]name");
 $productId = Html::getInputId($product, "[$i]product_id");
 $labelUnitId = 'label-unit-' . $i;
+if ($product->product->status == \app\models\Repository\Product::STATUS_DISABLED) {
+    $product->name = $product->name . " (удалено)";
+}
 
 $selectExp = new JsExpression('function(event, ui) {
             $("#' . $productId . '").val(ui.item.product_id);
