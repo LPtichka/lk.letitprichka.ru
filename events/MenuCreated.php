@@ -66,6 +66,13 @@ class MenuCreated extends Event
 
         $orderDates = [];
         foreach ($orderSchedules as $schedule) {
+            $now = time();
+            $scheduleMaxAvailableUpdateTime = strtotime($schedule['date'] . " 14:00:00");
+
+            if ($now > $scheduleMaxAvailableUpdateTime) {
+                continue;
+            }
+
             $order = Order::findOne($schedule['order_id']);
             if (!empty($orderDates[$schedule['order_id']]) && in_array($schedule['date'], $orderDates[$schedule['order_id']])) {
                 continue;
