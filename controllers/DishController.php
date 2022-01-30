@@ -56,6 +56,10 @@ class DishController extends BaseController
                 $isProductSaved = true;
                 foreach ($dish->dishProducts as $product) {
                     $product->dish_id = $dish->id;
+                    $product->weight = str_replace(',', '.', $product->weight);
+                    $product->brutto = str_replace(',', '.', $product->brutto);
+                    $product->netto = str_replace(',', '.', $product->netto);
+
                     if ($product->validate() && $product->save()) {
                         $this->log('dish-product-create-success', ['name' => $dish->name]);
                     } else {
