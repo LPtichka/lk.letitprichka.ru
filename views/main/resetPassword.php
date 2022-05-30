@@ -10,7 +10,7 @@ use yii\bootstrap\Html;
 $this->title = Yii::t('app', 'Reset password');
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<div class="reset-password">
+<div class="login-box">
     <div class="login-logo">
         <a href="#"><b>Личный кабинет</b> LP</a>
     </div>
