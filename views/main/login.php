@@ -52,7 +52,7 @@ $fieldOptions2 = [
 
         <?php ActiveForm::end(); ?>
 
-        <a href="#"><?= \Yii::t('app', 'I forgot my password');?></a>
+        <a href="/forgot-password"><?= \Yii::t('app', 'I forgot my password');?></a>
 
     </div>
     <!-- /.login-box-body -->
