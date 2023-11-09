@@ -45,7 +45,7 @@ $config = [
                 'class'      => 'Swift_SmtpTransport',
                 'host'       => 'smtp.yandex.ru',
                 'username'   => 'support@letitptichka.ru',
-                'password'   => '6M!7rnq59900',
+                'password'   => 'rzuilljvimhuadjn',
                 'port'       => '465',
                 'encryption' => 'SSL',
             ],
